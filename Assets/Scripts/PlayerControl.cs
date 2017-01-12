@@ -4,6 +4,8 @@ using System.Collections;
 public enum Direction {NORTH, EAST, SOUTH, WEST};
 public enum EntityState {NORMAL, ATTACKING};
 
+//FUCK YOU KURT
+
 public class PlayerControl : MonoBehaviour {
 
 	public Sprite[] link_run_down;
