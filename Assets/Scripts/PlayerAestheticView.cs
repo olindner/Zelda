@@ -11,6 +11,10 @@ public class PlayerAestheticView : MonoBehaviour {
 
     /* Inspector Tunables */
     public PlayerController player_controller;
+    public Sprite SpriteUp;
+	public Sprite SpriteDown;
+	public Sprite SpriteLeft;
+	public Sprite SpriteRight;
 
     // Use this for initialization
     void Start () {
@@ -31,7 +35,14 @@ public class PlayerAestheticView : MonoBehaviour {
     /* TODO: Change player sprite based on the direction the player_controller last moved in */
     void ProcessPlayerDirection()
     {
-        
+		if (Input.GetKey(KeyCode.UpArrow))
+            GetComponent<SpriteRenderer>().sprite = SpriteUp;
+        else if (Input.GetKey(KeyCode.LeftArrow))
+			GetComponent<SpriteRenderer>().sprite = SpriteLeft;
+        else if (Input.GetKey(KeyCode.RightArrow))
+			GetComponent<SpriteRenderer>().sprite = SpriteRight;
+        else if (Input.GetKey(KeyCode.DownArrow))
+			GetComponent<SpriteRenderer>().sprite = SpriteDown;
     }
 
     /* TODO: Check if the player_controller is reporting damage. If so, flash a red color */
