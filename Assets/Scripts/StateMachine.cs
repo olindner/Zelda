@@ -3,6 +3,7 @@
  */ 
 
 using UnityEngine;
+using System.Linq;
 
 // State Machines are responsible for processing states, notifying them when they're about to begin or conclude, etc.
 public class StateMachine
@@ -67,11 +68,11 @@ public class State
 // The state is capable of transitioning to a walking state upon key press.
 public class StateIdleWithSprite : State
 {
-	PlayerControl pc;
+	PlayerController pc;
 	SpriteRenderer renderer;
 	Sprite sprite;
 	
-	public StateIdleWithSprite(PlayerControl pc, SpriteRenderer renderer, Sprite sprite)
+	public StateIdleWithSprite(PlayerController pc, SpriteRenderer renderer, Sprite sprite)
 	{
 		this.pc = pc;
 		this.renderer = renderer;
@@ -104,21 +105,23 @@ public class StateIdleWithSprite : State
 // Good for animations such as walking.
 public class StatePlayAnimationForHeldKey : State
 {
-	PlayerControl pc;
+	PlayerController pc;
 	SpriteRenderer renderer;
 	KeyCode key;
 	Sprite[] animation;
+	Sprite current;
 	int animation_length;
 	float animation_progression;
 	float animation_start_time;
 	int fps;
 	
-	public StatePlayAnimationForHeldKey(PlayerControl pc, SpriteRenderer renderer, Sprite[] animation, int fps, KeyCode key)
+	public StatePlayAnimationForHeldKey(PlayerController pc, SpriteRenderer renderer, Sprite[] animation, int fps, KeyCode key)
 	{
 		this.pc = pc;
 		this.renderer = renderer;
 		this.key = key;
 		this.animation = animation;
+		this.current = animation [0];
 		this.animation_length = animation.Length;
 		this.fps = fps;
 		
@@ -162,68 +165,89 @@ public class StatePlayAnimationForHeldKey : State
 	}
 }
 
-//// A State for playing an animation when damaged.
-//public class StatePlayAnimationForDamage : State
-//{
-//	PlayerControl pc;
-//	SpriteRenderer renderer;
-//	KeyCode key;
-//	Sprite[] animation;
-//	int animation_length;
-//	float animation_progression;
-//	float animation_start_time;
-//	int fps;
-//
-//	public StatePlayAnimationForDamage(PlayerControl pc, SpriteRenderer renderer, Sprite[] animation, int fps, KeyCode key)
-//	{
-//		this.pc = pc;
-//		this.renderer = renderer;
-//		this.key = key;
-//		this.animation = animation;
-//		this.animation_length = animation.Length;
-//		this.fps = fps;
-//
-//		if(this.animation_length <= 0)
-//			Debug.LogError("Empty animation submitted to state machine!");
-//	}
-//
-//	public override void OnStart()
-//	{
-//		animation_start_time = Time.time;
-//	}
-//
-//	public override void OnUpdate(float time_delta_fraction)
-//	{
-//		if(pc.current_state == EntityState.ATTACKING)
-//			return;
-//
-//		if(this.animation_length <= 0)
-//		{
-//			Debug.LogError("Empty animation submitted to state machine!");
-//			return;
-//		}
-//
-//		// Modulus is necessary so we don't overshoot the length of the animation.
-//		int current_frame_index = ((int)((Time.time - animation_start_time) / (1.0 / fps)) % animation_length);
-//		renderer.sprite = animation[current_frame_index];
-//
-//		// If another key is pressed, we need to transition to a different walking animation.
-//		if(Input.GetKeyDown(KeyCode.DownArrow))
-//			state_machine.ChangeState(new StatePlayAnimationForHeldKey(pc, renderer, pc.link_run_down, 6, KeyCode.DownArrow));
-//		else if(Input.GetKeyDown(KeyCode.UpArrow))
-//			state_machine.ChangeState(new StatePlayAnimationForHeldKey(pc, renderer, pc.link_run_up, 6, KeyCode.UpArrow));
-//		else if(Input.GetKeyDown(KeyCode.RightArrow))
-//			state_machine.ChangeState(new StatePlayAnimationForHeldKey(pc, renderer, pc.link_run_right, 6, KeyCode.RightArrow));
-//		else if(Input.GetKeyDown(KeyCode.LeftArrow))
-//			state_machine.ChangeState(new StatePlayAnimationForHeldKey(pc, renderer, pc.link_run_left, 6, KeyCode.LeftArrow));
-//
-//
-//
-//		// If we detect the specified key has been released, return to the idle state.
-//		else if(!Input.GetKey(key))
-//			state_machine.ChangeState(new StateIdleWithSprite(pc, renderer, animation[1]));
-//	}
-//}
+// A State for playing an animation when damaged.
+public class StatePlayAnimationForDamage : State
+{
+	PlayerController pc;
+	SpriteRenderer renderer;
+	KeyCode key;
+	Sprite[] animation;
+	Sprite current;
+	int animation_length;
+	float animation_progression;
+	float animation_start_time = -1.0f; //this should be -1 if you want it set to the actual time
+	int fps;
+	float cooldown_time;
+	float total_damage_time;
+
+	public StatePlayAnimationForDamage(PlayerController pc, SpriteRenderer renderer, Sprite[] animation, int fps, float cooldown, float damage_time, KeyCode key, float start_time)
+	{
+		this.pc = pc;
+		this.renderer = renderer;
+		this.key = key;
+		this.animation = animation;
+		this.current = animation [0];
+		this.animation_length = animation.Length;
+		this.cooldown_time = cooldown;
+		this.total_damage_time = damage_time;
+		this.fps = fps;
+		if (start_time != -1.0f) {
+			this.animation_start_time = start_time;
+		}
+
+		if(this.animation_length <= 0)
+			Debug.LogError("Empty animation submitted to state machine!");
+	}
+
+	public override void OnStart()
+	{
+		//only set animation_start_time to actual time if none was given
+		if (animation_start_time != -1.0f)
+			animation_start_time = Time.time;
+	}
+
+	public override void OnUpdate(float time_delta_fraction)
+	{
+		if(pc.current_state == EntityState.ATTACKING)
+			return;
+
+		if(this.animation_length <= 0)
+		{
+			Debug.LogError("Empty animation submitted to state machine!");
+			return;
+		}
+
+		//this should stop the damage animation after "total damage time"
+		if (Time.time - animation_start_time > total_damage_time) {
+			if (pc.link_down_damage.Contains (current))
+				state_machine.ChangeState (new StateIdleWithSprite (pc, renderer, pc.link_run_down [1]));
+			else if (pc.link_left_damage.Contains (current))
+				state_machine.ChangeState (new StateIdleWithSprite (pc, renderer, pc.link_run_left [1]));
+			else if (pc.link_up_damage.Contains (current))
+				state_machine.ChangeState (new StateIdleWithSprite (pc, renderer, pc.link_run_up [1]));
+			else if (pc.link_right_damage.Contains (current))
+				state_machine.ChangeState (new StateIdleWithSprite (pc, renderer, pc.link_run_right [1]));
+		}
+
+		// Modulus is necessary so we don't overshoot the length of the animation.
+		int current_frame_index = ((int)((Time.time - animation_start_time) / (1.0 / fps)) % animation_length);
+		renderer.sprite = animation[current_frame_index];
+
+		if (Time.time - animation_start_time > cooldown_time) {
+			// If another key is pressed, we need to transition to a different walking animation.
+			if (Input.GetKeyDown (KeyCode.DownArrow))
+				state_machine.ChangeState (new StatePlayAnimationForDamage (pc, renderer, pc.link_down_damage, 6, cooldown_time, total_damage_time, KeyCode.DownArrow, animation_start_time));
+			else if (Input.GetKeyDown (KeyCode.UpArrow))
+				state_machine.ChangeState (new StatePlayAnimationForDamage (pc, renderer, pc.link_up_damage, 6, cooldown_time, total_damage_time, KeyCode.UpArrow, animation_start_time));
+			else if (Input.GetKeyDown (KeyCode.RightArrow))
+				state_machine.ChangeState (new StatePlayAnimationForDamage (pc, renderer, pc.link_right_damage, 6, cooldown_time, total_damage_time, KeyCode.RightArrow, animation_start_time));
+			else if (Input.GetKeyDown (KeyCode.LeftArrow))
+				state_machine.ChangeState (new StatePlayAnimationForDamage (pc, renderer, pc.link_left_damage, 6, cooldown_time, total_damage_time, KeyCode.LeftArrow, animation_start_time));
+			//eventually we can add in "static" flashing (so Link isn't "running" when
+			//there is no key down), but that's not super important right now
+		}
+	}
+}
 
 // Additional recommended states:
 // StateDeath

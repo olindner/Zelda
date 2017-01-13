@@ -2,6 +2,9 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+public enum Direction {NORTH, EAST, SOUTH, WEST};
+public enum EntityState {NORMAL, ATTACKING};
+
 public class PlayerController : MonoBehaviour {
 
     /* Inspector Tunables */
@@ -10,8 +13,8 @@ public class PlayerController : MonoBehaviour {
 
     /* Private Data */
     Rigidbody rb;
-	public bool receive_damage = false;
-	public Material[] materials;
+	//public bool receive_damage = false;
+	//public Material[] materials;
 	public int remainingDamageFrames = 0;
 	public int remainingDamageFlashes = 0;
 	public Color[] originalColors;
@@ -22,6 +25,25 @@ public class PlayerController : MonoBehaviour {
 	public int num_keys;
 	public int num_bombs;
 
+	//state machine stuff
+	public Sprite[] link_run_down;
+	public Sprite[] link_run_up;
+	public Sprite[] link_run_right;
+	public Sprite[] link_run_left;
+
+	public Sprite[] link_down_damage;
+	public Sprite[] link_up_damage;
+	public Sprite[] link_right_damage;
+	public Sprite[] link_left_damage;
+
+	StateMachine animation_state_machine;
+	StateMachine control_state_machine;
+
+	public EntityState current_state = EntityState.NORMAL;
+	public Direction current_direction = Direction.SOUTH;
+
+	public GameObject selected_weapon_prefab;
+
     // Use this for initialization
     void Start () {
         rb = GetComponent<Rigidbody>();
@@ -31,12 +53,17 @@ public class PlayerController : MonoBehaviour {
 //		for (int i = 0; i < materials.Length; i++) {
 //			originalColors [i] = materials [i].color;
 //		}
+
+		animation_state_machine = new StateMachine ();
+		animation_state_machine.ChangeState (new StateIdleWithSprite (this, 
+			GetComponent<SpriteRenderer> (), link_run_down[0]));
     }
     
     // Update is called once per frame
     void Update () {
         ProcessMovement();
         ProcessAttacks();
+		animation_state_machine.Update ();
     }
 
     /* TODO: Deal with user-invoked movement of the player character */
@@ -106,13 +133,16 @@ public class PlayerController : MonoBehaviour {
     }
 
 	void OnCollisionEnter(Collision coll) {
-		//future enemy damage stuff
+		print ("entered collision enter function");
 		if (coll.gameObject.tag == "Enemy") {
 			//receive_damage = true;
 			//do something here like decrease health? not sure how to put all
 			//the code together with these files, like difference between
 			//PlayerControl and PlayerController.
 			print("dude you touched me");
+//			Sprite current = animation_state_machine.
+			//animation_state_machine.ChangeState(new StatePlayAnimationForDamage(this, GetComponent<SpriteRenderer>(),
+				
 			num_hearts -= 0.5f;
 			if (num_hearts <= 0.0) {
 				print ("ah dude I ded");
