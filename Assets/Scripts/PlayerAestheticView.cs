@@ -57,18 +57,10 @@ public class PlayerAestheticView : MonoBehaviour {
     /* TODO: Change player sprite based on the direction the player_controller last moved in */
     void ProcessPlayerDirection()
     {
-		//sorry for changing this, but I did it the way that Austin teaches
-		//in the tutorial so that it changes between like both Sprite-up sprites
-		//(one is left foot forward, other is right foot forward) etc.
-		//Technically don't need this function even...so idk.
-//		if (Input.GetKey(KeyCode.UpArrow))
-//            GetComponent<SpriteRenderer>().sprite = SpriteUp;
-//        else if (Input.GetKey(KeyCode.LeftArrow))
-//			GetComponent<SpriteRenderer>().sprite = SpriteLeft;
-//        else if (Input.GetKey(KeyCode.RightArrow))
-//			GetComponent<SpriteRenderer>().sprite = SpriteRight;
-//        else if (Input.GetKey(KeyCode.DownArrow))
-//			GetComponent<SpriteRenderer>().sprite = SpriteDown;
+		if (Input.GetKey(KeyCode.UpArrow) || Input.GetKey(KeyCode.DownArrow))
+            GetComponent<SpriteRenderer>().sprite = SpriteUp;
+		else if (Input.GetKey(KeyCode.LeftArrow) || Input.GetKey(KeyCode.RightArrow))
+			GetComponent<SpriteRenderer>().sprite = SpriteLeft;
     }
 
     /* TODO: Check if the player_controller is reporting damage. If so, flash a red color */
