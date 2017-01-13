@@ -14,7 +14,7 @@ public class PlayerController : MonoBehaviour {
     /* Private Data */
     Rigidbody rb;
 	//public bool receive_damage = false;
-	//public Material[] materials;
+	public Material[] materials;
 	public int remainingDamageFrames = 0;
 	public int remainingDamageFlashes = 0;
 	public Color[] originalColors;
@@ -48,11 +48,11 @@ public class PlayerController : MonoBehaviour {
     void Start () {
         rb = GetComponent<Rigidbody>();
 
-//		materials = Utils.GetAllMaterials (gameObject);
-//		originalColors = new Color[materials.Length];
-//		for (int i = 0; i < materials.Length; i++) {
-//			originalColors [i] = materials [i].color;
-//		}
+		materials = Utils.GetAllMaterials (gameObject);
+		originalColors = new Color[materials.Length];
+		for (int i = 0; i < materials.Length; i++) {
+			originalColors [i] = materials [i].color;
+		}
 
 		animation_state_machine = new StateMachine ();
 		animation_state_machine.ChangeState (new StateIdleWithSprite (this, 
@@ -64,6 +64,20 @@ public class PlayerController : MonoBehaviour {
         ProcessMovement();
         ProcessAttacks();
 		animation_state_machine.Update ();
+
+		if (remainingDamageFlashes > 0) {
+			if (remainingDamageFrames > 0) {
+				remainingDamageFrames--;
+				if (remainingDamageFrames == 0) {
+					UnshowDamage ();
+				}
+			} else {
+				remainingDamageFlashes--;
+				ShowDamage (remainingDamageFlashes);
+			}
+		} else {
+			UnshowDamage ();
+		}
     }
 
     /* TODO: Deal with user-invoked movement of the player character */
@@ -142,7 +156,7 @@ public class PlayerController : MonoBehaviour {
 			print("dude you touched me");
 //			Sprite current = animation_state_machine.
 			//animation_state_machine.ChangeState(new StatePlayAnimationForDamage(this, GetComponent<SpriteRenderer>(),
-				
+			ShowDamage(5);
 			num_hearts -= 0.5f;
 			if (num_hearts <= 0.0) {
 				print ("ah dude I ded");
@@ -178,4 +192,21 @@ public class PlayerController : MonoBehaviour {
 			Destroy (collider.gameObject);
 		}
 	}
+
+	void ShowDamage(int flashes_left) {
+		//print ("entered ShowDamage");
+		//receive_damage = false;
+		remainingDamageFlashes = flashes_left;
+		foreach (Material m in materials) {
+			m.color = Color.red;
+		}
+		remainingDamageFrames = showDamageForFrames;
+	}
+
+	void UnshowDamage() {
+		for (int i = 0; i < materials.Length; i++) {
+			materials [i].color = originalColors [i];
+		}
+	}
+
 }
