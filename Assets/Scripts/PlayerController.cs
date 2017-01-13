@@ -6,13 +6,25 @@ public class PlayerController : MonoBehaviour {
 
     /* Inspector Tunables */
     public float PlayerMovementVelocity;
+	public int showDamageForFrames = 2;
 
     /* Private Data */
     Rigidbody rb;
+	public bool receive_damage = false;
+	public Material[] materials;
+	public int remainingDamageFrames = 0;
+	public int remainingDamageFlashes = 0;
+	public Color[] originalColors;
 
     // Use this for initialization
     void Start () {
         rb = GetComponent<Rigidbody>();
+
+//		materials = Utils.GetAllMaterials (gameObject);
+//		originalColors = new Color[materials.Length];
+//		for (int i = 0; i < materials.Length; i++) {
+//			originalColors [i] = materials [i].color;
+//		}
     }
     
     // Update is called once per frame
@@ -52,4 +64,14 @@ public class PlayerController : MonoBehaviour {
     {
 
     }
+
+//	void OnCollisionEnter(Collision coll) {
+//		if (coll.gameObject.tag == "Enemy") {
+//			receive_damage = true;
+//			//do something here like decrease health? not sure how to put all
+//			//the code together with these files, like difference between
+//			//PlayerControl and PlayerController.
+//			//print("dude you touched me");
+//		}
+//	}
 }

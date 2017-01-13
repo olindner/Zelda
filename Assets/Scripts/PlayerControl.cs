@@ -23,11 +23,14 @@ public class PlayerControl : MonoBehaviour {
 
 	// Use this for initialization
 	void Start () {
-
+		animation_state_machine = new StateMachine ();
+		animation_state_machine.ChangeState (new StateIdleWithSprite (this, 
+			GetComponent<SpriteRenderer> (), link_run_down[0]));
 	}
 	
 	// Update is called once per frame
 	void Update () {
+		animation_state_machine.Update ();
 
 	}
 }
