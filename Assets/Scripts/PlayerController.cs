@@ -11,11 +11,16 @@ public class PlayerController : MonoBehaviour {
     /* Private Data */
     Rigidbody rb;
 	public bool receive_damage = false;
-	public float hearts;
 	public Material[] materials;
 	public int remainingDamageFrames = 0;
 	public int remainingDamageFlashes = 0;
 	public Color[] originalColors;
+
+	public int num_rupees = 0;
+	public float num_hearts;
+	public int heart_capacity = 3;
+	public int num_keys;
+	public int num_bombs;
 
     // Use this for initialization
     void Start () {
@@ -37,6 +42,7 @@ public class PlayerController : MonoBehaviour {
     /* TODO: Deal with user-invoked movement of the player character */
     void ProcessMovement ()
     {
+		float grid_offset_y = 0.0f;
         Vector3 desired_velocity = Vector3.zero;
 
 		if (Input.GetKey (KeyCode.UpArrow)) {
@@ -52,20 +58,20 @@ public class PlayerController : MonoBehaviour {
 		} else if (Input.GetKey (KeyCode.LeftArrow)) {
 			desired_velocity = new Vector3 (-1, 0, 0);
 			float temp;
-			if ((rb.position.y - 0.2) % 0.5f < 0.25) {
-				temp = Mathf.Floor ((rb.position.y - 0.2f) / 0.5f) * 0.5f + 0.2f;
+			if ((rb.position.y - grid_offset_y) % 0.5f < 0.25) {
+				temp = Mathf.Floor ((rb.position.y - grid_offset_y) / 0.5f) * 0.5f + grid_offset_y;
 			} else {
-				temp = Mathf.Ceil ((rb.position.y - 0.2f) / 0.5f) * 0.5f + 0.2f;
+				temp = Mathf.Ceil ((rb.position.y - grid_offset_y) / 0.5f) * 0.5f + grid_offset_y;
 			}
 			Vector3 newpos = new Vector3 (rb.transform.position.x, temp, 0);
 			rb.transform.position = newpos;
 		} else if (Input.GetKey (KeyCode.RightArrow)) {
 			desired_velocity = Vector3.right;
 			float temp;
-			if ((rb.position.y - 0.2) % 0.5f < 0.25) {
-				temp = Mathf.Floor ((rb.position.y - 0.2f) / 0.5f) * 0.5f + 0.2f;
+			if ((rb.position.y - grid_offset_y) % 0.5f < 0.25) {
+				temp = Mathf.Floor ((rb.position.y - grid_offset_y) / 0.5f) * 0.5f + grid_offset_y;
 			} else {
-				temp = Mathf.Ceil ((rb.position.y - 0.2f) / 0.5f) * 0.5f + 0.2f;
+				temp = Mathf.Ceil ((rb.position.y - grid_offset_y) / 0.5f) * 0.5f + grid_offset_y;
 			}
 			Vector3 newpos = new Vector3 (rb.transform.position.x, temp, 0);
 			rb.transform.position = newpos;
@@ -107,14 +113,39 @@ public class PlayerController : MonoBehaviour {
 			//the code together with these files, like difference between
 			//PlayerControl and PlayerController.
 			print("dude you touched me");
+			num_hearts -= 0.5f;
+			if (num_hearts <= 0.0) {
+				print ("ah dude I ded");
+				//something idk...gotta start the dying animation I guess?
+			}
 		}
 	}
 
 	void OnTriggerEnter(Collider collider) {
 		if (collider.gameObject.tag == "Rupee") {
-			print ("ooh rupee shiny");
+			num_rupees++;
+			print ("num rupees:" + num_rupees);
 			Destroy (collider.gameObject);
 			print ("collected rupee");
+		} else if (collider.gameObject.tag == "Heart") {
+			if (num_hearts <= heart_capacity - 1) {
+				num_hearts++;
+			} else {
+				num_hearts = heart_capacity;
+			}
+			print ("num hearts:" + num_hearts);
+			Destroy (collider.gameObject);
+			print ("collected heart");
+		} else if (collider.gameObject.tag == "BigHeart") {
+			heart_capacity++;
+			num_hearts = heart_capacity;
+			Destroy (collider.gameObject);
+		} else if (collider.gameObject.tag == "Key") {
+			num_keys++;
+			Destroy (collider.gameObject);
+		} else if (collider.gameObject.tag == "Bomb") {
+			num_bombs++;
+			Destroy (collider.gameObject);
 		}
 	}
 }
