@@ -11,7 +11,6 @@ public class PlayerController : MonoBehaviour {
     public float PlayerMovementVelocity;
 	public int showDamageForFrames = 2;
 
-    /* Private Data */
     Rigidbody rb;
 	//public bool receive_damage = false;
 	public Material[] materials;
@@ -44,9 +43,12 @@ public class PlayerController : MonoBehaviour {
 
 	public GameObject selected_weapon_prefab;
 
+	public static PlayerController instance;
+
     // Use this for initialization
     void Start () {
         rb = GetComponent<Rigidbody>();
+        instance = this;
 
 		materials = Utils.GetAllMaterials (gameObject);
 		originalColors = new Color[materials.Length];
