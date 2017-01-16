@@ -280,7 +280,7 @@ public class PlayerController : MonoBehaviour {
 			//animation_state_machine.ChangeState(new StatePlayAnimationForDamage(this, GetComponent<SpriteRenderer>(),
 
 			ShowDamage(5);
-			num_hearts -= 0.5f;
+			//num_hearts -= 0.5f;
 
 			num_cooldown_frames = 50;
 			GetComponent<Rigidbody> ().velocity *= (-1f * damage_hopback_vel);
