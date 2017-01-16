@@ -225,7 +225,7 @@ public class PlayerController : MonoBehaviour {
 				go.transform.position = LinkPos;
 			} else if (this.current_direction == Direction.WEST) {
 				go.GetComponent<SpriteRenderer> ().sprite = def.sprites_dlur [1];
-				LinkPos.x += 0.7f;
+				LinkPos.x -= 0.7f;
 				LinkPos.y -= 0.06f;
 				go.transform.position = LinkPos;
 			} else if (this.current_direction == Direction.NORTH) {
@@ -235,7 +235,7 @@ public class PlayerController : MonoBehaviour {
 				go.transform.position = LinkPos;
 			} else { //current direction is EAST
 				go.GetComponent<SpriteRenderer> ().sprite = def.sprites_dlur [3];
-				LinkPos.x -= 0.7f;
+				LinkPos.x += 0.7f;
 				LinkPos.y -= 0.06f;
 				go.transform.position = LinkPos;
 			}
