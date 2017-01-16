@@ -279,12 +279,6 @@ public class PlayerController : MonoBehaviour {
 //			Sprite current = animation_state_machine.
 			//animation_state_machine.ChangeState(new StatePlayAnimationForDamage(this, GetComponent<SpriteRenderer>(),
 
-			ShowDamage(5);
-			num_hearts -= 0.5f;
-
-			num_cooldown_frames = 50;
-			GetComponent<Rigidbody> ().velocity *= (-1f * damage_hopback_vel);
-
 			if (num_hearts <= 0.0) {
 				print ("ah dude I ded");
 				//something idk...gotta start the dying animation I guess?
@@ -293,6 +287,8 @@ public class PlayerController : MonoBehaviour {
 				ShowDamage (5);
 				num_hearts -= 0.5f;
 				thing.GetComponent<Hud> ().TookDamage ();
+				num_cooldown_frames = 50;
+				GetComponent<Rigidbody> ().velocity *= (-1f * damage_hopback_vel);
 			}
 		}
 	}
