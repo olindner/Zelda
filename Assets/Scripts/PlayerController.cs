@@ -23,6 +23,7 @@ public class PlayerController : MonoBehaviour {
 	public int heart_capacity = 3;
 	public int num_keys;
 	public int num_bombs;
+	public GameObject thing; //had to rename to thing because naming/static error
 
 	//state machine stuff
 	public Sprite[] link_run_down;
@@ -148,21 +149,25 @@ public class PlayerController : MonoBehaviour {
 
     }
 
-	void OnCollisionEnter(Collision coll) {
+	void OnCollisionEnter (Collision coll)
+	{
 		print ("entered collision enter function");
 		if (coll.gameObject.tag == "Enemy") {
 			//receive_damage = true;
 			//do something here like decrease health? not sure how to put all
 			//the code together with these files, like difference between
 			//PlayerControl and PlayerController.
-			print("dude you touched me");
+			print ("dude you touched me");
 //			Sprite current = animation_state_machine.
 			//animation_state_machine.ChangeState(new StatePlayAnimationForDamage(this, GetComponent<SpriteRenderer>(),
-			ShowDamage(5);
-			num_hearts -= 0.5f;
 			if (num_hearts <= 0.0) {
 				print ("ah dude I ded");
 				//something idk...gotta start the dying animation I guess?
+			} 
+			else { //made it so can only take damage down to 0, don't want negative health
+				ShowDamage (5);
+				num_hearts -= 0.5f;
+				thing.GetComponent<Hud> ().TookDamage ();
 			}
 		}
 	}
