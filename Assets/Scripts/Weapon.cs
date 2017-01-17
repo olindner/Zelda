@@ -13,19 +13,24 @@ public enum WeaponType {
 public class WeaponDefinition {
 	public WeaponType type = WeaponType.none;
 	public Sprite[] sprites_dlur; //dlur meaning down left up right, order of sprites
-	public float delayBetweenShots = 0;
-	public float velocity = 0;
+	public int delayBetweenShots = 0;
+	public float velocity = 0f;
 	public GameObject weaponPrefab;
 }
 
 
 public class Weapon : MonoBehaviour {
-	static public Dictionary<WeaponType, WeaponDefinition> W_DEFS;
-	public WeaponDefinition[] weaponDefinitions;
 
 	[SerializeField]
 	private WeaponType _type;
 	public WeaponDefinition def;
+	public GameObject w_go;
+
+	public Weapon(WeaponType type, WeaponDefinition def, GameObject w_go) {
+		this._type = type;
+		this.def = def;
+		this.w_go = w_go;
+	}
 
 	public WeaponType type {
 		get {
@@ -38,27 +43,19 @@ public class Weapon : MonoBehaviour {
 
 	public void SetType(WeaponType eType) {
 		_type = eType;
-		if (type == null) {
-			this.gameObject.SetActive (false);
-			return;
-		} else {
-			this.gameObject.SetActive (true);
-		}
 	}
 
-	static public WeaponDefinition getWeaponDefinition(WeaponType wt) {
-		if (W_DEFS.ContainsKey (wt))
-			return W_DEFS [wt];
-
-		return (new WeaponDefinition ());
-	}
+//	void OnTriggerEnter(Collider collider) {
+//		if (collider.gameObject.tag == "Wall") {
+//			print ("omg a wall nooo");
+//			Destroy (this);
+//			print ("destroyed!");
+//		}
+//	}
 
 	// Use this for initialization
 	void Start () {
-		W_DEFS = new Dictionary<WeaponType, WeaponDefinition> ();
-		foreach (WeaponDefinition def in weaponDefinitions) {
-			W_DEFS [def.type] = def;
-		}
+		
 	}
 	
 	// Update is called once per frame

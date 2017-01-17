@@ -59,6 +59,14 @@ public class Tile : MonoBehaviour {
         }
     }
 
+	void OnTriggerEnter(Collider collider) {
+		if (this.gameObject.tag == "Wall" && collider.gameObject.tag == "Sword") {
+			print ("omg a wall nooo");
+			Destroy (collider.gameObject);
+			print ("destroyed!");
+		}
+	}
+
     /* Customize this tile based on the contents of Collision.txt
      * 
      * The function below uses a switch statement to decide whether a given tile
@@ -80,6 +88,12 @@ public class Tile : MonoBehaviour {
             bc.center = Vector3.zero;
             bc.size = Vector3.one;
             break;
+		case 'D': //Destroy (swords)
+			bc.center = Vector3.zero;
+			bc.size = Vector3.one;
+			bc.isTrigger = true;
+			gameObject.tag = "Wall";
+			break;
         default:
             bc.enabled = false;
             break;

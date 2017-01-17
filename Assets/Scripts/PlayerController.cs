@@ -53,7 +53,7 @@ public class PlayerController : MonoBehaviour {
 	public GameObject selected_weapon_prefab;
 	static public Dictionary<WeaponType, WeaponDefinition> W_DEFS;
 	public WeaponDefinition[] weaponDefinitions;
-	//public Weapon current_weapon;
+	public Weapon[] weapons;
 
 	public static PlayerController instance;
 
@@ -201,20 +201,17 @@ public class PlayerController : MonoBehaviour {
 				GetComponent<SpriteRenderer> ().sprite = link_attack [3];
 
 			if (selected_weapon_prefab.name == "Sword") {
-				GameObject sword = GenerateWeapon (WeaponType.sword);
-				UseSword (sword, getWeaponDefinition(WeaponType.sword));
+				Weapon sword = GenerateWeapon (WeaponType.sword);
+				UseSword (sword);
 			}
 		}
 	}
 
-	GameObject GenerateWeapon(WeaponType wt) {
+	Weapon GenerateWeapon(WeaponType wt) {
 		GameObject go = Instantiate (selected_weapon_prefab) as GameObject;
 		WeaponDefinition def = getWeaponDefinition(wt);
 		go.tag = "Sword";
 		Vector3 LinkPos = rb.transform.position;
-//		Weapon w = new Weapon();
-//		w.SetType(wt);
-//		w.def = def;
 
 		switch(wt) {
 		case WeaponType.sword:
@@ -223,48 +220,76 @@ public class PlayerController : MonoBehaviour {
 				LinkPos.x += 0.1f;
 				LinkPos.y -= 0.7f;
 				go.transform.position = LinkPos;
+				Vector3 go_bc_center = go.GetComponent<BoxCollider> ().center;
+				Vector3 go_bc_size = go.GetComponent<BoxCollider> ().size;
+				go_bc_center.y -= 0.15f;
+				go_bc_size.y = 0.7f;
+				go.GetComponent<BoxCollider> ().center = go_bc_center;
+				go.GetComponent<BoxCollider> ().size = go_bc_size;
 			} else if (this.current_direction == Direction.WEST) {
 				go.GetComponent<SpriteRenderer> ().sprite = def.sprites_dlur [1];
 				LinkPos.x -= 0.7f;
 				LinkPos.y -= 0.06f;
 				go.transform.position = LinkPos;
+				Vector3 go_bc_center = go.GetComponent<BoxCollider> ().center;
+				Vector3 go_bc_size = go.GetComponent<BoxCollider> ().size;
+				go_bc_center.x += 0.15f;
+				go_bc_size.x = 0.7f;
+				go.GetComponent<BoxCollider> ().center = go_bc_center;
+				go.GetComponent<BoxCollider> ().size = go_bc_size;
 			} else if (this.current_direction == Direction.NORTH) {
 				go.GetComponent<SpriteRenderer> ().sprite = def.sprites_dlur [2];
 				LinkPos.x -= 0.1f;
 				LinkPos.y += 0.7f;
 				go.transform.position = LinkPos;
+				Vector3 go_bc_center = go.GetComponent<BoxCollider> ().center;
+				Vector3 go_bc_size = go.GetComponent<BoxCollider> ().size;
+				go_bc_center.y += 0.15f;
+				go_bc_size.y = 0.7f;
+				go.GetComponent<BoxCollider> ().center = go_bc_center;
+				go.GetComponent<BoxCollider> ().size = go_bc_size;
 			} else { //current direction is EAST
 				go.GetComponent<SpriteRenderer> ().sprite = def.sprites_dlur [3];
 				LinkPos.x += 0.7f;
 				LinkPos.y -= 0.06f;
 				go.transform.position = LinkPos;
+				Vector3 go_bc_center = go.GetComponent<BoxCollider> ().center;
+				Vector3 go_bc_size = go.GetComponent<BoxCollider> ().size;
+				go_bc_center.x -= 0.15f;
+				go_bc_size.x = 0.7f;
+				go.GetComponent<BoxCollider> ().center = go_bc_center;
+				go.GetComponent<BoxCollider> ().size = go_bc_size;
 			}
 			break;
 		//more cases to come
 		}
-
-		return go;
+		Weapon w = new Weapon (wt, def, go);
+		return w;
 	}
 
-	void UseSword(GameObject sword, WeaponDefinition df) {
+	void UseSword(Weapon sword) {
 		if (num_hearts >= 3) { //I'm not sure when he's allowed to shoot--it's either at 3 or "full capacity"
 			//it shoots
 			switch (this.current_direction) {
 			case Direction.SOUTH:
-				sword.GetComponent<Rigidbody> ().velocity = Vector3.down * df.velocity;
+				sword.w_go.GetComponent<Rigidbody> ().velocity = Vector3.down * sword.def.velocity;
+				print ("sword velocity: " + sword.w_go.GetComponent<Rigidbody> ().velocity);
 				break;
 			case Direction.WEST:
-				sword.GetComponent<Rigidbody> ().velocity = Vector3.left * df.velocity;
+				sword.w_go.GetComponent<Rigidbody> ().velocity = Vector3.left * sword.def.velocity;
+				print ("sword velocity: " + sword.w_go.GetComponent<Rigidbody> ().velocity);
 				break;
 			case Direction.NORTH:
-				sword.GetComponent<Rigidbody> ().velocity = Vector3.up * df.velocity;
+				sword.w_go.GetComponent<Rigidbody> ().velocity = Vector3.up * sword.def.velocity;
+				print ("sword velocity: " + sword.w_go.GetComponent<Rigidbody> ().velocity);
 				break;
 			case Direction.EAST:
-				sword.GetComponent<Rigidbody> ().velocity = Vector3.right * df.velocity;
+				sword.w_go.GetComponent<Rigidbody> ().velocity = Vector3.right * sword.def.velocity;
+				print ("sword velocity: " + sword.w_go.GetComponent<Rigidbody> ().velocity);
 				break;
 			}
 		} else {
-			//it just appears for a bit an then doesn't shoot
+			sword.def.delayBetweenShots = 5;
 		}
 	}
 
