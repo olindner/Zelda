@@ -224,6 +224,7 @@ public class PlayerController : MonoBehaviour {
 				Vector3 go_bc_size = go.GetComponent<BoxCollider> ().size;
 				go_bc_center.y -= 0.15f;
 				go_bc_size.y = 0.7f;
+				go_bc_size.x = 0.7f;
 				go.GetComponent<BoxCollider> ().center = go_bc_center;
 				go.GetComponent<BoxCollider> ().size = go_bc_size;
 			} else if (this.current_direction == Direction.WEST) {
@@ -235,6 +236,7 @@ public class PlayerController : MonoBehaviour {
 				Vector3 go_bc_size = go.GetComponent<BoxCollider> ().size;
 				go_bc_center.x += 0.15f;
 				go_bc_size.x = 0.7f;
+				go_bc_size.y = 0.7f;
 				go.GetComponent<BoxCollider> ().center = go_bc_center;
 				go.GetComponent<BoxCollider> ().size = go_bc_size;
 			} else if (this.current_direction == Direction.NORTH) {
@@ -246,6 +248,7 @@ public class PlayerController : MonoBehaviour {
 				Vector3 go_bc_size = go.GetComponent<BoxCollider> ().size;
 				go_bc_center.y += 0.15f;
 				go_bc_size.y = 0.7f;
+				go_bc_size.x = 0.7f;
 				go.GetComponent<BoxCollider> ().center = go_bc_center;
 				go.GetComponent<BoxCollider> ().size = go_bc_size;
 			} else { //current direction is EAST
@@ -256,6 +259,7 @@ public class PlayerController : MonoBehaviour {
 				Vector3 go_bc_center = go.GetComponent<BoxCollider> ().center;
 				Vector3 go_bc_size = go.GetComponent<BoxCollider> ().size;
 				go_bc_center.x -= 0.15f;
+				go_bc_size.y = 0.7f;
 				go_bc_size.x = 0.7f;
 				go.GetComponent<BoxCollider> ().center = go_bc_center;
 				go.GetComponent<BoxCollider> ().size = go_bc_size;
