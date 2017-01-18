@@ -21,6 +21,8 @@ public class PlayerController : MonoBehaviour {
 	public Color[] originalColors;
 
 	public int num_cooldown_frames = 0;
+	public int num_cooldown_weapon_frames = 0;
+	public int num_cooldown_attack_frames = 0;
 	public float damage_hopback_vel = 2.65f; //how fast Link hops back when damaged in comparison to velocity before
 
 	public int num_rupees = 0;
@@ -53,7 +55,7 @@ public class PlayerController : MonoBehaviour {
 	public GameObject selected_weapon_prefab;
 	static public Dictionary<WeaponType, WeaponDefinition> W_DEFS;
 	public WeaponDefinition[] weaponDefinitions;
-	public Weapon[] weapons;
+	public Weapon current_weapon;
 
 	public static PlayerController instance;
 
@@ -76,6 +78,9 @@ public class PlayerController : MonoBehaviour {
 		animation_state_machine = new StateMachine ();
 		animation_state_machine.ChangeState (new StateIdleWithSprite (this, 
 			GetComponent<SpriteRenderer> (), link_run_down[0]));
+
+		GameObject c_w = new GameObject ();
+		current_weapon = new Weapon (WeaponType.none, getWeaponDefinition(WeaponType.none), c_w);
     }
     
     // Update is called once per frame
@@ -83,6 +88,15 @@ public class PlayerController : MonoBehaviour {
 		//frame++;
 		if (current_state == EntityState.ATTACKING)
 			current_state = EntityState.NORMAL;
+
+		if (current_weapon.type != WeaponType.none) {
+			current_weapon.def.delayBetweenShots--;
+			if (current_weapon.def.delayBetweenShots == 0) {
+				Destroy (current_weapon.w_go);
+				GameObject c_w = new GameObject ();
+				current_weapon = new Weapon (WeaponType.none, getWeaponDefinition(WeaponType.none), c_w);
+			}
+		}
 		
 
         ProcessMovement();
@@ -114,6 +128,27 @@ public class PlayerController : MonoBehaviour {
 			if (num_cooldown_frames == 0) {
 				GetComponent<Rigidbody>().velocity = Vector3.zero;
 				//print ("cooldown over!!!!");
+			}
+		}
+		if (num_cooldown_weapon_frames > 0) {
+			num_cooldown_weapon_frames--;
+		}
+		if (num_cooldown_attack_frames > 0) {
+			num_cooldown_attack_frames--;
+			if (num_cooldown_attack_frames == 0) {
+				if (GetComponent<SpriteRenderer> ().sprite == link_attack [0]) {
+					animation_state_machine.ChangeState (new StateIdleWithSprite (this, 
+						GetComponent<SpriteRenderer> (), link_run_down [0]));
+				} else if (GetComponent<SpriteRenderer> ().sprite == link_attack [1]) {
+					animation_state_machine.ChangeState (new StateIdleWithSprite (this, 
+						GetComponent<SpriteRenderer> (), link_run_left [0]));
+				} else if (GetComponent<SpriteRenderer> ().sprite == link_attack [2]) {
+					animation_state_machine.ChangeState (new StateIdleWithSprite (this, 
+						GetComponent<SpriteRenderer> (), link_run_up [0]));
+				} else if (GetComponent<SpriteRenderer> ().sprite == link_attack [3]) {
+					animation_state_machine.ChangeState (new StateIdleWithSprite (this, 
+						GetComponent<SpriteRenderer> (), link_run_right [0]));
+				}
 			}
 		}
     }
@@ -189,16 +224,26 @@ public class PlayerController : MonoBehaviour {
 
     /* TODO: Deal with user-invoked usage of weapons and items */
     void ProcessAttacks() {
-		if (Input.GetKeyDown (KeyCode.Z)) {
+		if (num_cooldown_weapon_frames == 0 && Input.GetKeyDown (KeyCode.Z)) {
+			num_cooldown_weapon_frames = 8;
+			num_cooldown_attack_frames = 5;
 			current_state = EntityState.ATTACKING;
 			if (current_direction == Direction.SOUTH)
-				GetComponent<SpriteRenderer> ().sprite = link_attack [0];
+				//GetComponent<SpriteRenderer> ().sprite = link_attack [0];
+				animation_state_machine.ChangeState(new StateIdleWithSprite(this, 
+					GetComponent<SpriteRenderer>(), link_attack[0]));
 			else if (current_direction == Direction.WEST)
-				GetComponent<SpriteRenderer> ().sprite = link_attack [1];
+				//GetComponent<SpriteRenderer> ().sprite = link_attack [1];
+				animation_state_machine.ChangeState(new StateIdleWithSprite(this, 
+					GetComponent<SpriteRenderer>(), link_attack[1]));
 			else if (current_direction == Direction.NORTH)
-				GetComponent<SpriteRenderer> ().sprite = link_attack [2];
+				//GetComponent<SpriteRenderer> ().sprite = link_attack [2];
+				animation_state_machine.ChangeState(new StateIdleWithSprite(this, 
+					GetComponent<SpriteRenderer>(), link_attack[2]));
 			else //direction is EAST
-				GetComponent<SpriteRenderer> ().sprite = link_attack [3];
+				//GetComponent<SpriteRenderer> ().sprite = link_attack [3];
+				animation_state_machine.ChangeState(new StateIdleWithSprite(this, 
+					GetComponent<SpriteRenderer>(), link_attack[3]));
 
 			if (selected_weapon_prefab.name == "Sword") {
 				Weapon sword = GenerateWeapon (WeaponType.sword);
@@ -293,6 +338,7 @@ public class PlayerController : MonoBehaviour {
 				break;
 			}
 		} else {
+			this.current_weapon = sword;
 			sword.def.delayBetweenShots = 5;
 		}
 	}
