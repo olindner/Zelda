@@ -23,11 +23,14 @@ public class Skeleton : MonoBehaviour {
 	// Update is called once per frame
 	void Update ()
 	{
-
+		
 		if (tr.position == pos)
 			isMoving = false;
 		else
 			isMoving = true;
+
+		//Need to make way to pause after getting to square
+
 		if (!isMoving) {
 			int num = Random.Range (0, 15);
 
@@ -63,5 +66,13 @@ public class Skeleton : MonoBehaviour {
 			}
 		}
 		transform.position = Vector3.MoveTowards (transform.position, pos, Time.deltaTime * speed);
+	}
+
+	void OnTriggerEnter (Collider col) {
+		if (col.gameObject.tag == "Sword") {
+			Destroy(col.gameObject);
+			health--;
+			if (health <= 0) Destroy(this.gameObject);
+		}
 	}
 }
