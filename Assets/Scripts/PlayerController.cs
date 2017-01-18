@@ -8,6 +8,7 @@ public enum EntityState {NORMAL, ATTACKING};
 public class PlayerController : MonoBehaviour {
 
 	//public int frame = 0; //for debugging
+	//fuck you austin jk i love you
 
     /* Inspector Tunables */
     public float PlayerMovementVelocity;
