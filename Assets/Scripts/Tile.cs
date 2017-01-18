@@ -59,10 +59,11 @@ public class Tile : MonoBehaviour {
         }
     }
 
-	void OnTriggerEnter(Collider collider) {
-		if (this.gameObject.tag == "Wall" && collider.gameObject.tag == "Sword") {
+	void OnCollisionEnter(Collision coll) {
+		print ("entered collision thingie for tile");
+		if (this.gameObject.tag == "Wall" && coll.gameObject.tag == "Sword") {
 			print ("omg a wall nooo");
-			Destroy (collider.gameObject);
+			Destroy (coll.gameObject);
 			print ("destroyed!");
 		}
 	}
@@ -84,14 +85,14 @@ public class Tile : MonoBehaviour {
         bc.enabled = true;
         char c = ShowMapOnCamera.S.collisionS[tileNum];
         switch (c) {
-        case 'S': // Solid
-            bc.center = Vector3.zero;
-            bc.size = Vector3.one;
+		case 'S': // Solid
+			bc.center = Vector3.zero;
+			bc.size = Vector3.one;
             break;
 		case 'D': //Destroy (swords)
 			bc.center = Vector3.zero;
 			bc.size = Vector3.one;
-			bc.isTrigger = true;
+			//bc.isTrigger = true;
 			gameObject.tag = "Wall";
 			break;
         default:
