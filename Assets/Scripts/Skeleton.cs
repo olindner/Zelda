@@ -10,6 +10,8 @@ public class Skeleton : MonoBehaviour {
 	private int health;
 	private bool isMoving;
 	private int dir;
+	public float spriteTimeDelay;
+	private float timer;
 
 	// Use this for initialization
 	void Start () {
@@ -18,14 +20,20 @@ public class Skeleton : MonoBehaviour {
 		health = 2;
 		isMoving = false;
 		dir = Random.Range(0,3); //pick a random starting direction
+		timer = Time.time + spriteTimeDelay;
 	}
 	
 	// Update is called once per frame
 	void Update ()
 	{
-		
-		if (tr.position == pos)
+		if (Time.time >= timer) {
+			GetComponent<SpriteRenderer>().flipX = !GetComponent<SpriteRenderer>().flipX;
+			timer = Time.time + spriteTimeDelay;
+		}
+
+		if (tr.position == pos) {
 			isMoving = false;
+		}
 		else
 			isMoving = true;
 
