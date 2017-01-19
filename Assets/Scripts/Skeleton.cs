@@ -37,8 +37,6 @@ public class Skeleton : MonoBehaviour {
 		else
 			isMoving = true;
 
-		//Need to make way to pause after getting to square
-
 		if (!isMoving) {
 			int num = Random.Range (0, 15);
 
