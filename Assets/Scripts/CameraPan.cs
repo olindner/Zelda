@@ -28,7 +28,7 @@ public class CameraPan : MonoBehaviour {
 		cam_panning = false;
 		foreach (Transform child in transform) {
 			if (child.name == "Main Camera") {
-				camera = child;
+				camera = child.GetComponent<Camera>();
 			}
 		}
 		height = 2 * camera.orthographicSize * (240.0f - HUDheight)/240.0f;
