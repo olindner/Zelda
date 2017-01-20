@@ -60,6 +60,8 @@ public class PlayerController : MonoBehaviour {
 
 	public static PlayerController instance;
 
+	public CameraPan cam_pan;
+
     // Use this for initialization
     void Start () {
         rb = GetComponent<Rigidbody>();

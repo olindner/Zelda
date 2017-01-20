@@ -63,15 +63,38 @@ public class Tile : MonoBehaviour {
 		//print ("entered collision thingie for tile");
 		//print ("tile tag " + this.gameObject.tag);
 		//print ("collision tag " + coll.gameObject.tag);
-		if ((this.gameObject.tag == "Wall" || this.gameObject.tag == "DoorDown" 
-			|| this.gameObject.tag == "DoorUp" || this.gameObject.tag == "DoorLeft" 
-			|| this.gameObject.tag == "DoorRight") && coll.gameObject.tag == "Sword") {
+		if ((this.gameObject.tag == "Wall" || this.gameObject.tag == "DoorDown"
+		    || this.gameObject.tag == "DoorUp" || this.gameObject.tag == "DoorLeft"
+		    || this.gameObject.tag == "DoorRight") && coll.gameObject.tag == "Sword") {
 			//print ("omg a wall nooo");
 			Destroy (coll.gameObject);
 			//print ("destroyed!");
 		}
-		//else if (this.gameObject.tag == "DoorDown" && coll.gameObject.tag == "Player") pan camera accordingly
-		//by calling a method in the CameraPan thingie...?
+	}
+
+	void OnTriggerEnter(Collider coll) {
+		if (this.gameObject.tag == "DoorDown" && coll.gameObject.tag == "Player") {
+			print ("tag is " + this.gameObject.tag);
+			print ("other tag is " + coll.gameObject.tag);
+			print ("pan down!!!!!!!!!!!");
+			//pan down I guess?
+			if (!CameraPan.c.cam_panning) {
+				CameraPan.c.cam_panning = true;
+				CameraPan.c.panDown ();
+			}
+		} else if (this.gameObject.tag == "DoorRight" && coll.gameObject.tag == "Player") {
+			print ("tag is " + this.gameObject.tag);
+			print ("other tag is " + coll.gameObject.tag);
+			print ("pan right!!!!!!!!!!!");
+			//pan down I guess?
+			if (!CameraPan.c.cam_panning) {
+				Vector3 new_pos = coll.gameObject.transform.position;
+				new_pos.x += 5;
+				coll.gameObject.transform.position = new_pos;
+				CameraPan.c.cam_panning = true;
+				CameraPan.c.panRight ();
+			}
+		}
 	}
 
     /* Customize this tile based on the contents of Collision.txt
@@ -103,24 +126,28 @@ public class Tile : MonoBehaviour {
 		case 'D': //DoorDown
 			bc.center = Vector3.zero;
 			bc.size = Vector3.one;
+			bc.isTrigger = true;
 			this.gameObject.layer = 11;
 			this.gameObject.tag = "DoorDown";
 			break;
 		case 'U': //DoorUp
 			bc.center = Vector3.zero;
 			bc.size = Vector3.one;
+			bc.isTrigger = true;
 			this.gameObject.layer = 11;
 			this.gameObject.tag = "DoorUp";
 			break;
 		case 'L': //DoorLeft
 			bc.center = Vector3.zero;
 			bc.size = Vector3.one;
+			bc.isTrigger = true;
 			this.gameObject.layer = 11;
 			this.gameObject.tag = "DoorLeft";
 			break;
 		case 'R': //DoorRight
 			bc.center = Vector3.zero;
 			bc.size = Vector3.one;
+			bc.isTrigger = true;
 			this.gameObject.layer = 11;
 			this.gameObject.tag = "DoorRight";
 			break;
