@@ -26,10 +26,14 @@ public class CameraPan : MonoBehaviour {
 		camZ = this.transform.position.z;
 		HUDheight = 52f;
 		cam_panning = false;
-		foreach 
-		height = 2 * this.GetComponent<Camera> ().orthographicSize * (240.0f - HUDheight)/240.0f;
+		foreach (Transform child in transform) {
+			if (child.name == "Main Camera") {
+				camera = child;
+			}
+		}
+		height = 2 * camera.orthographicSize * (240.0f - HUDheight)/240.0f;
 		print ("height: " + height);
-		width = 2 * this.GetComponent<Camera> ().orthographicSize * (256.0f / 240.0f);
+		width = 2 * camera.orthographicSize * (256.0f / 240.0f);
 		print ("width: " + width);
 		current_pos = new Vector3(this.transform.position.x, this.transform.position.y, camZ);
 		print ("current_pos: " + current_pos);
