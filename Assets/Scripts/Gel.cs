@@ -11,7 +11,11 @@ public class Gel : MonoBehaviour {
 	private bool isMoving;
 	private int dir;
 	public float timeDelay;
+	public float spriteDelay;
 	private float timer;
+	private float spriteTimer;
+	public Sprite[] array;
+	private int here;
 
 	// Use this for initialization
 	void Start () {
@@ -21,11 +25,20 @@ public class Gel : MonoBehaviour {
 		isMoving = false;
 		dir = Random.Range(0,3); //pick a random starting direction
 		timer = Time.time + timeDelay;
+		spriteTimer = Time.time + spriteDelay;
+		here = 0;
 	}
 	
 	// Update is called once per frame
 	void Update () {
-		
+
+		if (Time.time >= spriteTimer) {
+			GetComponent<SpriteRenderer>().sprite = array[here];
+			if (here == 0) here = 1;
+			else if (here == 1) here = 0;
+			spriteTimer = Time.time + spriteDelay;
+		}
+
 		if (tr.position == pos) {
 			isMoving = false;
 			timer = Time.time + timeDelay;
@@ -35,7 +48,6 @@ public class Gel : MonoBehaviour {
 
 		if (!isMoving) {
 			int num = Random.Range (0, 15);
-			print (num);
 
 			Vector3 rayUp = transform.TransformDirection (Vector3.up);
 			Vector3 rayDown = transform.TransformDirection (Vector3.down);
