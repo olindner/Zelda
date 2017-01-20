@@ -53,9 +53,13 @@ public class Gel : MonoBehaviour {
 			Vector3 rayDown = transform.TransformDirection (Vector3.down);
 			Vector3 rayLeft = transform.TransformDirection (Vector3.left);
 			Vector3 rayRight = transform.TransformDirection (Vector3.right);
+			RaycastHit hit;
 
 			//Equal percentages each direction...
-			if ((num == 0 || num == 1) && !Physics.Raycast (transform.position, rayUp, 1)) {
+			if (num == 0 || num == 1) {
+				if (Physics.Raycast (transform.position, rayUp, out hit, 1) && hit.transform.tag == "Wall") {
+					return;
+				}
 				pos += Vector3.up;
 				dir = 0;
 			} 
