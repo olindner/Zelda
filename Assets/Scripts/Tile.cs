@@ -60,11 +60,40 @@ public class Tile : MonoBehaviour {
     }
 
 	void OnCollisionEnter(Collision coll) {
-		print ("entered collision thingie for tile");
-		if (this.gameObject.tag == "Wall" && coll.gameObject.tag == "Sword") {
-			print ("omg a wall nooo");
+		//print ("entered collision thingie for tile");
+		//print ("tile tag " + this.gameObject.tag);
+		//print ("collision tag " + coll.gameObject.tag);
+		if ((this.gameObject.tag == "Wall" || this.gameObject.tag == "DoorDown"
+		    || this.gameObject.tag == "DoorUp" || this.gameObject.tag == "DoorLeft"
+		    || this.gameObject.tag == "DoorRight") && coll.gameObject.tag == "Sword") {
+			//print ("omg a wall nooo");
 			Destroy (coll.gameObject);
-			print ("destroyed!");
+			//print ("destroyed!");
+		}
+	}
+
+	void OnTriggerEnter(Collider coll) {
+		if (this.gameObject.tag == "DoorDown" && coll.gameObject.tag == "Player") {
+			print ("tag is " + this.gameObject.tag);
+			print ("other tag is " + coll.gameObject.tag);
+			print ("pan down!!!!!!!!!!!");
+			//pan down I guess?
+			if (!CameraPan.c.cam_panning) {
+				CameraPan.c.cam_panning = true;
+				CameraPan.c.panDown ();
+			}
+		} else if (this.gameObject.tag == "DoorRight" && coll.gameObject.tag == "Player") {
+			print ("tag is " + this.gameObject.tag);
+			print ("other tag is " + coll.gameObject.tag);
+			print ("pan right!!!!!!!!!!!");
+			//pan down I guess?
+			if (!CameraPan.c.cam_panning) {
+				Vector3 new_pos = coll.gameObject.transform.position;
+				new_pos.x += 5;
+				coll.gameObject.transform.position = new_pos;
+				CameraPan.c.cam_panning = true;
+				CameraPan.c.panRight ();
+			}
 		}
 	}
 
@@ -89,15 +118,47 @@ public class Tile : MonoBehaviour {
 			bc.center = Vector3.zero;
 			bc.size = Vector3.one;
             break;
-		case 'D': //Destroy (swords)
+		case 'W': // Wall
 			bc.center = Vector3.zero;
 			bc.size = Vector3.one;
-			//bc.isTrigger = true;
-			gameObject.tag = "Wall";
+			this.gameObject.tag = "Wall";
+			break;
+		case 'D': //DoorDown
+			bc.center = Vector3.zero;
+			bc.size = Vector3.one;
+			bc.isTrigger = true;
+			this.gameObject.layer = 11;
+			this.gameObject.tag = "DoorDown";
+			break;
+		case 'U': //DoorUp
+			bc.center = Vector3.zero;
+			bc.size = Vector3.one;
+			bc.isTrigger = true;
+			this.gameObject.layer = 11;
+			this.gameObject.tag = "DoorUp";
+			break;
+		case 'L': //DoorLeft
+			bc.center = Vector3.zero;
+			bc.size = Vector3.one;
+			bc.isTrigger = true;
+			this.gameObject.layer = 11;
+			this.gameObject.tag = "DoorLeft";
+			break;
+		case 'R': //DoorRight
+			bc.center = Vector3.zero;
+			bc.size = Vector3.one;
+			bc.isTrigger = true;
+			this.gameObject.layer = 11;
+			this.gameObject.tag = "DoorRight";
+			break;
+		case 'B': //Block (aka one of those Dragon tiles)
+			bc.center = Vector3.zero;
+			bc.size = Vector3.one;
+			this.gameObject.layer = 10;
 			break;
         default:
             bc.enabled = false;
             break;
-        }
+		}
     }	
 }
