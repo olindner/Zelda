@@ -226,8 +226,8 @@ public class PlayerController : MonoBehaviour {
     /* TODO: Deal with user-invoked usage of weapons and items */
     void ProcessAttacks() {
 		if (num_cooldown_weapon_frames == 0 && Input.GetKeyDown (KeyCode.Z)) {
-			num_cooldown_weapon_frames = 8;
-			num_cooldown_attack_frames = 5;
+			num_cooldown_weapon_frames = 24;
+			num_cooldown_attack_frames = 12;
 			current_state = EntityState.ATTACKING;
 			if (current_direction == Direction.SOUTH)
 				//GetComponent<SpriteRenderer> ().sprite = link_attack [0];
@@ -339,6 +339,7 @@ public class PlayerController : MonoBehaviour {
 				break;
 			}
 		} else {
+			Destroy(this.current_weapon.w_go);
 			this.current_weapon = sword;
 			sword.def.delayBetweenShots = 5;
 		}
