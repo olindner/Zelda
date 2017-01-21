@@ -349,6 +349,7 @@ public class PlayerController : MonoBehaviour {
 
 	void OnCollisionEnter(Collision coll) {
 		//print ("entered collision enter function");
+		print("other's tag = " + coll.gameObject.tag);
 		if (coll.gameObject.tag == "Enemy" && num_cooldown_frames == 0) {
 			//receive_damage = true;
 			//do something here like decrease health? not sure how to put all

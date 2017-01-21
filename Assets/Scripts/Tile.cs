@@ -73,26 +73,71 @@ public class Tile : MonoBehaviour {
 	}
 
 	void OnTriggerEnter(Collider coll) {
-		if (this.gameObject.tag == "DoorDown" && coll.gameObject.tag == "Player") {
-			print ("tag is " + this.gameObject.tag);
-			print ("other tag is " + coll.gameObject.tag);
-			print ("pan down!!!!!!!!!!!");
+		if (this.gameObject.tag == "DoorDown" && coll.gameObject.tag == "Player" 
+			&& coll.gameObject.GetComponent<PlayerController>().current_direction == Direction.SOUTH) {
+//			print ("tag is " + this.gameObject.tag);
+//			print ("other tag is " + coll.gameObject.tag);
+//			print ("pan down!!!!!!!!!!!");
 			//pan down I guess?
-			if (!CameraPan.c.cam_panning) {
-				CameraPan.c.cam_panning = true;
-				CameraPan.c.panDown ();
-			}
-		} else if (this.gameObject.tag == "DoorRight" && coll.gameObject.tag == "Player") {
-			print ("tag is " + this.gameObject.tag);
-			print ("other tag is " + coll.gameObject.tag);
-			print ("pan right!!!!!!!!!!!");
-			//pan down I guess?
-			if (!CameraPan.c.cam_panning) {
+			if (!CameraPan.c.panning_down) {
 				Vector3 new_pos = coll.gameObject.transform.position;
-				new_pos.x += 5;
+				new_pos.y -= 4;
 				coll.gameObject.transform.position = new_pos;
-				CameraPan.c.cam_panning = true;
-				CameraPan.c.panRight ();
+				Vector3 temp = CameraPan.c.destination;
+				temp.y -= CameraPan.c.height;
+				CameraPan.c.destination = temp;
+				CameraPan.c.panning_down = true;
+			}
+		} else if (this.gameObject.tag == "DoorRight" && coll.gameObject.tag == "Player"
+			&& coll.gameObject.GetComponent<PlayerController>().current_direction == Direction.EAST) {
+//			print ("tag is " + this.gameObject.tag);
+//			print ("other tag is " + coll.gameObject.tag);
+//			print ("pan right!!!!!!!!!!!");
+			//pan down I guess?
+			if (!CameraPan.c.panning_right) {
+				Vector3 new_pos = coll.gameObject.transform.position;
+				new_pos.x += 4;
+				coll.gameObject.transform.position = new_pos;
+				Vector3 temp = CameraPan.c.destination;
+				temp.x += CameraPan.c.width;
+				CameraPan.c.destination = temp;
+				CameraPan.c.panning_right = true;
+			}
+		} else if (this.gameObject.tag == "DoorUp" && coll.gameObject.tag == "Player"
+			&& coll.gameObject.GetComponent<PlayerController>().current_direction == Direction.NORTH) {
+//			print ("tag is " + this.gameObject.tag);
+//			print ("other tag is " + coll.gameObject.tag);
+//			print ("pan up!!!!!!!!!!!");
+			//pan down I guess?
+			if (!CameraPan.c.panning_up) {
+				//Vector3 new_pos = coll.gameObject.transform.position;
+				//new_pos.x += 5;
+				//coll.gameObject.transform.position = new_pos;
+				Vector3 new_pos = coll.gameObject.transform.position;
+				new_pos.y += 4;
+				coll.gameObject.transform.position = new_pos;
+				Vector3 temp = CameraPan.c.destination;
+				temp.y += CameraPan.c.height;
+				CameraPan.c.destination = temp;
+				CameraPan.c.panning_up = true;
+			}
+		} else if (this.gameObject.tag == "DoorLeft" && coll.gameObject.tag == "Player"
+			&& coll.gameObject.GetComponent<PlayerController>().current_direction == Direction.WEST) {
+//			print ("tag is " + this.gameObject.tag);
+//			print ("other tag is " + coll.gameObject.tag);
+//			print ("pan left!!!!!!!!!!!");
+			//pan down I guess?
+			if (!CameraPan.c.panning_left) {
+				//Vector3 new_pos = coll.gameObject.transform.position;
+				//new_pos.x += 5;
+				//coll.gameObject.transform.position = new_pos;
+				Vector3 new_pos = coll.gameObject.transform.position;
+				new_pos.x -= 4;
+				coll.gameObject.transform.position = new_pos;
+				Vector3 temp = CameraPan.c.destination;
+				temp.x -= CameraPan.c.width;
+				CameraPan.c.destination = temp;
+				CameraPan.c.panning_down = true;
 			}
 		}
 	}
