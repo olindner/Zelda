@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public enum Direction {NORTH, EAST, SOUTH, WEST};
 public enum EntityState {NORMAL, ATTACKING};
@@ -17,6 +18,7 @@ public class PlayerController : MonoBehaviour {
     Rigidbody rb;
 	//public bool receive_damage = false;
 	public Material[] materials;
+	public Material[] tile_materials;
 	public int remainingDamageFrames = 0;
 	public int remainingDamageFlashes = 0;
 	public Color[] originalColors;
@@ -47,6 +49,8 @@ public class PlayerController : MonoBehaviour {
 	public Sprite[] link_attack; //first element down, then left, then up, then right
 	//public Sprite[] swords; //first element down, then left, then up, then right
 
+	public Sprite[] link_dead;
+
 	StateMachine animation_state_machine;
 	StateMachine control_state_machine;
 
@@ -61,6 +65,8 @@ public class PlayerController : MonoBehaviour {
 	public static PlayerController instance;
 
 	public CameraPan cam_pan;
+	public bool done_dying = false;
+	public float gameRestartDelay = 2f;
 
     // Use this for initialization
     void Start () {
@@ -77,6 +83,8 @@ public class PlayerController : MonoBehaviour {
 		for (int i = 0; i < materials.Length; i++) {
 			originalColors [i] = materials [i].color;
 		}
+
+		//tile_materials = Utils.GetAllMaterials (GameObject.Find ("Map Anchor"));
 
 		animation_state_machine = new StateMachine ();
 		animation_state_machine.ChangeState (new StateIdleWithSprite (this, 
@@ -153,6 +161,9 @@ public class PlayerController : MonoBehaviour {
 						GetComponent<SpriteRenderer> (), link_run_right [0]));
 				}
 			}
+		}
+		if (done_dying) {
+			DelayedRestart (gameRestartDelay);
 		}
     }
 
@@ -347,31 +358,9 @@ public class PlayerController : MonoBehaviour {
 		}
 	}
 
-	void OnCollisionEnter(Collision coll) {
-		//print ("entered collision enter function");
-		//print("other's tag = " + coll.gameObject.tag);
-		if (coll.gameObject.tag == "Enemy" && num_cooldown_frames == 0) {
-			//receive_damage = true;
-			//do something here like decrease health? not sure how to put all
-			//the code together with these files, like difference between
-			//PlayerControl and PlayerController.
-			//print ("dude you touched me");
-//			Sprite current = animation_state_machine.
-			//animation_state_machine.ChangeState(new StatePlayAnimationForDamage(this, GetComponent<SpriteRenderer>(),
-
-			if (num_hearts <= 0.0) {
-				print ("ah dude I ded");
-				//something idk...gotta start the dying animation I guess?
-			} 
-			else { //made it so can only take damage down to 0, don't want negative health
-				ShowDamage (5);
-				num_hearts -= 0.5f;
-				thing.GetComponent<Hud> ().TookDamage ();
-				num_cooldown_frames = 50;
-				GetComponent<Rigidbody> ().velocity *= (-1f * damage_hopback_vel);
-			}
-		}
-	}
+//	void OnCollisionEnter(Collision coll) {
+//		//???
+//	}
 
 	void OnTriggerEnter(Collider collider) {
 		if (collider.gameObject.tag == "Rupee") {
@@ -398,6 +387,24 @@ public class PlayerController : MonoBehaviour {
 		} else if (collider.gameObject.tag == "Bomb") {
 			num_bombs++;
 			Destroy (collider.gameObject);
+		} else if (collider.gameObject.tag == "Enemy" && num_cooldown_frames == 0) {
+			print ("dude you touched me");
+			if (num_hearts > 0) {
+				ShowDamage (5);
+				num_hearts -= 0.5f;
+				thing.GetComponent<Hud> ().TookDamage ();
+				num_cooldown_frames = 50;
+				GetComponent<Rigidbody> ().velocity *= (-1f * damage_hopback_vel);
+				if (num_hearts == 0.0) {
+					print ("ah dude I ded");
+					//get rid of all other things in the camera that isn't Link or a tile, like enemies, collectibles, etc, etc
+					animation_state_machine.ChangeState (new StatePlayAnimationForDead (this, 
+						GetComponent<SpriteRenderer> (), link_dead, 6));
+					//				foreach (Material m in tile_materials) {
+					//					m.color = Color.red;
+					//				}
+				}
+			}
 		}
 	}
 
@@ -417,4 +424,11 @@ public class PlayerController : MonoBehaviour {
 		}
 	}
 
+	void DelayedRestart(float delay) {
+		Invoke("Restart", delay);
+	}
+
+	void Restart() {
+		SceneManager.LoadScene ("Dungeon");
+	}
 }

@@ -5,7 +5,7 @@ using UnityEngine;
 public class CameraPan : MonoBehaviour {
 	public static CameraPan c;
 
-	public float easing = 0.2f;
+	public float easing = 0.15f;
 
 	public float camZ;
 	public PlayerController pc;
@@ -38,7 +38,7 @@ public class CameraPan : MonoBehaviour {
 		//print ("height: " + height);
 		//width = 2 * camera.orthographicSize * (256.0f / 240.0f);
 		//print ("width: " + width);
-		height = 15.0f;
+		height = 15.0f * (240.0f - HUDheight)/240.0f;
 		width = 16.0f;
 		current_pos = new Vector3(this.transform.position.x, this.transform.position.y, camZ);
 		destination = current_pos;
@@ -80,6 +80,7 @@ public class CameraPan : MonoBehaviour {
 			transform.position = current_pos;
 			current_pos = transform.position;
 			if (Mathf.Abs(transform.position.x - destination.x) <= 0.1) {
+				print ("done panning left!");
 				transform.position = destination;
 				current_pos = destination;
 				panning_left = false;
