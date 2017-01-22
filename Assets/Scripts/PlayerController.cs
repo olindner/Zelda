@@ -325,19 +325,19 @@ public class PlayerController : MonoBehaviour {
 			switch (this.current_direction) {
 			case Direction.SOUTH:
 				sword.w_go.GetComponent<Rigidbody> ().velocity = Vector3.down * sword.def.velocity;
-				print ("sword velocity: " + sword.w_go.GetComponent<Rigidbody> ().velocity);
+				//print ("sword velocity: " + sword.w_go.GetComponent<Rigidbody> ().velocity);
 				break;
 			case Direction.WEST:
 				sword.w_go.GetComponent<Rigidbody> ().velocity = Vector3.left * sword.def.velocity;
-				print ("sword velocity: " + sword.w_go.GetComponent<Rigidbody> ().velocity);
+				//print ("sword velocity: " + sword.w_go.GetComponent<Rigidbody> ().velocity);
 				break;
 			case Direction.NORTH:
 				sword.w_go.GetComponent<Rigidbody> ().velocity = Vector3.up * sword.def.velocity;
-				print ("sword velocity: " + sword.w_go.GetComponent<Rigidbody> ().velocity);
+				//print ("sword velocity: " + sword.w_go.GetComponent<Rigidbody> ().velocity);
 				break;
 			case Direction.EAST:
 				sword.w_go.GetComponent<Rigidbody> ().velocity = Vector3.right * sword.def.velocity;
-				print ("sword velocity: " + sword.w_go.GetComponent<Rigidbody> ().velocity);
+				//print ("sword velocity: " + sword.w_go.GetComponent<Rigidbody> ().velocity);
 				break;
 			}
 		} else {
@@ -349,13 +349,13 @@ public class PlayerController : MonoBehaviour {
 
 	void OnCollisionEnter(Collision coll) {
 		//print ("entered collision enter function");
-		print("other's tag = " + coll.gameObject.tag);
+		//print("other's tag = " + coll.gameObject.tag);
 		if (coll.gameObject.tag == "Enemy" && num_cooldown_frames == 0) {
 			//receive_damage = true;
 			//do something here like decrease health? not sure how to put all
 			//the code together with these files, like difference between
 			//PlayerControl and PlayerController.
-			print ("dude you touched me");
+			//print ("dude you touched me");
 //			Sprite current = animation_state_machine.
 			//animation_state_machine.ChangeState(new StatePlayAnimationForDamage(this, GetComponent<SpriteRenderer>(),
 
@@ -376,18 +376,18 @@ public class PlayerController : MonoBehaviour {
 	void OnTriggerEnter(Collider collider) {
 		if (collider.gameObject.tag == "Rupee") {
 			num_rupees++;
-			print ("num rupees:" + num_rupees);
+			//print ("num rupees:" + num_rupees);
 			Destroy (collider.gameObject);
-			print ("collected rupee");
+			//print ("collected rupee");
 		} else if (collider.gameObject.tag == "Heart") {
 			if (num_hearts <= heart_capacity - 1) {
 				num_hearts++;
 			} else {
 				num_hearts = heart_capacity;
 			}
-			print ("num hearts:" + num_hearts);
+			//print ("num hearts:" + num_hearts);
 			Destroy (collider.gameObject);
-			print ("collected heart");
+			//print ("collected heart");
 		} else if (collider.gameObject.tag == "BigHeart") {
 			heart_capacity++;
 			num_hearts = heart_capacity;
