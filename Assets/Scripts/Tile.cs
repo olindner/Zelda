@@ -14,6 +14,11 @@ public class Tile : MonoBehaviour {
 
     private SpriteRenderer  sprend;
 
+	public Sprite open_door_92;
+	public Sprite open_door_93;
+	public Sprite open_door_48;
+	public Sprite open_door_51;
+
     void Awake() {
         if (spriteArray == null) {
             spriteArray = Resources.LoadAll<Sprite>(spriteTexture.name);
@@ -72,20 +77,33 @@ public class Tile : MonoBehaviour {
 			//print ("omg a wall nooo");
 			Destroy (coll.gameObject);
 			//print ("destroyed!");
-		} else if (this.gameObject.tag == "LockedDoorUp" && coll.gameObject.tag == "Player"
-			&& coll.gameObject.GetComponent<PlayerController> ().num_keys > 0) {
-			print ("hit locked door up");
+		} else if ((this.gameObject.tag == "LockedDoorUp" || this.gameObject.tag == "LockedDoorLeft" 
+			|| this.gameObject.tag == "LockedDoorRight") && coll.gameObject.tag == "Player"
+		           && coll.gameObject.GetComponent<PlayerController> ().num_keys > 0) {
+			print ("hit locked door");
 			print ("tile tag " + this.gameObject.tag);
-			int eX = this.x;
-			int eY = this.y;
-			int eTileNum;
-			print ("tile num now " + tileNum);
-			if (tileNum == 80) {
-				eTileNum = 92;
-			} else { //if tileNum == 81
-				eTileNum = 93;
+			OpenLockedDoor ();
+		}
+	}
+
+	//THE PROBLEM WITH THIS STUPID THING IS I DON'T KNOW HOW TO OPEN BOTH AT THE SAME TIME
+	void OpenLockedDoor() {
+		if (tileNum == 80 || tileNum == 81) {
+			if (this.tileNum == 80) {
+				this.GetComponent<SpriteRenderer> ().sprite = open_door_92;
+				tileNum = 92;
+			} else if (this.tileNum == 81) {
+				this.GetComponent<SpriteRenderer> ().sprite = open_door_93;
+				tileNum = 93;
 			}
-			SetTile (eX, eY, eTileNum);
+			this.bc.isTrigger = true;
+			this.gameObject.tag = "DoorUp";
+		} else if (tileNum == 101) {
+			this.GetComponent<SpriteRenderer>().sprite = open_door_48;
+			tileNum = 48;
+		} else if (tileNum == 106) {
+			this.GetComponent<SpriteRenderer>().sprite = open_door_51;
+			tileNum = 51;
 		}
 	}
 
@@ -185,47 +203,66 @@ public class Tile : MonoBehaviour {
 			bc.size = Vector3.one;
 			this.gameObject.tag = "Wall";
 			break;
-		case 'D': //DoorDown
-			bc.center = Vector3.zero;
-			bc.size = Vector3.one;
+		case 'D': //DoorDown, right tile
+			bc.center = new Vector3(-0.25f, 0f, 0f);
+			bc.size = new Vector3(0.5f, 1f, 1f);
 			bc.isTrigger = true;
 			this.gameObject.layer = 11;
 			this.gameObject.tag = "DoorDown";
 			break;
-		case 'U': //DoorUp
-			bc.center = Vector3.zero;
-			bc.size = Vector3.one;
+		case 'd': //DoorDown, left tile
+			bc.center = new Vector3(0.25f, 0f, 0f);
+			bc.size = new Vector3(0.5f, 1f, 1f);
+			bc.isTrigger = true;
+			this.gameObject.layer = 11;
+			this.gameObject.tag = "DoorDown";
+			break;
+		case 'U': //DoorUp, right tile
+			bc.center = new Vector3(-0.25f, 0f, 0f);
+			bc.size = new Vector3(0.5f, 1f, 1f);
+			bc.isTrigger = true;
+			this.gameObject.layer = 11;
+			this.gameObject.tag = "DoorUp";
+			break;
+		case 'u': //DoorUp, left tile
+			bc.center = new Vector3(0.25f, 0f, 0f);
+			bc.size = new Vector3(0.5f, 1f, 1f);
 			bc.isTrigger = true;
 			this.gameObject.layer = 11;
 			this.gameObject.tag = "DoorUp";
 			break;
 		case 'L': //DoorLeft
 			bc.center = Vector3.zero;
-			bc.size = Vector3.one;
+			bc.size = new Vector3(1f, 0.8f, 1f);
 			bc.isTrigger = true;
 			this.gameObject.layer = 11;
 			this.gameObject.tag = "DoorLeft";
 			break;
 		case 'R': //DoorRight
 			bc.center = Vector3.zero;
-			bc.size = Vector3.one;
+			bc.size = new Vector3(1f, 0.8f, 1f);
 			bc.isTrigger = true;
 			this.gameObject.layer = 11;
 			this.gameObject.tag = "DoorRight";
 			break;
-		case '1': //LockedDoorUp
-			bc.center = Vector3.zero;
-			bc.size = Vector3.one;
+		case 'V': //LockedDoorUp, right tile
+			bc.center = new Vector3(-0.25f, 0f, 0f);
+			bc.size = new Vector3(0.5f, 1f, 1f);
+			this.gameObject.tag = "LockedDoorUp";
+			break;
+		case 'v': //LockedDoorUp, left tile
+			bc.center = new Vector3(0.25f, 0f, 0f);
+			bc.size = new Vector3(0.5f, 1f, 1f);
 			this.gameObject.tag = "LockedDoorUp";
 			break;
 		case '2': //LockedDoorRight
 			bc.center = Vector3.zero;
-			bc.size = Vector3.one;
+			bc.size = new Vector3(1f, 0.8f, 1f);
 			this.gameObject.tag = "LockedDoorRight";
 			break;
 		case '3': //LockedDoorLeft
 			bc.center = Vector3.zero;
-			bc.size = Vector3.one;
+			bc.size = new Vector3(1f, 0.8f, 1f);
 			this.gameObject.tag = "LockedDoorLeft";
 			break;
 		case 'B': //Block (aka one of those Dragon tiles)
