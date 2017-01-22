@@ -397,12 +397,13 @@ public class PlayerController : MonoBehaviour {
 				GetComponent<Rigidbody> ().velocity *= (-1f * damage_hopback_vel);
 				if (num_hearts == 0.0) {
 					print ("ah dude I ded");
-					//get rid of all other things in the camera that isn't Link or a tile, like enemies, collectibles, etc, etc
+					//DestroyStuffOnDeath ();
+					GetComponent<Rigidbody> ().velocity = Vector3.zero;
 					animation_state_machine.ChangeState (new StatePlayAnimationForDead (this, 
 						GetComponent<SpriteRenderer> (), link_dead, 6));
-					//				foreach (Material m in tile_materials) {
-					//					m.color = Color.red;
-					//				}
+					//foreach (Material m in tile_materials) {
+					//m.color = Color.red;
+				//}
 				}
 			}
 		}
@@ -430,5 +431,35 @@ public class PlayerController : MonoBehaviour {
 
 	void Restart() {
 		SceneManager.LoadScene ("Dungeon");
+	}
+
+	void DestroyStuffOnDeath() {
+		while (GameObject.FindWithTag ("Enemy") != null) {
+			Destroy (GameObject.FindWithTag ("Enemy"));
+		}
+		while (GameObject.FindWithTag ("Rupee") != null) {
+			Destroy (GameObject.FindWithTag ("Rupee"));
+		}
+		while (GameObject.FindWithTag ("Key") != null) {
+			Destroy (GameObject.FindWithTag ("Key"));
+		}
+		while (GameObject.FindWithTag ("Heart") != null) {
+			Destroy (GameObject.FindWithTag ("Heart"));
+		}
+		while (GameObject.FindWithTag ("BigHeart") != null) {
+			Destroy (GameObject.FindWithTag ("BigHeart"));
+		}
+		while (GameObject.FindWithTag ("Bomb") != null) {
+			Destroy (GameObject.FindWithTag ("Bomb"));
+		}
+		while (GameObject.FindWithTag ("Sword") != null) {
+			Destroy (GameObject.FindWithTag ("Sword"));
+		}
+		while (GameObject.FindWithTag ("Map") != null) {
+			Destroy (GameObject.FindWithTag ("Map"));
+		}
+		while (GameObject.FindWithTag ("Compass") != null) {
+			Destroy (GameObject.FindWithTag ("Compass"));
+		}
 	}
 }

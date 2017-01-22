@@ -213,6 +213,7 @@ public class StatePlayAnimationForDead : State
 	public override void OnStart()
 	{
 		animation_start_time = Time.time;
+		Debug.LogError ("num_changes " + num_changes);
 	}
 
 	public override void OnUpdate(float time_delta_fraction)
@@ -222,7 +223,7 @@ public class StatePlayAnimationForDead : State
 			Debug.LogError("Empty animation submitted to state machine!");
 			return;
 		}
-		if (num_changes == -1) {
+		if (num_changes == 1) {
 			state_machine.ChangeState(new StateIdleWithSprite(pc, renderer, current));
 			pc.done_dying = true;
 		}
@@ -232,6 +233,7 @@ public class StatePlayAnimationForDead : State
 		renderer.sprite = animation[current_frame_index];
 		if (animation [current_frame_index] != current) {
 			num_changes--;
+			Debug.LogError ("num_changes " + num_changes);
 			current = animation [current_frame_index];
 		}
 	}
