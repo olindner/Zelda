@@ -5,7 +5,7 @@ using UnityEngine;
 public class CameraPan : MonoBehaviour {
 	public static CameraPan c;
 
-	public float easing = 0.2f;
+	public float easing = 0.15f;
 
 	public float camZ;
 	public PlayerController pc;
