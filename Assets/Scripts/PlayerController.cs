@@ -347,31 +347,9 @@ public class PlayerController : MonoBehaviour {
 		}
 	}
 
-	void OnCollisionEnter(Collision coll) {
-		//print ("entered collision enter function");
-		print("other's tag = " + coll.gameObject.tag);
-		if (coll.gameObject.tag == "Enemy" && num_cooldown_frames == 0) {
-			//receive_damage = true;
-			//do something here like decrease health? not sure how to put all
-			//the code together with these files, like difference between
-			//PlayerControl and PlayerController.
-			print ("dude you touched me");
-//			Sprite current = animation_state_machine.
-			//animation_state_machine.ChangeState(new StatePlayAnimationForDamage(this, GetComponent<SpriteRenderer>(),
-
-			if (num_hearts <= 0.0) {
-				print ("ah dude I ded");
-				//something idk...gotta start the dying animation I guess?
-			} 
-			else { //made it so can only take damage down to 0, don't want negative health
-				ShowDamage (5);
-				num_hearts -= 0.5f;
-				thing.GetComponent<Hud> ().TookDamage ();
-				num_cooldown_frames = 50;
-				GetComponent<Rigidbody> ().velocity *= (-1f * damage_hopback_vel);
-			}
-		}
-	}
+//	void OnCollisionEnter(Collision coll) {
+//		//???
+//	}
 
 	void OnTriggerEnter(Collider collider) {
 		if (collider.gameObject.tag == "Rupee") {
@@ -398,6 +376,26 @@ public class PlayerController : MonoBehaviour {
 		} else if (collider.gameObject.tag == "Bomb") {
 			num_bombs++;
 			Destroy (collider.gameObject);
+		} else if (collider.gameObject.tag == "Enemy" && num_cooldown_frames == 0) {
+			//receive_damage = true;
+			//do something here like decrease health? not sure how to put all
+			//the code together with these files, like difference between
+			//PlayerControl and PlayerController.
+			print ("dude you touched me");
+			//			Sprite current = animation_state_machine.
+			//animation_state_machine.ChangeState(new StatePlayAnimationForDamage(this, GetComponent<SpriteRenderer>(),
+
+			if (num_hearts <= 0.0) {
+				print ("ah dude I ded");
+				//something idk...gotta start the dying animation I guess?
+			} 
+			else { //made it so can only take damage down to 0, don't want negative health
+				ShowDamage (5);
+				num_hearts -= 0.5f;
+				thing.GetComponent<Hud> ().TookDamage ();
+				num_cooldown_frames = 50;
+				GetComponent<Rigidbody> ().velocity *= (-1f * damage_hopback_vel);
+			}
 		}
 	}
 

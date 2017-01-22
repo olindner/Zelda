@@ -27,6 +27,9 @@ public class Tile : MonoBehaviour {
     }
 
     public void SetTile(int eX, int eY, int eTileNum = -1) {
+		//print ("entered set tile function");
+		//print (eX);
+		//print (eY);
         if (x == eX && y == eY) return; // Don't move this if you don't have to. - JB
 
         x = eX;
@@ -69,6 +72,20 @@ public class Tile : MonoBehaviour {
 			//print ("omg a wall nooo");
 			Destroy (coll.gameObject);
 			//print ("destroyed!");
+		} else if (this.gameObject.tag == "LockedDoorUp" && coll.gameObject.tag == "Player"
+			&& coll.gameObject.GetComponent<PlayerController> ().num_keys > 0) {
+			print ("hit locked door up");
+			print ("tile tag " + this.gameObject.tag);
+			int eX = this.x;
+			int eY = this.y;
+			int eTileNum;
+			print ("tile num now " + tileNum);
+			if (tileNum == 80) {
+				eTileNum = 92;
+			} else { //if tileNum == 81
+				eTileNum = 93;
+			}
+			SetTile (eX, eY, eTileNum);
 		}
 	}
 
@@ -137,7 +154,7 @@ public class Tile : MonoBehaviour {
 				Vector3 temp = CameraPan.c.destination;
 				temp.x -= CameraPan.c.width;
 				CameraPan.c.destination = temp;
-				CameraPan.c.panning_down = true;
+				CameraPan.c.panning_left = true;
 			}
 		}
 	}
@@ -195,6 +212,21 @@ public class Tile : MonoBehaviour {
 			bc.isTrigger = true;
 			this.gameObject.layer = 11;
 			this.gameObject.tag = "DoorRight";
+			break;
+		case '1': //LockedDoorUp
+			bc.center = Vector3.zero;
+			bc.size = Vector3.one;
+			this.gameObject.tag = "LockedDoorUp";
+			break;
+		case '2': //LockedDoorRight
+			bc.center = Vector3.zero;
+			bc.size = Vector3.one;
+			this.gameObject.tag = "LockedDoorRight";
+			break;
+		case '3': //LockedDoorLeft
+			bc.center = Vector3.zero;
+			bc.size = Vector3.one;
+			this.gameObject.tag = "LockedDoorLeft";
 			break;
 		case 'B': //Block (aka one of those Dragon tiles)
 			bc.center = Vector3.zero;
