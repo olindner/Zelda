@@ -408,6 +408,20 @@ public class PlayerController : MonoBehaviour {
 		}
 	}
 
+	void OnTriggerExit (Collider col)
+	{
+		print("hello?");
+		print (col.gameObject.name);
+		if (col.gameObject.name == "WallMaster") {
+		print("In");
+			GetComponent<Collider>().isTrigger = false; //allow Player to collide properly again
+			//black screen wipe
+			//move to first room
+			transform.position = new Vector3(40f, 2f, 0);
+			//set direction to north/up
+		}
+	}
+
 	void ShowDamage(int flashes_left) {
 		//print ("entered ShowDamage");
 		//receive_damage = false;
