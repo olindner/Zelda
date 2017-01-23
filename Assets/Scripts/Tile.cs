@@ -14,11 +14,6 @@ public class Tile : MonoBehaviour {
 
     private SpriteRenderer  sprend;
 
-	public Sprite open_door_92;
-	public Sprite open_door_93;
-	public Sprite open_door_48;
-	public Sprite open_door_51;
-
     void Awake() {
         if (spriteArray == null) {
             spriteArray = Resources.LoadAll<Sprite>(spriteTexture.name);
@@ -35,8 +30,9 @@ public class Tile : MonoBehaviour {
 		//print ("entered set tile function");
 		//print (eX);
 		//print (eY);
-        if (x == eX && y == eY) return; // Don't move this if you don't have to. - JB
+		if (x == eX && y == eY && eTileNum == tileNum) return; // Don't move this if you don't have to. - JB
 
+		//print ("got past first if statement in settile");
         x = eX;
         y = eY;
         transform.localPosition = new Vector3(x, y, 0);
@@ -88,26 +84,17 @@ public class Tile : MonoBehaviour {
 
 	//THE PROBLEM WITH THIS STUPID THING IS I DON'T KNOW HOW TO OPEN BOTH AT THE SAME TIME
 	void OpenLockedDoor() {
-		if (tileNum == 80 || tileNum == 81) {
-			if (this.tileNum == 80) {
-				this.GetComponent<SpriteRenderer> ().sprite = open_door_92;
-				tileNum = 92;
-			} else if (this.tileNum == 81) {
-				this.GetComponent<SpriteRenderer> ().sprite = open_door_93;
-				tileNum = 93;
-			}
-			this.bc.isTrigger = true;
-			this.gameObject.tag = "DoorUp";
+		if (this.tileNum == 80) {
+			SetTile(this.x, this.y, 92);
+			print ("this x " + x);
+			ShowMapOnCamera.MAP_TILES [this.x + 1, this.y].SetTile (this.x + 1, this.y, 93);
+		} else if (this.tileNum == 81) {
+			SetTile(this.x, this.y, 93);
+			ShowMapOnCamera.MAP_TILES [this.x - 1, this.y].SetTile (this.x - 1, this.y, 92);
 		} else if (tileNum == 101) {
-			this.GetComponent<SpriteRenderer>().sprite = open_door_48;
-			tileNum = 48;
-			this.bc.isTrigger = true;
-			this.gameObject.tag = "DoorRight";
+			SetTile (this.x, this.y, 48);
 		} else if (tileNum == 106) {
-			this.GetComponent<SpriteRenderer>().sprite = open_door_51;
-			tileNum = 51;
-			this.bc.isTrigger = true;
-			this.gameObject.tag = "DoorLeft";
+			SetTile (this.x, this.y, 51);
 		}
 	}
 

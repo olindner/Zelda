@@ -137,14 +137,16 @@ public class RoomController : MonoBehaviour {
 		map1 [5, 2].is_active = true;
 		active_row_index = 5;
 		active_col_index = 2;
-		print ("INITIAL ACTIVE ROW INDEX " + active_row_index);
-		print ("INITIAL ACTIVE COL INDEX " + active_col_index);
+		//print ("INITIAL ACTIVE ROW INDEX " + active_row_index);
+		//print ("INITIAL ACTIVE COL INDEX " + active_col_index);
 	}
 	
 	// Update is called once per frame
 	void Update () {
-		if (CameraPan.c.panning_down || CameraPan.c.panning_up || CameraPan.c.panning_left || CameraPan.c.panning_right) {
-			print ("camera is panning!");
+		if ((CameraPan.c.panning_down || CameraPan.c.panning_up || CameraPan.c.panning_left || CameraPan.c.panning_right)
+			&& active_row_index != -1 && active_col_index != -1) {
+			map1 [active_row_index, active_col_index].is_active = false;
+			//print ("camera is panning!");
 			active_row_index = -1;
 			active_col_index = -1;
 		}
@@ -160,8 +162,8 @@ public class RoomController : MonoBehaviour {
 		row_index = 5f - row_index;
 		float col_index = (this.transform.position.x - x_start) / room_width;
 		col_index = 5f - col_index;
-		print ("Row_index = " + row_index);
-		print ("Col_index = " + col_index);
+		//print ("Row_index = " + row_index);
+		//print ("Col_index = " + col_index);
 		map1 [(int)row_index, (int)col_index].is_active = true;
 		active_row_index = (int)row_index;
 		active_col_index = (int)col_index;
