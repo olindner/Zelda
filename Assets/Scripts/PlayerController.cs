@@ -64,7 +64,6 @@ public class PlayerController : MonoBehaviour {
 
 	public static PlayerController instance;
 
-	public CameraPan cam_pan;
 	public bool done_dying = false;
 	public float gameRestartDelay = 2f;
 
