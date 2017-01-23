@@ -10,36 +10,22 @@ public class CameraPan : MonoBehaviour {
 	public float camZ;
 	public PlayerController pc;
 	public Vector3 current_pos;
-	public float height;
-	public float width;
-	public float HUDheight;
+	public float height = 11.0f;
+	public float width = 16.0f;
 	public bool panning_down;
 	public bool panning_up;
 	public bool panning_left;
 	public bool panning_right;
-	public Camera camera;
 	public Vector3 destination;
 
 	// Use this for initialization
 	void Awake () {
 		c = this;
 		camZ = this.transform.position.z;
-		HUDheight = 52f;
 		panning_down = false;
 		panning_up = false;
 		panning_left = false;
 		panning_right = false;
-		foreach (Transform child in transform) {
-			if (child.name == "Main Camera") {
-				camera = child.GetComponent<Camera>();
-			}
-		}
-		//height = 2 * camera.orthographicSize * (240.0f - HUDheight)/240.0f;
-		//print ("height: " + height);
-		//width = 2 * camera.orthographicSize * (256.0f / 240.0f);
-		//print ("width: " + width);
-		height = 15.0f * (240.0f - HUDheight)/240.0f;
-		width = 16.0f;
 		current_pos = new Vector3(this.transform.position.x, this.transform.position.y, camZ);
 		destination = current_pos;
 		print ("current_pos: " + current_pos);

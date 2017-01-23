@@ -101,9 +101,13 @@ public class Tile : MonoBehaviour {
 		} else if (tileNum == 101) {
 			this.GetComponent<SpriteRenderer>().sprite = open_door_48;
 			tileNum = 48;
+			this.bc.isTrigger = true;
+			this.gameObject.tag = "DoorRight";
 		} else if (tileNum == 106) {
 			this.GetComponent<SpriteRenderer>().sprite = open_door_51;
 			tileNum = 51;
+			this.bc.isTrigger = true;
+			this.gameObject.tag = "DoorLeft";
 		}
 	}
 
