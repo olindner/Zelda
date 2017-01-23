@@ -76,8 +76,8 @@ public class Tile : MonoBehaviour {
 		} else if ((this.gameObject.tag == "LockedDoorUp" || this.gameObject.tag == "LockedDoorLeft" 
 			|| this.gameObject.tag == "LockedDoorRight") && coll.gameObject.tag == "Player"
 		           && coll.gameObject.GetComponent<PlayerController> ().num_keys > 0) {
-			print ("hit locked door");
-			print ("tile tag " + this.gameObject.tag);
+			//print ("hit locked door");
+			//print ("tile tag " + this.gameObject.tag);
 			OpenLockedDoor ();
 		}
 	}
@@ -86,7 +86,7 @@ public class Tile : MonoBehaviour {
 	void OpenLockedDoor() {
 		if (this.tileNum == 80) {
 			SetTile(this.x, this.y, 92);
-			print ("this x " + x);
+			//print ("this x " + x);
 			ShowMapOnCamera.MAP_TILES [this.x + 1, this.y].SetTile (this.x + 1, this.y, 93);
 		} else if (this.tileNum == 81) {
 			SetTile(this.x, this.y, 93);

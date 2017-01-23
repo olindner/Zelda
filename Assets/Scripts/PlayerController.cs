@@ -387,7 +387,7 @@ public class PlayerController : MonoBehaviour {
 			num_bombs++;
 			Destroy (collider.gameObject);
 		} else if (collider.gameObject.tag == "Enemy" && num_cooldown_frames == 0) {
-			print ("dude you touched me");
+			//print ("dude you touched me");
 			if (num_hearts > 0) {
 				ShowDamage (5);
 				num_hearts -= 0.5f;
@@ -395,7 +395,7 @@ public class PlayerController : MonoBehaviour {
 				num_cooldown_frames = 50;
 				GetComponent<Rigidbody> ().velocity *= (-1f * damage_hopback_vel);
 				if (num_hearts == 0.0) {
-					print ("ah dude I ded");
+					//print ("ah dude I ded");
 					//DestroyStuffOnDeath ();
 					GetComponent<Rigidbody> ().velocity = Vector3.zero;
 					animation_state_machine.ChangeState (new StatePlayAnimationForDead (this, 
