@@ -28,7 +28,7 @@ public class CameraPan : MonoBehaviour {
 		panning_right = false;
 		current_pos = new Vector3(this.transform.position.x, this.transform.position.y, camZ);
 		destination = current_pos;
-		print ("current_pos: " + current_pos);
+		//print ("current_pos: " + current_pos);
 	}
 	
 	// Update is called once per frame
@@ -66,7 +66,7 @@ public class CameraPan : MonoBehaviour {
 			transform.position = current_pos;
 			current_pos = transform.position;
 			if (Mathf.Abs(transform.position.x - destination.x) <= 0.1) {
-				print ("done panning left!");
+				//print ("done panning left!");
 				transform.position = destination;
 				current_pos = destination;
 				panning_left = false;

@@ -76,25 +76,30 @@ public class Tile : MonoBehaviour {
 		} else if ((this.gameObject.tag == "LockedDoorUp" || this.gameObject.tag == "LockedDoorLeft" 
 			|| this.gameObject.tag == "LockedDoorRight") && coll.gameObject.tag == "Player"
 		           && coll.gameObject.GetComponent<PlayerController> ().num_keys > 0) {
-			print ("hit locked door");
-			print ("tile tag " + this.gameObject.tag);
+			//print ("hit locked door");
+			//print ("tile tag " + this.gameObject.tag);
 			OpenLockedDoor ();
 		}
 	}
 
-	//THE PROBLEM WITH THIS STUPID THING IS I DON'T KNOW HOW TO OPEN BOTH AT THE SAME TIME
 	void OpenLockedDoor() {
 		if (this.tileNum == 80) {
 			SetTile(this.x, this.y, 92);
-			print ("this x " + x);
+			//print ("this x " + x);
 			ShowMapOnCamera.MAP_TILES [this.x + 1, this.y].SetTile (this.x + 1, this.y, 93);
+			ShowMapOnCamera.MAP [this.x, this.y] = 92;
+			ShowMapOnCamera.MAP [this.x + 1, this.y] = 93;
 		} else if (this.tileNum == 81) {
 			SetTile(this.x, this.y, 93);
 			ShowMapOnCamera.MAP_TILES [this.x - 1, this.y].SetTile (this.x - 1, this.y, 92);
+			ShowMapOnCamera.MAP [this.x, this.y] = 93;
+			ShowMapOnCamera.MAP [this.x - 1, this.y] = 92;
 		} else if (tileNum == 101) {
 			SetTile (this.x, this.y, 48);
+			ShowMapOnCamera.MAP [this.x, this.y] = 48;
 		} else if (tileNum == 106) {
 			SetTile (this.x, this.y, 51);
+			ShowMapOnCamera.MAP [this.x, this.y] = 51;
 		}
 	}
 
@@ -256,10 +261,25 @@ public class Tile : MonoBehaviour {
 			bc.size = new Vector3(1f, 0.8f, 1f);
 			this.gameObject.tag = "LockedDoorLeft";
 			break;
+		case 'J': //JaggedDoor
+			bc.center = Vector3.zero;
+			bc.size = new Vector3 (1f, 0.8f, 1f);
+			this.gameObject.tag = "JaggedDoor";
+			break;
 		case 'B': //Block (aka one of those Dragon tiles)
 			bc.center = Vector3.zero;
 			bc.size = Vector3.one;
 			this.gameObject.layer = 10;
+			break;
+		case 'F': //Floor
+			bc.enabled = false;
+			this.gameObject.tag = "Floor";
+			break;
+		case 's': //Stairs
+			bc.center = Vector3.zero;
+			bc.size = Vector3.one;
+			bc.isTrigger = true;
+			this.gameObject.tag = "Stairs";
 			break;
         default:
             bc.enabled = false;

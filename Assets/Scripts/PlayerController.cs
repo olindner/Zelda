@@ -90,7 +90,7 @@ public class PlayerController : MonoBehaviour {
 			GetComponent<SpriteRenderer> (), link_run_down[0]));
 
 		GameObject c_w = new GameObject ();
-		current_weapon = new Weapon (WeaponType.none, getWeaponDefinition(WeaponType.none), c_w);
+		current_weapon = new Weapon (WeaponType.none, getWeaponDefinition(WeaponType.none), c_w, this);
     }
     
     // Update is called once per frame
@@ -104,7 +104,7 @@ public class PlayerController : MonoBehaviour {
 			if (current_weapon.def.delayBetweenShots == 0) {
 				Destroy (current_weapon.w_go);
 				GameObject c_w = new GameObject ();
-				current_weapon = new Weapon (WeaponType.none, getWeaponDefinition(WeaponType.none), c_w);
+				current_weapon = new Weapon (WeaponType.none, getWeaponDefinition(WeaponType.none), c_w, this);
 			}
 		}
 		
@@ -261,6 +261,13 @@ public class PlayerController : MonoBehaviour {
 			if (selected_weapon_prefab.name == "Sword") {
 				Weapon sword = GenerateWeapon (WeaponType.sword);
 				UseSword (sword);
+			} else if (selected_weapon_prefab.name == "Boomerang") {
+				Weapon boomerang = GenerateWeapon (WeaponType.boomerang);
+				UseBoomerang (boomerang);
+			} else if (selected_weapon_prefab.name == "Arrow") {
+				Weapon arrow = GenerateWeapon (WeaponType.arrow);
+				UseArrow (arrow);
+				num_rupees--;
 			}
 		}
 	}
@@ -268,11 +275,11 @@ public class PlayerController : MonoBehaviour {
 	Weapon GenerateWeapon(WeaponType wt) {
 		GameObject go = Instantiate (selected_weapon_prefab) as GameObject;
 		WeaponDefinition def = getWeaponDefinition(wt);
-		go.tag = "Sword";
 		Vector3 LinkPos = rb.transform.position;
 
 		switch(wt) {
 		case WeaponType.sword:
+			go.tag = "Sword";
 			if (this.current_direction == Direction.SOUTH) {
 				go.GetComponent<SpriteRenderer> ().sprite = def.sprites_dlur [0];
 				LinkPos.x += 0.1f;
@@ -323,14 +330,100 @@ public class PlayerController : MonoBehaviour {
 				go.GetComponent<BoxCollider> ().size = go_bc_size;
 			}
 			break;
-		//more cases to come
+		case WeaponType.boomerang:
+			go.tag = "Boomerang";
+			//go.transform.position = this.transform.position;
+			if (this.current_direction == Direction.SOUTH) {
+				go.GetComponent<SpriteRenderer> ().sprite = def.sprites_dlur [0];
+				LinkPos.y -= 1f;
+				go.transform.position = LinkPos;
+			} else if (this.current_direction == Direction.WEST) {
+				go.GetComponent<SpriteRenderer> ().sprite = def.sprites_dlur [1];
+				LinkPos.x -= 1f;
+				go.transform.position = LinkPos;
+			} else if (this.current_direction == Direction.NORTH) {
+				go.GetComponent<SpriteRenderer> ().sprite = def.sprites_dlur [2];
+				LinkPos.y += 1f;
+				go.transform.position = LinkPos;
+			} else {
+				go.GetComponent<SpriteRenderer> ().sprite = def.sprites_dlur [3];
+				LinkPos.x += 1f;
+				go.transform.position = LinkPos;
+			}
+			break;
+		case WeaponType.arrow:
+			go.tag = "Sword"; //IDK maybe it's okay
+			if (this.current_direction == Direction.SOUTH) {
+				go.GetComponent<SpriteRenderer> ().sprite = def.sprites_dlur [0];
+				LinkPos.y -= 1f;
+				go.transform.position = LinkPos;
+			} else if (this.current_direction == Direction.WEST) {
+				go.GetComponent<SpriteRenderer> ().sprite = def.sprites_dlur [1];
+				LinkPos.x -= 1f;
+				go.transform.position = LinkPos;
+			} else if (this.current_direction == Direction.NORTH) {
+				go.GetComponent<SpriteRenderer> ().sprite = def.sprites_dlur [2];
+				LinkPos.y += 1f;
+				go.transform.position = LinkPos;
+			} else {
+				go.GetComponent<SpriteRenderer> ().sprite = def.sprites_dlur [3];
+				LinkPos.x += 1f;
+				go.transform.position = LinkPos;
+			}
+			break;
 		}
-		Weapon w = new Weapon (wt, def, go);
+		Weapon w = new Weapon (wt, def, go, this);
 		return w;
 	}
 
+	void UseBoomerang(Weapon boomerang) {
+		Destroy (this.current_weapon.w_go);
+		this.current_weapon = boomerang;
+		switch (this.current_direction) {
+		case Direction.SOUTH:
+			current_weapon.w_go.GetComponent<Rigidbody> ().velocity = Vector3.down * current_weapon.def.velocity;
+			print ("sword velocity: " + boomerang.w_go.GetComponent<Rigidbody> ().velocity);
+			break;
+		case Direction.WEST:
+			current_weapon.w_go.GetComponent<Rigidbody> ().velocity = Vector3.left * current_weapon.def.velocity;
+			//print ("sword velocity: " + sword.w_go.GetComponent<Rigidbody> ().velocity);
+			break;
+		case Direction.NORTH:
+			current_weapon.w_go.GetComponent<Rigidbody> ().velocity = Vector3.up * current_weapon.def.velocity;
+			//print ("sword velocity: " + sword.w_go.GetComponent<Rigidbody> ().velocity);
+			break;
+		case Direction.EAST:
+			current_weapon.w_go.GetComponent<Rigidbody> ().velocity = Vector3.right * current_weapon.def.velocity;
+			//print ("sword velocity: " + sword.w_go.GetComponent<Rigidbody> ().velocity);
+			break;
+		}
+	}
+
+	void UseArrow(Weapon arrow) {
+		if (num_rupees > 0) {
+			switch (this.current_direction) {
+			case Direction.SOUTH:
+				arrow.w_go.GetComponent<Rigidbody> ().velocity = Vector3.down * arrow.def.velocity;
+				//print ("sword velocity: " + sword.w_go.GetComponent<Rigidbody> ().velocity);
+				break;
+			case Direction.WEST:
+				arrow.w_go.GetComponent<Rigidbody> ().velocity = Vector3.left * arrow.def.velocity;
+				//print ("sword velocity: " + sword.w_go.GetComponent<Rigidbody> ().velocity);
+				break;
+			case Direction.NORTH:
+				arrow.w_go.GetComponent<Rigidbody> ().velocity = Vector3.up * arrow.def.velocity;
+				//print ("sword velocity: " + sword.w_go.GetComponent<Rigidbody> ().velocity);
+				break;
+			case Direction.EAST:
+				arrow.w_go.GetComponent<Rigidbody> ().velocity = Vector3.right * arrow.def.velocity;
+				//print ("sword velocity: " + sword.w_go.GetComponent<Rigidbody> ().velocity);
+				break;
+			}
+		}
+	}
+
 	void UseSword(Weapon sword) {
-		if (num_hearts >= 3) { //I'm not sure when he's allowed to shoot--it's either at 3 or "full capacity"
+		if (num_hearts == heart_capacity) { //I'm not sure when he's allowed to shoot--it's either at 3 or "full capacity"
 			//it shoots
 			switch (this.current_direction) {
 			case Direction.SOUTH:
@@ -357,9 +450,32 @@ public class PlayerController : MonoBehaviour {
 		}
 	}
 
-//	void OnCollisionEnter(Collision coll) {
-//		//???
-//	}
+	void OnCollisionEnter(Collision coll) {
+		if (coll.gameObject.tag == "Enemy" && num_cooldown_frames == 0) {
+			//print ("dude you touched me");
+			if (num_hearts > 0) {
+				ShowDamage (5);
+				num_hearts -= 0.5f;
+				thing.GetComponent<Hud> ().TookDamage ();
+				num_cooldown_frames = 50;
+				GetComponent<Rigidbody> ().velocity *= (-1f * damage_hopback_vel);
+				if (num_hearts == 0.0) {
+					//print ("ah dude I ded");
+					//DestroyStuffOnDeath ();
+					GetComponent<Rigidbody> ().velocity = Vector3.zero;
+					animation_state_machine.ChangeState (new StatePlayAnimationForDead (this, 
+						GetComponent<SpriteRenderer> (), link_dead, 6));
+					//foreach (Material m in tile_materials) {
+					//m.color = Color.red;
+					//}
+				}
+			}
+		} else if (coll.gameObject.tag == "Boomerang") {
+			Destroy (coll.gameObject);
+			GameObject c_w = new GameObject ();
+			current_weapon = new Weapon (WeaponType.none, getWeaponDefinition (WeaponType.none), c_w, this);
+		}
+	}
 
 	void OnTriggerEnter(Collider collider) {
 		if (collider.gameObject.tag == "Rupee") {
@@ -378,7 +494,7 @@ public class PlayerController : MonoBehaviour {
 			//print ("collected heart");
 		} else if (collider.gameObject.tag == "BigHeart") {
 			heart_capacity++;
-			num_hearts = heart_capacity;
+			num_hearts += 1;
 			Destroy (collider.gameObject);
 		} else if (collider.gameObject.tag == "Key") {
 			num_keys++;
@@ -387,7 +503,7 @@ public class PlayerController : MonoBehaviour {
 			num_bombs++;
 			Destroy (collider.gameObject);
 		} else if (collider.gameObject.tag == "Enemy" && num_cooldown_frames == 0) {
-			print ("dude you touched me");
+			//print ("dude you touched me");
 			if (num_hearts > 0) {
 				ShowDamage (5);
 				num_hearts -= 0.5f;
@@ -395,7 +511,7 @@ public class PlayerController : MonoBehaviour {
 				num_cooldown_frames = 50;
 				GetComponent<Rigidbody> ().velocity *= (-1f * damage_hopback_vel);
 				if (num_hearts == 0.0) {
-					print ("ah dude I ded");
+					//print ("ah dude I ded");
 					//DestroyStuffOnDeath ();
 					GetComponent<Rigidbody> ().velocity = Vector3.zero;
 					animation_state_machine.ChangeState (new StatePlayAnimationForDead (this, 
@@ -444,35 +560,5 @@ public class PlayerController : MonoBehaviour {
 
 	void Restart() {
 		SceneManager.LoadScene ("Dungeon");
-	}
-
-	void DestroyStuffOnDeath() {
-		while (GameObject.FindWithTag ("Enemy") != null) {
-			Destroy (GameObject.FindWithTag ("Enemy"));
-		}
-		while (GameObject.FindWithTag ("Rupee") != null) {
-			Destroy (GameObject.FindWithTag ("Rupee"));
-		}
-		while (GameObject.FindWithTag ("Key") != null) {
-			Destroy (GameObject.FindWithTag ("Key"));
-		}
-		while (GameObject.FindWithTag ("Heart") != null) {
-			Destroy (GameObject.FindWithTag ("Heart"));
-		}
-		while (GameObject.FindWithTag ("BigHeart") != null) {
-			Destroy (GameObject.FindWithTag ("BigHeart"));
-		}
-		while (GameObject.FindWithTag ("Bomb") != null) {
-			Destroy (GameObject.FindWithTag ("Bomb"));
-		}
-		while (GameObject.FindWithTag ("Sword") != null) {
-			Destroy (GameObject.FindWithTag ("Sword"));
-		}
-		while (GameObject.FindWithTag ("Map") != null) {
-			Destroy (GameObject.FindWithTag ("Map"));
-		}
-		while (GameObject.FindWithTag ("Compass") != null) {
-			Destroy (GameObject.FindWithTag ("Compass"));
-		}
 	}
 }

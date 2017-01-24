@@ -5,7 +5,7 @@ using UnityEngine;
 public enum WeaponType {
 	none,
 	sword,
-	bow,
+	arrow,
 	boomerang
 }
 
@@ -26,10 +26,14 @@ public class Weapon : MonoBehaviour {
 	public WeaponDefinition def;
 	public GameObject w_go;
 
-	public Weapon(WeaponType type, WeaponDefinition def, GameObject w_go) {
+	public PlayerController pc;
+	Vector3 fwd;
+
+	public Weapon(WeaponType type, WeaponDefinition def, GameObject w_go, PlayerController pc) {
 		this._type = type;
 		this.def = def;
 		this.w_go = w_go;
+		this.pc = pc;
 	}
 
 	public WeaponType type {
@@ -45,11 +49,19 @@ public class Weapon : MonoBehaviour {
 		_type = eType;
 	}
 
-//	void OnTriggerEnter(Collider collider) {
-//		if (collider.gameObject.tag == "Wall") {
-//			print ("omg a wall nooo");
-//			Destroy (this);
-//			print ("destroyed!");
+//	void OnCollisionEnter(Collision coll) {
+//		if (this.def.type == WeaponType.boomerang && coll.gameObject.tag == "Player") {
+//			print ("Boomerang triggered player");
+//			print ("boom velocity " + this.gameObject.GetComponent<Rigidbody> ().velocity);
+//			if (this.gameObject.GetComponent<Rigidbody> ().velocity.x > 0) {
+//				this.gameObject.GetComponent<Rigidbody> ().velocity = this.def.velocity * Vector3.left;
+//			} else if (this.gameObject.GetComponent<Rigidbody> ().velocity.x < 0) {
+//				this.gameObject.GetComponent<Rigidbody> ().velocity = this.def.velocity * Vector3.right;
+//			} else if (this.gameObject.GetComponent<Rigidbody> ().velocity.y > 0) {
+//				this.gameObject.GetComponent<Rigidbody> ().velocity = this.def.velocity * Vector3.down;
+//			} else {
+//				this.gameObject.GetComponent<Rigidbody> ().velocity = this.def.velocity * Vector3.up;
+//			}
 //		}
 //	}
 
@@ -60,6 +72,23 @@ public class Weapon : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
-		
+		if (type == WeaponType.boomerang) {
+			Vector3 fwd;
+			if (this.gameObject.GetComponent<Rigidbody> ().velocity.x > 0) {
+				fwd = transform.TransformDirection (Vector3.right);
+			} else if (this.gameObject.GetComponent<Rigidbody> ().velocity.x < 0) {
+				fwd = transform.TransformDirection (Vector3.left);
+			} else if (this.gameObject.GetComponent<Rigidbody> ().velocity.y > 0) {
+				fwd = transform.TransformDirection (Vector3.up);
+			} else {
+				fwd = transform.TransformDirection (Vector3.down);
+			}
+			int layermask = 1 << 10;
+			layermask = ~layermask;
+			if (Physics.Raycast (transform.position, fwd, 0.5f, layermask)) {
+				print ("ah shoot something is there!!!");
+				this.GetComponent<Rigidbody> ().velocity *= -1;
+			}
+		}
 	}
 }

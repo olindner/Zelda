@@ -24,6 +24,7 @@
 using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
+using System.IO;
 
 public class ShowMapOnCamera : MonoBehaviour {
 
@@ -109,7 +110,6 @@ public class ShowMapOnCamera : MonoBehaviour {
             }
         }
 
-
         // Generate the mapAnchor to which all of the Tiles will be parented
         GameObject go;
         go = new GameObject("MapAnchor");
@@ -127,6 +127,45 @@ public class ShowMapOnCamera : MonoBehaviour {
         UpdateTiles(true);
     }
 
+	void PrintTiles() {
+		using (StreamWriter outputfile = new StreamWriter("grid.txt")) {
+			for (int i = h - 1; i >= 0; i--) {
+				string nextline = "";
+				for (int j = 0; j < w; j++) {
+					//print ("i " + i + " j " + j);
+					if (MAP_TILES [j, i] == null) {
+						nextline += "_ ";
+					} else if (MAP_TILES [j, i].gameObject.tag == "Wall") {
+						nextline += "W ";
+					} else if (MAP_TILES [j, i].gameObject.tag == "Floor") {
+						nextline += "F ";
+					} else if (MAP_TILES [j, i].gameObject.tag == "DoorDown") {
+						nextline += "D ";
+					} else if (MAP_TILES [j, i].gameObject.tag == "DoorUp") {
+						nextline += "U ";
+					} else if (MAP_TILES [j, i].gameObject.tag == "DoorRight") {
+						nextline += "R ";
+					} else if (MAP_TILES [j, i].gameObject.tag == "DoorLeft") {
+						nextline += "L ";
+					} else if (MAP_TILES [j, i].gameObject.tag == "LockedDoorUp") {
+						nextline += "V ";
+					} else if (MAP_TILES [j, i].gameObject.tag == "LockedDoorRight") {
+						nextline += "2 ";
+					} else if (MAP_TILES [j, i].gameObject.tag == "LockedDoorLeft") {
+						nextline += "3 ";
+					} else if (MAP_TILES [j, i].gameObject.tag == "JaggedDoor") {
+						nextline += "J ";
+					} else if (MAP_TILES [j, i].gameObject.tag == "Stairs") {
+						nextline += "s ";
+					} else if (MAP_TILES [j, i].gameObject.GetComponent<BoxCollider>().enabled == true) {
+						nextline += "S ";
+					}
+				}
+				nextline += "\n";
+				outputfile.WriteLine(nextline);
+			}
+		}
+	}
 
     void FixedUpdate() {
         UpdateTiles();
@@ -134,6 +173,10 @@ public class ShowMapOnCamera : MonoBehaviour {
 
     /* Move tiles objects around, update their sprites, etc, in response to camera movement. */
     public void UpdateTiles(bool clearAll=false) {
+		if (Input.GetKeyDown (KeyCode.P)) {
+			PrintTiles();
+		}
+
         if (clearAll) {
             // Clear every Tile that was on screen
             for (int i=0; i<w; i++) {
@@ -182,6 +225,8 @@ public class ShowMapOnCamera : MonoBehaviour {
             }
         }
     }
+
+
 
     static public Tile GetTile() {
         int n = TILE_POOL.Count-1;
