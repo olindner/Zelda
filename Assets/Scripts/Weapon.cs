@@ -61,16 +61,16 @@ public class Weapon : MonoBehaviour {
 			|| coll.gameObject.tag == "LockedDoorRight")) {
 			//print ("Boomerang triggered player");
 			//print ("boom velocity " + this.gameObject.GetComponent<Rigidbody> ().velocity);
-			if (PlayerController.instance.current_direction == Direction.EAST) {
-				this.gameObject.GetComponent<Rigidbody> ().velocity = this.def.velocity * Vector3.left;
-				//print ("new velocity " + this.def.velocity * Vector3.left);
-			} else if (PlayerController.instance.current_direction == Direction.WEST) {
-				this.gameObject.GetComponent<Rigidbody> ().velocity = this.def.velocity * Vector3.right;
-			} else if (PlayerController.instance.current_direction == Direction.NORTH) {
-				this.gameObject.GetComponent<Rigidbody> ().velocity = this.def.velocity * Vector3.down;
-			} else {
-				this.gameObject.GetComponent<Rigidbody> ().velocity = this.def.velocity * Vector3.up;
-			}
+//			if (PlayerController.instance.current_direction == Direction.EAST) {
+//				this.gameObject.GetComponent<Rigidbody> ().velocity = this.def.velocity * Vector3.left;
+//				//print ("new velocity " + this.def.velocity * Vector3.left);
+//			} else if (PlayerController.instance.current_direction == Direction.WEST) {
+//				this.gameObject.GetComponent<Rigidbody> ().velocity = this.def.velocity * Vector3.right;
+//			} else if (PlayerController.instance.current_direction == Direction.NORTH) {
+//				this.gameObject.GetComponent<Rigidbody> ().velocity = this.def.velocity * Vector3.down;
+//			} else {
+//				this.gameObject.GetComponent<Rigidbody> ().velocity = this.def.velocity * Vector3.up;
+//			}
 			on_way_back = true;
 			Vector3 new_direction = PlayerController.instance.transform.position - this.transform.position;
 			this.gameObject.GetComponent<Rigidbody> ().velocity = new_direction.normalized * this.def.velocity;

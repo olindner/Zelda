@@ -21,6 +21,7 @@ public class Bat : MonoBehaviour {
 		hi = 0;
 		isMoving = false;
 		sleepTimer = 0;
+		target = transform.position;
 	}
 	
 	// Update is called once per frame
@@ -37,12 +38,12 @@ public class Bat : MonoBehaviour {
 				spriteTimer = Time.time + spriteDelay;
 			}
 
-			if (transform.position == target)
-				isMoving = false;
+			if (transform.position == target) isMoving = false;
+			//else isMoving = true;
 
 			if (!isMoving) { //not moving so randomly choose a state
 				int num = Random.Range (0, 99);
-				if (num == 1) { //1% chance do sleep
+				if (num <= 10) { //1% chance do sleep
 					sleepTimer = Time.time + sleepDelay;
 				} else { //99% to move
 					isMoving = true;

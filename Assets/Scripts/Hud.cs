@@ -12,10 +12,29 @@ public class Hud : MonoBehaviour {
 	public Image[] whiteHearts;
 	public Image[] halfHearts;
 	private int slot; //keeps track of the "current" health slot
+	private bool hidden;
+	private RectTransform rt;
+	public float ease_factor = 0.1f;
+	public Image Red0Empty;
+	public Image Blue0Empty;
+	public float blinkDelay = 0.2f;
+	private float blinkTimer;
+	public Image map;
+	public Image compass;
 
 	// Use this for initialization
 	void Start ()
 	{
+		blinkTimer = Time.time + blinkDelay;
+		Red0Empty.enabled = true;
+		Blue0Empty.enabled = false;
+
+		map.enabled = false;
+		compass.enabled = false;
+
+		hidden = true;
+		rt = GetComponent<RectTransform> ();
+		
 		float health = PlayerController.instance.num_hearts;
 		int capacity = PlayerController.instance.heart_capacity;
 		slot = (int)Mathf.Floor(health);
@@ -57,7 +76,39 @@ public class Hud : MonoBehaviour {
 	}
 	
 	// Update is called once per frame
-	void Update () {
+	void Update ()
+	{
+
+		if (Input.GetKeyDown (KeyCode.Return)) {
+			hidden = !hidden;
+		}
+
+		if (Time.time >= blinkTimer && !hidden) {
+			if (Red0Empty.enabled == true) {
+				Red0Empty.enabled = false;
+				Blue0Empty.enabled = true;
+			} else if (Blue0Empty.enabled == true) {
+				Blue0Empty.enabled = false;
+				Red0Empty.enabled = true;
+			}
+			blinkTimer = Time.time + blinkDelay;
+		}
+
+		if (PlayerController.instance.hasMap) {
+			map.enabled = true;
+			//create map on menu
+		}
+		if (PlayerController.instance.hasCompass) {
+			compass.enabled = true;
+		}
+
+		Vector2 desired_ui_position = new Vector2(400, 375);
+
+		if (!hidden)
+            desired_ui_position = new Vector2(400, -241);
+
+        rt.anchoredPosition += (desired_ui_position - rt.anchoredPosition) * ease_factor;
+
 		int rupees = PlayerController.instance.num_rupees;
 		rupeeText.text = "x" + rupees.ToString();
 		int keys = PlayerController.instance.num_keys;
