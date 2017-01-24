@@ -60,24 +60,30 @@ public class Room : MonoBehaviour {
 		ymin = cam_pos.y - 4f - 3.5f;
 
 		int i = 0;
+		while (ShowMapOnCamera.MAP_TILES [0, i] == null) {
+			i++;
+		}
 		while (tile_xmin < ShowMapOnCamera.MAP_TILES [0, i].transform.position.x) {
 			i++;
 		}
 		tile_xmin = i;
 		print ("Tile xmin set to " + tile_xmin);
-		while (tile_xmax <= ShowMapOnCamera.MAP_TILES [0, i].transform.position.x) {
+		while (ShowMapOnCamera.MAP_TILES [0, i] == null || tile_xmax <= ShowMapOnCamera.MAP_TILES [0, i].transform.position.x) {
 			i++;
 		}
 		tile_xmax = i;
 		print ("Tile xmax set to " + tile_xmax);
 
 		i = 0;
+		while (ShowMapOnCamera.MAP_TILES [i, 0] == null) {
+			i++;
+		}
 		while (tile_ymin > ShowMapOnCamera.MAP_TILES [i, 0].transform.position.y) {
 			i++;
 		}
 		tile_ymin = i;
 		print ("Tile ymin set to " + tile_ymin);
-		while (tile_ymin >= ShowMapOnCamera.MAP_TILES [i, 0].transform.position.y) {
+		while (ShowMapOnCamera.MAP_TILES [i, 0] == null || tile_ymin >= ShowMapOnCamera.MAP_TILES [i, 0].transform.position.y) {
 			i++;
 		}
 		tile_ymax = i;
@@ -129,6 +135,10 @@ public class Room : MonoBehaviour {
 	Vector3 FindFreeTile() {
 		int temp_xtile = random.Next (tile_xmin, tile_xmax);
 		int temp_ytile = random.Next (tile_ymin, tile_ymax);
+		print ("tile xmin " + tile_xmin);
+		print ("tile xmax " + tile_xmax);
+		print ("tile ymin " + tile_ymin);
+		print ("tile ymax " + tile_ymax);
 		print ("temp xtile " + temp_xtile);
 		print ("temp ytile " + temp_ytile);
 		while (ShowMapOnCamera.MAP_TILES[temp_xtile, temp_ytile].gameObject.tag != "Floor"

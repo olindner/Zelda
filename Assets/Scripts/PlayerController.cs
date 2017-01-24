@@ -35,6 +35,10 @@ public class PlayerController : MonoBehaviour {
 	public int num_bombs;
 	public GameObject thing; //had to rename to thing because naming/static error
 
+	public bool has_map;
+	public bool has_compass;
+	public bool has_bow;
+
 	//state machine stuff
 	public Sprite[] link_run_down;
 	public Sprite[] link_run_up;
@@ -57,10 +61,13 @@ public class PlayerController : MonoBehaviour {
 	public EntityState current_state = EntityState.NORMAL;
 	public Direction current_direction = Direction.SOUTH;
 
-	public GameObject selected_weapon_prefab;
+	public GameObject selected_weapon_prefab_a;
+	public GameObject selected_weapon_prefab_b;
 	static public Dictionary<WeaponType, WeaponDefinition> W_DEFS;
 	public WeaponDefinition[] weaponDefinitions;
-	public Weapon current_weapon;
+	public Weapon current_weapon_A;
+	public Weapon current_weapon_B;
+	public bool have_boomerang = false;
 
 	public static PlayerController instance;
 
@@ -90,7 +97,12 @@ public class PlayerController : MonoBehaviour {
 			GetComponent<SpriteRenderer> (), link_run_down[0]));
 
 		GameObject c_w = new GameObject ();
-		current_weapon = new Weapon (WeaponType.none, getWeaponDefinition(WeaponType.none), c_w, this);
+		current_weapon_A = new Weapon (WeaponType.none, getWeaponDefinition(WeaponType.none), c_w, this);
+		current_weapon_B = new Weapon (WeaponType.none, getWeaponDefinition(WeaponType.none), c_w, this);
+
+		if (selected_weapon_prefab_b.name == "Boomerang") {
+			have_boomerang = true;
+		}
     }
     
     // Update is called once per frame
@@ -99,15 +111,46 @@ public class PlayerController : MonoBehaviour {
 		if (current_state == EntityState.ATTACKING)
 			current_state = EntityState.NORMAL;
 
-		if (current_weapon.type != WeaponType.none) {
-			current_weapon.def.delayBetweenShots--;
-			if (current_weapon.def.delayBetweenShots == 0) {
-				Destroy (current_weapon.w_go);
+		if (current_weapon_A.type != WeaponType.none) {
+			current_weapon_A.def.delayBetweenShots--;
+			if (current_weapon_A.def.delayBetweenShots == 0) {
+				Destroy (current_weapon_A.w_go);
 				GameObject c_w = new GameObject ();
-				current_weapon = new Weapon (WeaponType.none, getWeaponDefinition(WeaponType.none), c_w, this);
+				current_weapon_A = new Weapon (WeaponType.none, getWeaponDefinition(WeaponType.none), c_w, this);
 			}
 		}
-		
+
+		if (current_weapon_B.type == WeaponType.arrow) {
+			current_weapon_B.def.delayBetweenShots--;
+			if (current_weapon_B.def.delayBetweenShots == 0) {
+				Destroy (current_weapon_B.w_go);
+				GameObject c_w = new GameObject ();
+				current_weapon_B = new Weapon (WeaponType.none, getWeaponDefinition (WeaponType.none), c_w, this);
+			}
+		}
+
+		if (current_weapon_B.type == WeaponType.bomb) {
+			current_weapon_B.def.delayBetweenShots--;
+			if (current_weapon_B.def.delayBetweenShots == 0) {
+				print ("BOMB GOES BOOM");
+				//BombKills ();
+				Destroy (current_weapon_B.w_go);
+				GameObject c_w = new GameObject ();
+				current_weapon_B = new Weapon (WeaponType.none, getWeaponDefinition (WeaponType.none), c_w, this);
+			}
+		}
+
+//		print ("boomerang position " + current_weapon_B.w_go.transform.position);
+//		print ("boomerang target " + current_weapon_B.target1);
+//		print ("on way back " + current_weapon_B.on_way_back);
+		if (current_weapon_B.type == WeaponType.boomerang && !current_weapon_B.on_way_back 
+			&& (Mathf.Abs (current_weapon_B.w_go.transform.position.x - current_weapon_B.target1.x) <= 0.1
+			&& Mathf.Abs (current_weapon_B.w_go.transform.position.y - current_weapon_B.target1.y) <= 0.1)) {
+			//print ("ON MAH WAY BACK DAWG");
+			current_weapon_B.on_way_back = true;
+			Vector3 new_direction = this.transform.position - current_weapon_B.w_go.transform.position;
+			current_weapon_B.w_go.GetComponent<Rigidbody> ().velocity = new_direction.normalized * current_weapon_B.def.velocity;
+		}
 
         ProcessMovement();
         ProcessAttacks();
@@ -237,7 +280,7 @@ public class PlayerController : MonoBehaviour {
 
     /* TODO: Deal with user-invoked usage of weapons and items */
     void ProcessAttacks() {
-		if (num_cooldown_weapon_frames == 0 && Input.GetKeyDown (KeyCode.Z)) {
+		if (num_cooldown_weapon_frames == 0 && (Input.GetKeyDown (KeyCode.A) || Input.GetKeyDown(KeyCode.S))) {
 			num_cooldown_weapon_frames = 24;
 			num_cooldown_attack_frames = 12;
 			current_state = EntityState.ATTACKING;
@@ -258,22 +301,33 @@ public class PlayerController : MonoBehaviour {
 				animation_state_machine.ChangeState(new StateIdleWithSprite(this, 
 					GetComponent<SpriteRenderer>(), link_attack[3]));
 
-			if (selected_weapon_prefab.name == "Sword") {
-				Weapon sword = GenerateWeapon (WeaponType.sword);
+			if (Input.GetKeyDown (KeyCode.A)) {
+				Weapon sword = GenerateWeapon (WeaponType.sword, 'a');
 				UseSword (sword);
-			} else if (selected_weapon_prefab.name == "Boomerang") {
-				Weapon boomerang = GenerateWeapon (WeaponType.boomerang);
-				UseBoomerang (boomerang);
-			} else if (selected_weapon_prefab.name == "Arrow") {
-				Weapon arrow = GenerateWeapon (WeaponType.arrow);
-				UseArrow (arrow);
-				num_rupees--;
+			} else if (Input.GetKeyDown (KeyCode.S)) {
+				if (selected_weapon_prefab_b.name == "Boomerang" && have_boomerang) {
+					Weapon boomerang = GenerateWeapon (WeaponType.boomerang, 'b');
+					UseBoomerang (boomerang);
+				} else if (selected_weapon_prefab_b.name == "Arrow" && has_bow) {
+					Weapon arrow = GenerateWeapon (WeaponType.arrow, 'b');
+					UseArrow (arrow);
+					num_rupees--;
+				} else if (selected_weapon_prefab_b.name == "Bomb" && num_bombs > 0) {
+					Weapon bomb = GenerateWeapon (WeaponType.bomb, 'b');
+					DropBomb (bomb);
+					num_bombs--;
+				}
 			}
 		}
 	}
 
-	Weapon GenerateWeapon(WeaponType wt) {
-		GameObject go = Instantiate (selected_weapon_prefab) as GameObject;
+	Weapon GenerateWeapon(WeaponType wt, char ab) {
+		GameObject go;
+		if (ab == 'a') {
+			go = Instantiate (selected_weapon_prefab_a) as GameObject;
+		} else if (ab == 'b') {
+			go = Instantiate (selected_weapon_prefab_b) as GameObject;
+		}
 		WeaponDefinition def = getWeaponDefinition(wt);
 		Vector3 LinkPos = rb.transform.position;
 
@@ -371,29 +425,63 @@ public class PlayerController : MonoBehaviour {
 				go.transform.position = LinkPos;
 			}
 			break;
+		case WeaponType.bomb:
+			print ("gonna generate a bomb!");
+			go.tag = "Bomb";
+			go.GetComponent<BoxCollider> ().isTrigger = false;
+			go.GetComponent<SpriteRenderer> ().sprite = def.sprites_dlur [0];
+			go.transform.position = LinkPos;
+			break;
 		}
 		Weapon w = new Weapon (wt, def, go, this);
 		return w;
 	}
 
+	void DropBomb(Weapon bomb) {
+		print ("dropped bomb");
+		Destroy (this.current_weapon_B.w_go);
+		this.current_weapon_B = bomb;
+		current_weapon_B.def.delayBetweenShots = 120;
+	}
+
+	void BombKills() {
+		Vector3 pos = current_weapon_B.w_go.transform.position;
+
+		//kills stuff in the Manhattan distance of 1
+		//uses Room to do this by searching through all the objects in the room
+	}
+
+
 	void UseBoomerang(Weapon boomerang) {
-		Destroy (this.current_weapon.w_go);
-		this.current_weapon = boomerang;
+		Destroy (this.current_weapon_B.w_go);
+		this.current_weapon_B = boomerang;
+		have_boomerang = false;
+		this.current_weapon_B.on_way_back = false;
 		switch (this.current_direction) {
 		case Direction.SOUTH:
-			current_weapon.w_go.GetComponent<Rigidbody> ().velocity = Vector3.down * current_weapon.def.velocity;
-			print ("sword velocity: " + boomerang.w_go.GetComponent<Rigidbody> ().velocity);
+			current_weapon_B.w_go.GetComponent<Rigidbody> ().velocity = Vector3.down * current_weapon_B.def.velocity;
+			current_weapon_B.target1 = this.transform.position;
+			current_weapon_B.target1.y -= 5f;
+			//print ("sword velocity: " + boomerang.w_go.GetComponent<Rigidbody> ().velocity);
+			print ("boomerang start " + this.transform.position);
+			print ("boomerang target " + current_weapon_B.target1);
 			break;
 		case Direction.WEST:
-			current_weapon.w_go.GetComponent<Rigidbody> ().velocity = Vector3.left * current_weapon.def.velocity;
+			current_weapon_B.w_go.GetComponent<Rigidbody> ().velocity = Vector3.left * current_weapon_B.def.velocity;
+			current_weapon_B.target1 = this.transform.position;
+			current_weapon_B.target1.x -= 5f;
 			//print ("sword velocity: " + sword.w_go.GetComponent<Rigidbody> ().velocity);
 			break;
 		case Direction.NORTH:
-			current_weapon.w_go.GetComponent<Rigidbody> ().velocity = Vector3.up * current_weapon.def.velocity;
+			current_weapon_B.w_go.GetComponent<Rigidbody> ().velocity = Vector3.up * current_weapon_B.def.velocity;
+			current_weapon_B.target1 = this.transform.position;
+			current_weapon_B.target1.y += 5f;
 			//print ("sword velocity: " + sword.w_go.GetComponent<Rigidbody> ().velocity);
 			break;
 		case Direction.EAST:
-			current_weapon.w_go.GetComponent<Rigidbody> ().velocity = Vector3.right * current_weapon.def.velocity;
+			current_weapon_B.w_go.GetComponent<Rigidbody> ().velocity = Vector3.right * current_weapon_B.def.velocity;
+			current_weapon_B.target1 = this.transform.position;
+			current_weapon_B.target1.x += 5f;
 			//print ("sword velocity: " + sword.w_go.GetComponent<Rigidbody> ().velocity);
 			break;
 		}
@@ -444,8 +532,8 @@ public class PlayerController : MonoBehaviour {
 				break;
 			}
 		} else {
-			Destroy(this.current_weapon.w_go);
-			this.current_weapon = sword;
+			Destroy(this.current_weapon_A.w_go);
+			this.current_weapon_A = sword;
 			sword.def.delayBetweenShots = 5;
 		}
 	}
@@ -473,7 +561,8 @@ public class PlayerController : MonoBehaviour {
 		} else if (coll.gameObject.tag == "Boomerang") {
 			Destroy (coll.gameObject);
 			GameObject c_w = new GameObject ();
-			current_weapon = new Weapon (WeaponType.none, getWeaponDefinition (WeaponType.none), c_w, this);
+			current_weapon_B = new Weapon (WeaponType.none, getWeaponDefinition (WeaponType.none), c_w, this);
+			have_boomerang = true;
 		}
 	}
 
@@ -502,6 +591,18 @@ public class PlayerController : MonoBehaviour {
 		} else if (collider.gameObject.tag == "Bomb") {
 			num_bombs++;
 			Destroy (collider.gameObject);
+		} else if (collider.gameObject.tag == "Bow") {
+			has_bow = true;
+			//change animation to hold up bow
+			Destroy (collider.gameObject);
+		} else if (collider.gameObject.tag == "Map") {
+			has_map = true;
+			Destroy (collider.gameObject);
+			//put map on hud
+		} else if (collider.gameObject.tag == "Compass") {
+			has_compass = true;
+			Destroy (collider.gameObject);
+			//put little red dot on hud
 		} else if (collider.gameObject.tag == "Enemy" && num_cooldown_frames == 0) {
 			//print ("dude you touched me");
 			if (num_hearts > 0) {

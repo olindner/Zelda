@@ -6,7 +6,8 @@ public enum WeaponType {
 	none,
 	sword,
 	arrow,
-	boomerang
+	boomerang,
+	bomb
 }
 
 [System.Serializable]
@@ -28,6 +29,8 @@ public class Weapon : MonoBehaviour {
 
 	public PlayerController pc;
 	Vector3 fwd;
+	public Vector3 target1;
+	public bool on_way_back;
 
 	public Weapon(WeaponType type, WeaponDefinition def, GameObject w_go, PlayerController pc) {
 		this._type = type;
@@ -49,21 +52,30 @@ public class Weapon : MonoBehaviour {
 		_type = eType;
 	}
 
-//	void OnCollisionEnter(Collision coll) {
-//		if (this.def.type == WeaponType.boomerang && coll.gameObject.tag == "Player") {
-//			print ("Boomerang triggered player");
-//			print ("boom velocity " + this.gameObject.GetComponent<Rigidbody> ().velocity);
-//			if (this.gameObject.GetComponent<Rigidbody> ().velocity.x > 0) {
-//				this.gameObject.GetComponent<Rigidbody> ().velocity = this.def.velocity * Vector3.left;
-//			} else if (this.gameObject.GetComponent<Rigidbody> ().velocity.x < 0) {
-//				this.gameObject.GetComponent<Rigidbody> ().velocity = this.def.velocity * Vector3.right;
-//			} else if (this.gameObject.GetComponent<Rigidbody> ().velocity.y > 0) {
-//				this.gameObject.GetComponent<Rigidbody> ().velocity = this.def.velocity * Vector3.down;
-//			} else {
-//				this.gameObject.GetComponent<Rigidbody> ().velocity = this.def.velocity * Vector3.up;
-//			}
-//		}
-//	}
+	void OnCollisionEnter(Collision coll) {
+		//print ("collided with something!");
+		if (this.type == WeaponType.boomerang && (coll.gameObject.tag == "Wall"
+			|| coll.gameObject.tag == "DoorUp" || coll.gameObject.tag == "DoorLeft"
+			|| coll.gameObject.tag == "DoorRight" || coll.gameObject.tag == "DoorDown"
+			|| coll.gameObject.tag == "LockedDoorUp" || coll.gameObject.tag == "LockedDoorLeft"
+			|| coll.gameObject.tag == "LockedDoorRight")) {
+			//print ("Boomerang triggered player");
+			//print ("boom velocity " + this.gameObject.GetComponent<Rigidbody> ().velocity);
+			if (PlayerController.instance.current_direction == Direction.EAST) {
+				this.gameObject.GetComponent<Rigidbody> ().velocity = this.def.velocity * Vector3.left;
+				//print ("new velocity " + this.def.velocity * Vector3.left);
+			} else if (PlayerController.instance.current_direction == Direction.WEST) {
+				this.gameObject.GetComponent<Rigidbody> ().velocity = this.def.velocity * Vector3.right;
+			} else if (PlayerController.instance.current_direction == Direction.NORTH) {
+				this.gameObject.GetComponent<Rigidbody> ().velocity = this.def.velocity * Vector3.down;
+			} else {
+				this.gameObject.GetComponent<Rigidbody> ().velocity = this.def.velocity * Vector3.up;
+			}
+			on_way_back = true;
+			Vector3 new_direction = PlayerController.instance.transform.position - this.transform.position;
+			this.gameObject.GetComponent<Rigidbody> ().velocity = new_direction.normalized * this.def.velocity;
+		}
+	}
 
 	// Use this for initialization
 	void Start () {
@@ -73,21 +85,10 @@ public class Weapon : MonoBehaviour {
 	// Update is called once per frame
 	void Update () {
 		if (type == WeaponType.boomerang) {
-			Vector3 fwd;
-			if (this.gameObject.GetComponent<Rigidbody> ().velocity.x > 0) {
-				fwd = transform.TransformDirection (Vector3.right);
-			} else if (this.gameObject.GetComponent<Rigidbody> ().velocity.x < 0) {
-				fwd = transform.TransformDirection (Vector3.left);
-			} else if (this.gameObject.GetComponent<Rigidbody> ().velocity.y > 0) {
-				fwd = transform.TransformDirection (Vector3.up);
-			} else {
-				fwd = transform.TransformDirection (Vector3.down);
-			}
-			int layermask = 1 << 10;
-			layermask = ~layermask;
-			if (Physics.Raycast (transform.position, fwd, 0.5f, layermask)) {
-				print ("ah shoot something is there!!!");
-				this.GetComponent<Rigidbody> ().velocity *= -1;
+			transform.Rotate (0, 0, 3*Time.time);
+			if (on_way_back && !PlayerController.instance.have_boomerang) {
+				Vector3 new_direction = PlayerController.instance.transform.position - this.transform.position;
+				this.gameObject.GetComponent<Rigidbody> ().velocity = new_direction.normalized * this.def.velocity;
 			}
 		}
 	}

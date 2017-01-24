@@ -19,9 +19,9 @@ public class RoomController : MonoBehaviour {
 //	}
 
 	// Use this for initialization
-	void Start () {
-		room_height = CameraPan.c.height;
-		room_width = CameraPan.c.width;
+	void Awake () {
+		room_height = 11f;
+		room_width = 16f;
 
 		map1 = new Room[6, 6];
 		for (int i = 0; i < 6; i++) {

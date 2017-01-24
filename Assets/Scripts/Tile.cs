@@ -69,7 +69,9 @@ public class Tile : MonoBehaviour {
 		//print ("collision tag " + coll.gameObject.tag);
 		if ((this.gameObject.tag == "Wall" || this.gameObject.tag == "DoorDown"
 		    || this.gameObject.tag == "DoorUp" || this.gameObject.tag == "DoorLeft"
-		    || this.gameObject.tag == "DoorRight") && coll.gameObject.tag == "Sword") {
+			|| this.gameObject.tag == "DoorRight" || this.gameObject.tag == "LockedDoorUp"
+			|| this.gameObject.tag == "LockedDoorRight" || this.gameObject.tag == "LockedDoorLeft")
+			&& coll.gameObject.tag == "Sword") {
 			//print ("omg a wall nooo");
 			Destroy (coll.gameObject);
 			//print ("destroyed!");
@@ -274,6 +276,11 @@ public class Tile : MonoBehaviour {
 		case 'F': //Floor
 			bc.enabled = false;
 			this.gameObject.tag = "Floor";
+			break;
+		case 'w': //Water
+			bc.center = Vector3.zero;
+			bc.size = Vector3.one;
+			this.gameObject.layer = 10;
 			break;
 		case 's': //Stairs
 			bc.center = Vector3.zero;
