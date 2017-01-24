@@ -34,6 +34,8 @@ public class PlayerController : MonoBehaviour {
 	public int num_keys;
 	public int num_bombs;
 	public GameObject thing; //had to rename to thing because naming/static error
+	public bool hasCompass = false;
+	public bool hasMap = false;
 
 	//state machine stuff
 	public Sprite[] link_run_down;

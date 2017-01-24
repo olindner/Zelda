@@ -23,10 +23,10 @@ public class LerpToDesiredUIPosition : MonoBehaviour
     {
         ProcessControls();
 
-        Vector2 desired_ui_position = Vector2.zero;
+        Vector2 desired_ui_position = new Vector2(-14, 800);
 
         if (hidden)
-            desired_ui_position = new Vector2(-272, 0);
+            desired_ui_position = new Vector2(-14, 0);
 
         // By jumping a particular fraction (ease_factor) of the way to our destination
         // every frame, we re-enact Zeno's Dichotomy paradox (https://youtu.be/EfqVnj-sgcc), 
