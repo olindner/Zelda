@@ -13,6 +13,15 @@ public class Skeleton : MonoBehaviour {
 	public float spriteTimeDelay;
 	private float timer;
 
+	public int showDamageForFrames = 2;
+	public Material[] materials;
+	public Material[] tile_materials;
+	public int remainingDamageFrames = 0;
+	public int remainingDamageFlashes = 0;
+	public Color[] originalColors;
+	public int num_cooldown_frames = 0;
+	public float damage_hopback_vel = 2.65f;
+
 	// Use this for initialization
 	void Start () {
 		pos = transform.position;
@@ -21,6 +30,12 @@ public class Skeleton : MonoBehaviour {
 		isMoving = false;
 		dir = Random.Range(0,3); //pick a random starting direction
 		timer = Time.time + spriteTimeDelay;
+
+		materials = Utils.GetAllMaterials (gameObject);
+		originalColors = new Color[materials.Length];
+		for (int i = 0; i < materials.Length; i++) {
+			originalColors [i] = materials [i].color;
+		}
 	}
 	
 	// Update is called once per frame
@@ -36,6 +51,33 @@ public class Skeleton : MonoBehaviour {
 		}
 		else
 			isMoving = true;
+
+		if (remainingDamageFlashes > 0) {
+			//print ("frame number: " + frame);
+			//print (remainingDamageFlashes + " damage flashes left");
+			if (remainingDamageFrames > 0) {
+				//print (remainingDamageFrames + " damage frames left");
+				remainingDamageFrames--;
+				if (remainingDamageFrames == showDamageForFrames / 2) {
+					//print ("no damage frames left!");
+					UnshowDamage ();
+				}
+			} else {
+				//print ("decreasing damage flashes left");
+				remainingDamageFlashes--;
+				ShowDamage (remainingDamageFlashes);
+			}
+		} else {
+			//print ("no damage flashes left!");
+			UnshowDamage ();
+		}
+
+		if (num_cooldown_frames > 0) {
+			num_cooldown_frames--;
+			if (num_cooldown_frames == 0) {
+				this.GetComponent<Rigidbody> ().velocity = Vector3.zero;
+			}
+		}
 
 		if (!isMoving) {
 			int num = Random.Range (0, 15);
@@ -129,11 +171,30 @@ public class Skeleton : MonoBehaviour {
 		transform.position = Vector3.MoveTowards (transform.position, pos, Time.deltaTime * speed);
 	}
 
-	void OnTriggerEnter (Collider col) {
+	void OnCollisionEnter (Collision col) {
 		if (col.gameObject.tag == "Sword") {
+			GetComponent<Rigidbody> ().velocity = damage_hopback_vel * col.rigidbody.velocity;
+			num_cooldown_frames = 5;
 			Destroy(col.gameObject);
 			health--;
+			ShowDamage (5);
 			if (health <= 0) Destroy(this.gameObject);
+		}
+	}
+
+	void ShowDamage(int flashes_left) {
+		//print ("entered ShowDamage");
+		//receive_damage = false;
+		remainingDamageFlashes = flashes_left;
+		foreach (Material m in materials) {
+			m.color = Color.red;
+		}
+		remainingDamageFrames = showDamageForFrames;
+	}
+
+	void UnshowDamage() {
+		for (int i = 0; i < materials.Length; i++) {
+			materials [i].color = originalColors [i];
 		}
 	}
 }

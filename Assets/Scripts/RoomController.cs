@@ -24,7 +24,6 @@ public class RoomController : MonoBehaviour {
 		room_width = CameraPan.c.width;
 
 		map1 = new Room[6, 6];
-
 		for (int i = 0; i < 6; i++) {
 			for (int j = 0; j < 6; j++) {
 				map1 [i, j] = new Room ();
@@ -52,7 +51,7 @@ public class RoomController : MonoBehaviour {
 		for (int i = 0; i < 6; i++) {
 			for (int j = 0; j < 6; j++) {
 				if (map1 [i, j].real_room) {
-					map1 [i, j].cam_pos = new Vector3 ((5 - i) * room_width + x_start, (5 - j) * room_height + y_start, z);
+					map1 [i, j].cam_pos = new Vector3 ((5 - i) * room_height + y_start, j * room_width + x_start, z);
 				}
 			}
 		}
@@ -145,8 +144,16 @@ public class RoomController : MonoBehaviour {
 	void Update () {
 		if ((CameraPan.c.panning_down || CameraPan.c.panning_up || CameraPan.c.panning_left || CameraPan.c.panning_right)
 			&& active_row_index != -1 && active_col_index != -1) {
+			if (map1 [active_row_index, active_col_index].things_inside_room.Count > 0) {
+				foreach (GameObject go in map1[active_row_index, active_col_index].things_inside_room) {
+					Destroy (go);
+				}
+				foreach (Vector2 v in map1[active_row_index, active_col_index].init_pos_of_enemies) {
+					map1 [active_row_index, active_col_index].init_pos_of_enemies.Remove (v);
+				}
+			}
 			map1 [active_row_index, active_col_index].is_active = false;
-			//print ("camera is panning!");
+			print ("camera is panning!");
 			active_row_index = -1;
 			active_col_index = -1;
 		}
@@ -154,14 +161,23 @@ public class RoomController : MonoBehaviour {
 		    && !(CameraPan.c.panning_down || CameraPan.c.panning_up
 		    || CameraPan.c.panning_left || CameraPan.c.panning_right)) {
 			ChangeActiveRoom ();
+			if (map1 [active_row_index, active_col_index].enemy_type == "Spiketrap") {
+				map1 [active_row_index, active_col_index].InstantiateSpiketraps ();
+			} else if (map1[active_row_index, active_col_index].enemy_type != "WallMaster") {
+				map1 [active_row_index, active_col_index].InstantiateEnemies ();
+			}
 		}
 	}
 
 	void ChangeActiveRoom() {
+		//print ("current cam pos y " + this.transform.position.y);
 		float row_index = (this.transform.position.y - y_start) / room_height;
+		//print ("row index = " + row_index);
+		//print ("current cam pos x " + this.transform.position.x);
 		row_index = 5f - row_index;
 		float col_index = (this.transform.position.x - x_start) / room_width;
-		col_index = 5f - col_index;
+		//print ("col index = " + col_index);
+		//col_index = 5f - col_index;
 		//print ("Row_index = " + row_index);
 		//print ("Col_index = " + col_index);
 		map1 [(int)row_index, (int)col_index].is_active = true;
