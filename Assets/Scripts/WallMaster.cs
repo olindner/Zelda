@@ -50,7 +50,8 @@ public class WallMaster : MonoBehaviour {
 		}
 
 		//Left side
-		if (playerx % 16f >= 1.5f && playerx % 16f <= 2.5f) isLeft = true;
+		if (playerx % 16f >= 1.5f && playerx % 16f <= 2.5f)
+			isLeft = true;
 
 		if (isLeft) {	
 			if (!set1) {
@@ -61,8 +62,7 @@ public class WallMaster : MonoBehaviour {
 			if (checks == 1 && !set2) { //has reached right1, and is in top part of room
 				if (transform.position.y < playery) { //player is above
 					target = new Vector3 (transform.position.x, transform.position.y + 3f, 0); //Target 2a: up 3 spaces
-				}
-				else if (transform.position.y >= playery) { //player is below
+				} else if (transform.position.y >= playery) { //player is below
 					target = new Vector3 (transform.position.x, transform.position.y - 3f, 0); //Target 2a: down 3 spaces
 				}
 				set2 = true;
@@ -76,8 +76,10 @@ public class WallMaster : MonoBehaviour {
 			//Check if at destination, increment checkpoints
 			if (transform.position == target) {
 				checks++;
-				if (checks == 3)
+				if (checks == 3) {
+					//print ("hi");
 					Destroy (gameObject);
+				}
 			}
 		}
 
