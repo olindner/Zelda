@@ -187,7 +187,6 @@ public class Skeleton : MonoBehaviour {
 			if (health <= 0) {
 				room.num_enemies_left--;
 				room.things_inside_room.Remove (this.gameObject);
-				Destroy (this.gameObject);
 				if (Random.Range (0f, 1f) < prob_drop_rupee) {
 					GameObject go;
 					if (Random.Range (0f, 1f) < 0.5) {
@@ -195,8 +194,10 @@ public class Skeleton : MonoBehaviour {
 					} else {
 						go = Instantiate (blue_rupee) as GameObject;
 					}
+					go.transform.position = this.transform.position;
 					room.things_inside_room.Add (go);
 				}
+				Destroy (this.gameObject);
 			}
 		}
 	}

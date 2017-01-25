@@ -78,6 +78,8 @@ public class Weapon : MonoBehaviour {
 
 		if (coll.gameObject.layer == 12)
 			Destroy (coll.gameObject);
+//		if (coll.gameObject.layer == 13)
+//			coll.gameObject.GetComponent<Aquamentus> ().health--;
 	}
 
 	// Use this for initialization

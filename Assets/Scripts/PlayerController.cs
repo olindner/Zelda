@@ -228,7 +228,8 @@ public class PlayerController : MonoBehaviour {
 
 		if (num_cooldown_frames == 0 
 			&& (!CameraPan.c.panning_down && !CameraPan.c.panning_up 
-				&& !CameraPan.c.panning_left && !CameraPan.c.panning_right)) {
+				&& !CameraPan.c.panning_left && !CameraPan.c.panning_right)
+			&& num_frames_hold_triforce == 0) {
 			if (Input.GetKey (KeyCode.UpArrow)) {
 				desired_velocity = new Vector3 (0, 1, 0);
 				float temp;
