@@ -136,31 +136,31 @@ public class ShowMapOnCamera : MonoBehaviour {
 				for (int j = 0; j < w; j++) {
 					//print ("i " + i + " j " + j);
 					if (MAP_TILES [j, i] == null) {
-						nextline += "_ ";
+						nextline += "_";
 					} else if (MAP_TILES [j, i].gameObject.tag == "Wall") {
-						nextline += "W ";
+						nextline += "W";
 					} else if (MAP_TILES [j, i].gameObject.tag == "Floor") {
-						nextline += "F ";
+						nextline += "F";
 					} else if (MAP_TILES [j, i].gameObject.tag == "DoorDown") {
-						nextline += "D ";
+						nextline += "D";
 					} else if (MAP_TILES [j, i].gameObject.tag == "DoorUp") {
-						nextline += "U ";
+						nextline += "U";
 					} else if (MAP_TILES [j, i].gameObject.tag == "DoorRight") {
-						nextline += "R ";
+						nextline += "R";
 					} else if (MAP_TILES [j, i].gameObject.tag == "DoorLeft") {
-						nextline += "L ";
+						nextline += "L";
 					} else if (MAP_TILES [j, i].gameObject.tag == "LockedDoorUp") {
-						nextline += "V ";
+						nextline += "V";
 					} else if (MAP_TILES [j, i].gameObject.tag == "LockedDoorRight") {
-						nextline += "2 ";
+						nextline += "2";
 					} else if (MAP_TILES [j, i].gameObject.tag == "LockedDoorLeft") {
-						nextline += "3 ";
+						nextline += "3";
 					} else if (MAP_TILES [j, i].gameObject.tag == "JaggedDoor") {
-						nextline += "J ";
+						nextline += "J";
 					} else if (MAP_TILES [j, i].gameObject.tag == "Stairs") {
-						nextline += "s ";
+						nextline += "s";
 					} else if (MAP_TILES [j, i].gameObject.GetComponent<BoxCollider>().enabled == true) {
-						nextline += "S ";
+						nextline += "S";
 					}
 				}
 				nextline += "\n";
