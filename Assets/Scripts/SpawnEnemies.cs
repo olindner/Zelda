@@ -24,13 +24,15 @@ public class SpawnEnemies : MonoBehaviour {
 			float playeryFloor = Mathf.Floor (playery);
 			Vector3 spawn = Vector3.zero;
 
-			if (playerx % 16f >= 1.5f && playerx % 16f <= 2.5f) { //player is on left side
-				if (playeryFloor % 11f > 3f) { //above bottom 2 squares
-					spawn = new Vector3 (Mathf.Floor (playerx) - 1f, Mathf.Floor (playery) - 3f, 0);
-				} else {
-					spawn = new Vector3 (Mathf.Floor (playerx) - 1f, Mathf.Floor (playery) + 3f, 0);
+			if (CameraPan.c.GetComponent<RoomController> ().active_col_index == 4 && CameraPan.c.GetComponent<RoomController> ().active_row_index == 2) {
+				if (playerx >= 65.5f && playerx <= 66.5f) { //player is on left side
+					if (playeryFloor >= 37f) { //above bottom 2 squares
+						spawn = new Vector3 (Mathf.Floor (playerx) - 1f, Mathf.Floor (playery) - 3f, 0);
+					} else {
+						spawn = new Vector3 (Mathf.Floor (playerx) - 1f, Mathf.Floor (playery) + 3f, 0);
+					}
 				}
-			
+
 				GameObject go = Instantiate (WM);
 				go.transform.position = spawn;
 				WMspawntimer = Time.time + WMspawnDelay;

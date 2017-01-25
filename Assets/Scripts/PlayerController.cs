@@ -106,7 +106,21 @@ public class PlayerController : MonoBehaviour {
     }
     
     // Update is called once per frame
-    void Update () {
+    void Update ()
+	{
+
+		if (GetComponent<BoxCollider> ().isTrigger == true) { //WallMaster did this
+			transform.position = new Vector3 (39.5f, 2f, 0f);
+			CameraPan.c.transform.position = new Vector3 (39.52f, 5.79f, -11f);
+			foreach (GameObject go in CameraPan.c.gameObject.GetComponent<RoomController>().map1[2,4].things_inside_room) {
+				Destroy (go);
+			}
+			CameraPan.c.gameObject.GetComponent<RoomController>().map1[2,4].things_inside_room.Clear();
+			CameraPan.c.gameObject.GetComponent<RoomController>().active_col_index = 2;
+			CameraPan.c.gameObject.GetComponent<RoomController>().active_row_index = 5;
+			GetComponent<BoxCollider> ().isTrigger = false;
+		}
+
 		//frame++;
 		if (current_state == EntityState.ATTACKING)
 			current_state = EntityState.NORMAL;
