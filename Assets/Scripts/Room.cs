@@ -49,10 +49,6 @@ public class Room : MonoBehaviour {
 	public int tile_ymax;
 
 	public GameObject enemy_prefab;
-	public GameObject key_prefab;
-	public GameObject compass_prefab;
-	public GameObject map_prefab;
-	public GameObject boomerang_prefab;
 
 	void Start() {
 	}
@@ -129,10 +125,13 @@ public class Room : MonoBehaviour {
 	// Update is called once per frame
 	void Update () {
 		if (is_active && needs_key_pickup) {
+			print ("this room needs key pickup");
 			if (num_enemies_left == 0 && !key_picked_up) {
+				print ("can drop key now because no enemies left");
+				//I KNOW WHAT'S WRONG I DIDN'T SET THE VARIABLES FJDKSFJDLSKFJKDSLJFKLSJS
 				init_pos_of_enemies.Clear ();
 				Vector3 temp = FindFreeTile ();
-				GameObject key = Instantiate (key_prefab) as GameObject;
+				GameObject key = Instantiate (room_controller.key_prefab) as GameObject;
 				key.transform.position = temp;
 				things_inside_room.Add (key);
 			}
@@ -146,7 +145,7 @@ public class Room : MonoBehaviour {
 			if (num_enemies_left == 0 && !boomerang_picked_up) {
 				init_pos_of_enemies.Clear ();
 				Vector3 temp = FindFreeTile ();
-				GameObject boomerang = Instantiate (boomerang_prefab) as GameObject;
+				GameObject boomerang = Instantiate (room_controller.boomerang_prefab) as GameObject;
 				boomerang.GetComponent<BoxCollider> ().isTrigger = true;
 				boomerang.transform.position = temp;
 				things_inside_room.Add (boomerang);
@@ -180,10 +179,10 @@ public class Room : MonoBehaviour {
 		GameObject st3 = Instantiate (enemy_prefab) as GameObject;
 		GameObject st4 = Instantiate (enemy_prefab) as GameObject;
 
-		st1.transform.position = ShowMapOnCamera.MAP_TILES[tile_xmin, tile_ymin].transform.position;
-		st2.transform.position = ShowMapOnCamera.MAP_TILES[tile_xmin, tile_ymax].transform.position;
-		st3.transform.position = ShowMapOnCamera.MAP_TILES[tile_xmax, tile_ymin].transform.position;
-		st4.transform.position = ShowMapOnCamera.MAP_TILES[tile_xmax, tile_ymax].transform.position;
+		st1.transform.position = ShowMapOnCamera.MAP_TILES[tile_xmin, tile_ymin+1].transform.position;
+		st2.transform.position = ShowMapOnCamera.MAP_TILES[tile_xmin, tile_ymax+1].transform.position;
+		st3.transform.position = ShowMapOnCamera.MAP_TILES[tile_xmax, tile_ymin+1].transform.position;
+		st4.transform.position = ShowMapOnCamera.MAP_TILES[tile_xmax, tile_ymax+1].transform.position;
 
 		things_inside_room.Add(st1);
 		things_inside_room.Add(st2);

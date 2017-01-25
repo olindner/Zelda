@@ -30,6 +30,8 @@ public class Aquamentus : MonoBehaviour {
 	public int num_cooldown_frames = 0;
 	public float damage_hopback_vel = 2.65f;
 
+	public GameObject bigheart;
+
 	public Room room;
 	// Use this for initialization
 	void Start () {
@@ -132,13 +134,17 @@ public class Aquamentus : MonoBehaviour {
 	}
 
 	void OnCollisionEnter(Collision coll) {
-		if (coll.gameObject.tag == "Weapon") {
+		if (coll.gameObject.tag == "Sword" || coll.gameObject.tag == "Boomerang") {
 			health--;
 			ShowDamage (5);
 			if (health == 0) {
 				room.num_enemies_left--;
 				room.things_inside_room.Remove (this.gameObject);
+				Vector3 current_pos = this.gameObject.transform.position;
 				Destroy (this.gameObject);
+				GameObject bigHeart = Instantiate (bigheart) as GameObject;
+				bigHeart.transform.position = current_pos;
+				room.things_inside_room.Add (bigHeart);
 			}
 		}
 	}

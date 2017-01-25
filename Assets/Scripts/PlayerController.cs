@@ -112,6 +112,13 @@ public class PlayerController : MonoBehaviour {
     // Update is called once per frame
     void Update () {
 		//frame++;
+		if (CameraPan.c.panning_up || CameraPan.c.panning_down
+		    || CameraPan.c.panning_left || CameraPan.c.panning_right) {
+			rb.constraints = RigidbodyConstraints.FreezeAll;
+		} else {
+			rb.constraints = RigidbodyConstraints.FreezeRotation | RigidbodyConstraints.FreezePositionZ;
+		}
+
 		if (num_frames_hold_triforce > 0) {
 			num_frames_hold_triforce--;
 			if (num_frames_hold_triforce == 0) {
@@ -444,7 +451,19 @@ public class PlayerController : MonoBehaviour {
 			go.tag = "Bomb";
 			go.GetComponent<BoxCollider> ().isTrigger = false;
 			go.GetComponent<SpriteRenderer> ().sprite = def.sprites_dlur [0];
-			go.transform.position = LinkPos;
+			if (this.current_direction == Direction.SOUTH) {
+				LinkPos.y -= 1f;
+				go.transform.position = LinkPos;
+			} else if (this.current_direction == Direction.WEST) {
+				LinkPos.x -= 1f;
+				go.transform.position = LinkPos;
+			} else if (this.current_direction == Direction.NORTH) {
+				LinkPos.y += 1f;
+				go.transform.position = LinkPos;
+			} else {
+				LinkPos.x += 1f;
+				go.transform.position = LinkPos;
+			}
 			break;
 		}
 		Weapon w = new Weapon (wt, def, go, this);
@@ -460,12 +479,13 @@ public class PlayerController : MonoBehaviour {
 
 	void BombKills() {
 		Vector3 pos = current_weapon_B.w_go.transform.position;
-
 		Room cur_room = rc.map1 [rc.active_row_index, rc.active_col_index];
 		for (int i = 0; i < cur_room.things_inside_room.Count; i++) {
 			if (cur_room.things_inside_room [i].tag == "Enemy" && isNeighbor (pos, cur_room.things_inside_room[i].transform.position)) {
+				GameObject go = cur_room.things_inside_room [i];
 				cur_room.num_enemies_left--;
-				cur_room.things_inside_room.Remove (cur_room.things_inside_room [i]);
+				cur_room.things_inside_room.Remove (go);
+				Destroy (go);
 				i--;
 			}
 		}
@@ -475,9 +495,12 @@ public class PlayerController : MonoBehaviour {
 	}
 
 	bool isNeighbor(Vector3 pos1, Vector3 pos2) {
-		if (Mathf.Abs (pos1.x - pos2.x) <= 1 || Mathf.Abs (pos1.y - pos2.y) <= 1) {
+		print (pos1 + " " + pos2);
+		if (Mathf.Abs (pos1.x - pos2.x) <= 1 && Mathf.Abs (pos1.y - pos2.y) <= 1) {
+			print ("poses are neighbors");
 			return true;
 		}
+		print ("nope not neighbors");
 		return false;
 	}
 
