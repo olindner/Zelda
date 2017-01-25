@@ -129,14 +129,7 @@ public class Room : MonoBehaviour {
 	// Update is called once per frame
 	void Update () {
 		if (is_active && needs_key_pickup) {
-			bool has_enemies = false;
-			foreach (GameObject go in things_inside_room) {
-				if (go.tag == "Enemy") {
-					has_enemies = true;
-					break;
-				}
-			}
-			if (is_active && !has_enemies) {
+			if (num_enemies_left == 0 && !key_picked_up) {
 				init_pos_of_enemies.Clear ();
 				Vector3 temp = FindFreeTile ();
 				GameObject key = Instantiate (key_prefab) as GameObject;
@@ -150,14 +143,7 @@ public class Room : MonoBehaviour {
 		}
 
 		if (is_active && needs_boomerang_pickup) {
-			bool has_enemies = false;
-			foreach (GameObject go in things_inside_room) {
-				if (go.tag == "Enemy") {
-					has_enemies = true;
-					break;
-				}
-			}
-			if (is_active && !has_enemies) {
+			if (num_enemies_left == 0 && !boomerang_picked_up) {
 				init_pos_of_enemies.Clear ();
 				Vector3 temp = FindFreeTile ();
 				GameObject boomerang = Instantiate (boomerang_prefab) as GameObject;
@@ -173,6 +159,17 @@ public class Room : MonoBehaviour {
 			Vector3 new_pos = FindFreeTile ();
 			GameObject go = Instantiate (enemy_prefab) as GameObject;
 			go.transform.position = new_pos;
+			if (enemy_prefab.name == "Skeleton") {
+				go.GetComponent<Skeleton> ().room = this;
+			} else if (enemy_prefab.name == "Goriya") {
+				go.GetComponent<Goriya> ().room = this;
+			} else if (enemy_prefab.name == "Gel") {
+				go.GetComponent<Gel> ().room = this;
+			} else if (enemy_prefab.name == "Aquamentus") {
+				go.GetComponent<Aquamentus> ().room = this;
+			} else if (enemy_prefab.name == "Bat") {
+				go.GetComponent<Bat> ().room = this;
+			}
 			things_inside_room.Add (go);
 		}
 	}
@@ -187,7 +184,6 @@ public class Room : MonoBehaviour {
 		st2.transform.position = ShowMapOnCamera.MAP_TILES[tile_xmin, tile_ymax].transform.position;
 		st3.transform.position = ShowMapOnCamera.MAP_TILES[tile_xmax, tile_ymin].transform.position;
 		st4.transform.position = ShowMapOnCamera.MAP_TILES[tile_xmax, tile_ymax].transform.position;
-
 
 		things_inside_room.Add(st1);
 		things_inside_room.Add(st2);

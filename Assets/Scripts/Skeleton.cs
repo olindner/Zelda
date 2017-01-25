@@ -13,6 +13,10 @@ public class Skeleton : MonoBehaviour {
 	public float spriteTimeDelay;
 	private float timer;
 
+	public float prob_drop_rupee = 0.75f;
+	public GameObject rupee;
+	public GameObject blue_rupee;
+
 	public int showDamageForFrames = 2;
 	public Material[] materials;
 	public Material[] tile_materials;
@@ -21,6 +25,8 @@ public class Skeleton : MonoBehaviour {
 	public Color[] originalColors;
 	public int num_cooldown_frames = 0;
 	public float damage_hopback_vel = 2.65f;
+
+	public Room room;
 
 	// Use this for initialization
 	void Start () {
@@ -178,7 +184,20 @@ public class Skeleton : MonoBehaviour {
 			Destroy(col.gameObject);
 			health--;
 			ShowDamage (5);
-			if (health <= 0) Destroy(this.gameObject);
+			if (health <= 0) {
+				room.num_enemies_left--;
+				room.things_inside_room.Remove (this.gameObject);
+				Destroy (this.gameObject);
+				if (Random.Range (0f, 1f) < prob_drop_rupee) {
+					GameObject go;
+					if (Random.Range (0f, 1f) < 0.5) {
+						go = Instantiate (rupee) as GameObject;
+					} else {
+						go = Instantiate (blue_rupee) as GameObject;
+					}
+					room.things_inside_room.Add (go);
+				}
+			}
 		}
 	}
 

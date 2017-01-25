@@ -14,7 +14,7 @@ public class Bat : MonoBehaviour {
 	private float sleepTimer;
 	public float speed;
 	public float dist;
-
+	public Room room;
 	// Use this for initialization
 	void Start () {
 		spriteTimer = Time.time + spriteDelay;
@@ -104,6 +104,15 @@ public class Bat : MonoBehaviour {
 			}
 			//Set speed changes here?
 			transform.position = Vector3.MoveTowards (transform.position, target, Time.deltaTime * speed);
+		}
+	}
+
+	void OnCollisionEnter(Collision coll) {
+		if (coll.gameObject.tag == "Weapon") {
+			room.num_enemies_left--;
+			room.things_inside_room.Remove(this.gameObject);
+			Destroy (coll.gameObject);
+			Destroy(this.gameObject);
 		}
 	}
 }

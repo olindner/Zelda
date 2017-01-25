@@ -21,6 +21,7 @@ public class Aquamentus : MonoBehaviour {
 	private float mouthTimer;
 	private int here = 0;
 
+	public Room room;
 	// Use this for initialization
 	void Start () {
 		health = 10; //? Not sure
@@ -84,6 +85,18 @@ public class Aquamentus : MonoBehaviour {
 				ball2.GetComponent<Fireball> ().angle = 2;
 
 				shootTimer = Time.time + shootDelay;
+			}
+		}
+			
+	}
+
+	void OnTriggerEnter(Collider coll) {
+		if (coll.gameObject.tag == "Weapon") {
+			health--;
+			if (health == 0) {
+				room.num_enemies_left--;
+				room.things_inside_room.Remove (this.gameObject);
+				Destroy (this.gameObject);
 			}
 		}
 	}

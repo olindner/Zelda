@@ -17,6 +17,8 @@ public class Gel : MonoBehaviour {
 	public Sprite[] array;
 	private int here;
 
+	public Room room;
+
 	// Use this for initialization
 	void Start () {
 		pos = transform.position;
@@ -144,7 +146,11 @@ public class Gel : MonoBehaviour {
 		if (col.gameObject.tag == "Sword") {
 			Destroy(col.gameObject);
 			health--;
-			if (health <= 0) Destroy(this.gameObject);
+			if (health <= 0) {
+				room.num_enemies_left--;
+				room.things_inside_room.Remove (this.gameObject);
+				Destroy (this.gameObject);
+			}
 		}
 	}
 }

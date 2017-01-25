@@ -54,6 +54,9 @@ public class PlayerController : MonoBehaviour {
 	//public Sprite[] swords; //first element down, then left, then up, then right
 
 	public Sprite[] link_dead;
+	public Sprite triforce_link;
+
+	public int num_frames_hold_triforce = 0;
 
 	StateMachine animation_state_machine;
 	StateMachine control_state_machine;
@@ -70,7 +73,7 @@ public class PlayerController : MonoBehaviour {
 	public bool have_boomerang = false;
 
 	public static PlayerController instance;
-	public static RoomController rc;
+	public RoomController rc;
 
 	public bool done_dying = false;
 	public float gameRestartDelay = 2f;
@@ -109,6 +112,13 @@ public class PlayerController : MonoBehaviour {
     // Update is called once per frame
     void Update () {
 		//frame++;
+		if (num_frames_hold_triforce > 0) {
+			num_frames_hold_triforce--;
+			if (num_frames_hold_triforce == 0) {
+				DelayedRestart (gameRestartDelay);
+			}
+		}
+
 		if (current_state == EntityState.ATTACKING)
 			current_state = EntityState.NORMAL;
 
@@ -134,7 +144,7 @@ public class PlayerController : MonoBehaviour {
 			current_weapon_B.def.delayBetweenShots--;
 			if (current_weapon_B.def.delayBetweenShots == 0) {
 				print ("BOMB GOES BOOM");
-				//BombKills ();
+				BombKills ();
 				Destroy (current_weapon_B.w_go);
 				GameObject c_w = new GameObject ();
 				current_weapon_B = new Weapon (WeaponType.none, getWeaponDefinition (WeaponType.none), c_w, this);
@@ -450,8 +460,24 @@ public class PlayerController : MonoBehaviour {
 	void BombKills() {
 		Vector3 pos = current_weapon_B.w_go.transform.position;
 
+		Room cur_room = rc.map1 [rc.active_row_index, rc.active_col_index];
+		for (int i = 0; i < cur_room.things_inside_room.Count; i++) {
+			if (cur_room.things_inside_room [i].tag == "Enemy" && isNeighbor (pos, cur_room.things_inside_room[i].transform.position)) {
+				cur_room.num_enemies_left--;
+				cur_room.things_inside_room.Remove (cur_room.things_inside_room [i]);
+				i--;
+			}
+		}
+				
 		//kills stuff in the Manhattan distance of 1
 		//uses Room to do this by searching through all the objects in the room
+	}
+
+	bool isNeighbor(Vector3 pos1, Vector3 pos2) {
+		if (Mathf.Abs (pos1.x - pos2.x) <= 1 || Mathf.Abs (pos1.y - pos2.y) <= 1) {
+			return true;
+		}
+		return false;
 	}
 
 
@@ -576,6 +602,12 @@ public class PlayerController : MonoBehaviour {
 			//print ("num rupees:" + num_rupees);
 			Destroy (collider.gameObject);
 			//print ("collected rupee");
+		} else if (collider.gameObject.tag == "BlueRupee") {
+			num_rupees += 5;
+			rc.map1 [rc.active_row_index, rc.active_col_index].things_inside_room.Remove (collider.gameObject);
+			//print ("num rupees:" + num_rupees);
+			Destroy (collider.gameObject);
+			//print ("collected rupee");
 		} else if (collider.gameObject.tag == "Heart") {
 			if (num_hearts <= heart_capacity - 1) {
 				num_hearts++;
@@ -621,6 +653,12 @@ public class PlayerController : MonoBehaviour {
 			rc.map1 [rc.active_row_index, rc.active_col_index].boomerang_picked_up = true;
 			rc.map1 [rc.active_row_index, rc.active_col_index].things_inside_room.Remove (collider.gameObject);
 			Destroy (collider.gameObject);
+		} else if (collider.gameObject.tag == "Triforce") {
+			GetComponent<SpriteRenderer> ().sprite = triforce_link;
+			Vector3 new_pos = this.gameObject.transform.position;
+			new_pos.y += 1;
+			collider.gameObject.transform.position = new_pos;
+			num_frames_hold_triforce = 50;
 		} else if (collider.gameObject.tag == "Enemy" && num_cooldown_frames == 0) {
 			//print ("dude you touched me");
 			if (num_hearts > 0) {
