@@ -22,6 +22,8 @@ public class WallMaster : MonoBehaviour {
 	private bool isUp = false;
 	private bool isDown = false;
 
+	public Room room;
+
 	// Use this for initialization
 	void Start () {
 		health = 2;
@@ -97,7 +99,11 @@ public class WallMaster : MonoBehaviour {
 		if (col.gameObject.tag == "Sword") {
 			Destroy(col.gameObject);
 			health--;
-			if (health <= 0) Destroy(this.gameObject);
+			if (health <= 0) {
+				room.num_enemies_left--;
+				room.things_inside_room.Remove (this.gameObject);
+				Destroy (this.gameObject);
+			}
 		}
 	}
 

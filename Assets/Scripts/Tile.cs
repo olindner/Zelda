@@ -105,6 +105,7 @@ public class Tile : MonoBehaviour {
 			SetTile (this.x, this.y, 51);
 			ShowMapOnCamera.MAP [this.x, this.y] = 51;
 		}
+		PlayerController.instance.num_keys--;
 	}
 
 	void OnTriggerEnter(Collider coll) {

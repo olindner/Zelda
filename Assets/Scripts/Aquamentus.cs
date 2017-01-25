@@ -8,7 +8,7 @@ public class Aquamentus : MonoBehaviour {
 	public float spriteDelay;
 	private float spriteTimer;
 	public Sprite openMouth;
-	private int health;
+	public int health;
 	private bool isMoving;
 	private Vector3 pos;
 	private int dir;
@@ -21,6 +21,16 @@ public class Aquamentus : MonoBehaviour {
 	private float mouthTimer;
 	private int here = 0;
 
+	public int showDamageForFrames = 2;
+	public Material[] materials;
+	public Material[] tile_materials;
+	public int remainingDamageFrames = 0;
+	public int remainingDamageFlashes = 0;
+	public Color[] originalColors;
+	public int num_cooldown_frames = 0;
+	public float damage_hopback_vel = 2.65f;
+
+	public Room room;
 	// Use this for initialization
 	void Start () {
 		health = 10; //? Not sure
@@ -29,6 +39,12 @@ public class Aquamentus : MonoBehaviour {
 		dir = Random.Range(0,1); //random starting direction, 0=RIGHT, 1=LEFT
 		shootTimer = Time.time + shootDelay;
 		spriteTimer = Time.time + spriteDelay;
+
+		materials = Utils.GetAllMaterials (gameObject);
+		originalColors = new Color[materials.Length];
+		for (int i = 0; i < materials.Length; i++) {
+			originalColors [i] = materials [i].color;
+		}
 	}
 	
 	// Update is called once per frame
@@ -85,6 +101,61 @@ public class Aquamentus : MonoBehaviour {
 
 				shootTimer = Time.time + shootDelay;
 			}
+		}
+
+		if (remainingDamageFlashes > 0) {
+			//print ("frame number: " + frame);
+			//print (remainingDamageFlashes + " damage flashes left");
+			if (remainingDamageFrames > 0) {
+				//print (remainingDamageFrames + " damage frames left");
+				remainingDamageFrames--;
+				if (remainingDamageFrames == showDamageForFrames / 2) {
+					//print ("no damage frames left!");
+					UnshowDamage ();
+				}
+			} else {
+				//print ("decreasing damage flashes left");
+				remainingDamageFlashes--;
+				ShowDamage (remainingDamageFlashes);
+			}
+		} else {
+			//print ("no damage flashes left!");
+			UnshowDamage ();
+		}
+
+		if (num_cooldown_frames > 0) {
+			num_cooldown_frames--;
+			if (num_cooldown_frames == 0) {
+				this.GetComponent<Rigidbody> ().velocity = Vector3.zero;
+			}
+		}
+	}
+
+	void OnCollisionEnter(Collision coll) {
+		if (coll.gameObject.tag == "Weapon") {
+			health--;
+			ShowDamage (5);
+			if (health == 0) {
+				room.num_enemies_left--;
+				room.things_inside_room.Remove (this.gameObject);
+				Destroy (this.gameObject);
+			}
+		}
+	}
+
+	void ShowDamage(int flashes_left) {
+		//print ("entered ShowDamage");
+		//receive_damage = false;
+		remainingDamageFlashes = flashes_left;
+		foreach (Material m in materials) {
+			m.color = Color.red;
+		}
+		remainingDamageFrames = showDamageForFrames;
+	}
+
+	void UnshowDamage() {
+		for (int i = 0; i < materials.Length; i++) {
+			materials [i].color = originalColors [i];
 		}
 	}
 }
