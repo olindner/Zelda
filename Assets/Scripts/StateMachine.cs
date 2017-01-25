@@ -166,9 +166,15 @@ public class StatePlayAnimationForHeldKey : State
 		// Modulus is necessary so we don't overshoot the length of the animation.
 		int current_frame_index = ((int)((Time.time - animation_start_time) / (1.0 / fps)) % animation_length);
 		renderer.sprite = animation[current_frame_index];
+
+		//don't animate when camera is panning
+		if (CameraPan.c.panning_down || CameraPan.c.panning_up 
+			|| CameraPan.c.panning_left || CameraPan.c.panning_right) {
+			state_machine.ChangeState (new StateIdleWithSprite (pc, renderer, animation [1]));
+		}
 		
-		// If another key is pressed, we need to transition to a different walking animation.
-		if(Input.GetKeyDown(KeyCode.DownArrow))
+		 //If another key is pressed, we need to transition to a different walking animation.
+		else if(Input.GetKeyDown(KeyCode.DownArrow))
 			state_machine.ChangeState(new StatePlayAnimationForHeldKey(pc, renderer, pc.link_run_down, 6, KeyCode.DownArrow));
 		else if(Input.GetKeyDown(KeyCode.UpArrow))
 			state_machine.ChangeState(new StatePlayAnimationForHeldKey(pc, renderer, pc.link_run_up, 6, KeyCode.UpArrow));
@@ -177,7 +183,7 @@ public class StatePlayAnimationForHeldKey : State
 		else if(Input.GetKeyDown(KeyCode.LeftArrow))
 			state_machine.ChangeState(new StatePlayAnimationForHeldKey(pc, renderer, pc.link_run_left, 6, KeyCode.LeftArrow));
 		
-		// If we detect the specified key has been released, return to the idle state.
+		 //If we detect the specified key has been released, return to the idle state.
 		else if(!Input.GetKey(key) || pc.num_cooldown_frames > 0)
 			state_machine.ChangeState(new StateIdleWithSprite(pc, renderer, animation[1]));
 	}

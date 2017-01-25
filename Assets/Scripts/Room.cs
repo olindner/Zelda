@@ -5,6 +5,7 @@ using System;
 
 public class Room : MonoBehaviour {
 	static public Room r;
+	public RoomController room_controller;
 
 	System.Random random = new System.Random();
 
@@ -18,21 +19,17 @@ public class Room : MonoBehaviour {
 
 	public bool needs_key_pickup = false;
 	public bool needs_compass_pickup = false;
-	public bool needs_special_key_pickup = false;
 	public bool needs_map_pickup = false;
 	public bool needs_boomerang_pickup = false;
 	public bool needs_bomb_pickup = false;
-	public bool needs_clock_pickup = false;
 	public bool has_triforce = false;
 	public bool must_kill_all_enemies = false;
 
 	public bool key_picked_up = false;
 	public bool compass_picked_up = false;
-	public bool special_key_picked_up = false;
 	public bool map_picked_up = false;
 	public bool boomerang_picked_up = false;
 	public bool bomb_picked_up = false;
-	public bool clock_picked_up = false;
 	public bool triforce_picked_up = false;
 	public bool all_enemies_killed = false;
 
@@ -52,51 +49,49 @@ public class Room : MonoBehaviour {
 	public int tile_ymin;
 	public int tile_ymax;
 
+	void Start() {
+	}
+
+	static public Room MakeNewRoom(Vector3 cam_pos, RoomController rc) {
+		Room room = new Room ();
+		room.cam_pos = cam_pos;
+		room.room_controller = rc;
+		return room;
+	}
+
 	// Use this for initialization
-	void Start () {
+	public void FindMinMax () {
 		xmax = cam_pos.x + 6f;
 		xmin = cam_pos.x - 6f;
 		ymax = cam_pos.y - 4f + 3.5f;
 		ymin = cam_pos.y - 4f - 3.5f;
 
-		int i = 0;
-		while (ShowMapOnCamera.MAP_TILES [0, i] == null) {
-			i++;
+		//print ("roomcontroller print message hi");
+		for (int i = 0; i < ShowMapOnCamera.S.h; i++) {
+			for (int j = 0; j < ShowMapOnCamera.S.w; j++) {
+				if (ShowMapOnCamera.MAP_TILES [j, i] != null) {
+					if (ShowMapOnCamera.MAP_TILES [j, i].transform.position.x > xmin
+					    && ShowMapOnCamera.MAP_TILES [j, i].transform.position.y <= ymax) {
+						tile_xmin = j;
+						tile_ymax = i;
+					}
+				}
+			}
 		}
-		while (tile_xmin < ShowMapOnCamera.MAP_TILES [0, i].transform.position.x) {
-			i++;
-		}
-		tile_xmin = i;
-		print ("Tile xmin set to " + tile_xmin);
-		while (ShowMapOnCamera.MAP_TILES [0, i] == null || tile_xmax <= ShowMapOnCamera.MAP_TILES [0, i].transform.position.x) {
-			i++;
-		}
-		tile_xmax = i;
-		print ("Tile xmax set to " + tile_xmax);
 
-		i = 0;
-		while (ShowMapOnCamera.MAP_TILES [i, 0] == null) {
-			i++;
-		}
-		while (tile_ymin > ShowMapOnCamera.MAP_TILES [i, 0].transform.position.y) {
-			i++;
-		}
-		tile_ymin = i;
-		print ("Tile ymin set to " + tile_ymin);
-		while (ShowMapOnCamera.MAP_TILES [i, 0] == null || tile_ymin >= ShowMapOnCamera.MAP_TILES [i, 0].transform.position.y) {
-			i++;
-		}
-		tile_ymax = i;
-		print ("Tile ymax set to " + tile_ymax);
+		tile_xmax = tile_xmin + 12;
+		tile_ymin = tile_ymax - 7;
 
 		if (enemy_type == "Stalfos") {
-			enemy_prefab = new Skeleton ().gameObject;
+			enemy_prefab = room_controller.enemies[0];
 		} else if (enemy_type == "Gel") {
-			enemy_prefab = new Gel ().gameObject;
+			enemy_prefab = room_controller.enemies[1];
 		} else if (enemy_type == "WallMaster") {
-			enemy_prefab = new WallMaster ().gameObject;
+			enemy_prefab = room_controller.enemies[2];
 		} else if (enemy_type == "Spiketrap") {
-			enemy_prefab = new Spiketrap().gameObject;
+			enemy_prefab = room_controller.enemies[3];
+		} else if (enemy_type == "Aquamentus") {
+			enemy_prefab = room_controller.enemies[4];
 		}
 	}
 	
@@ -141,6 +136,7 @@ public class Room : MonoBehaviour {
 		print ("tile ymax " + tile_ymax);
 		print ("temp xtile " + temp_xtile);
 		print ("temp ytile " + temp_ytile);
+
 		while (ShowMapOnCamera.MAP_TILES[temp_xtile, temp_ytile].gameObject.tag != "Floor"
 			|| init_pos_of_enemies.Contains(new Vector2(temp_xtile, temp_ytile))) {
 			temp_xtile = random.Next (tile_xmin, tile_xmax);

@@ -13,20 +13,24 @@ public class RoomController : MonoBehaviour {
 	public int active_row_index = -1;
 	public int active_col_index = -1;
 
+	public GameObject[] enemies;
+
 	public PlayerController pc;
 
 //	public RoomController() {
 //	}
 
 	// Use this for initialization
-	void Awake () {
+	void Start () {
 		room_height = 11f;
 		room_width = 16f;
 
 		map1 = new Room[6, 6];
 		for (int i = 0; i < 6; i++) {
 			for (int j = 0; j < 6; j++) {
-				map1 [i, j] = new Room ();
+				Vector3 cam_pos = new Vector3 ((5 - i) * room_height + y_start, j * room_width + x_start, z);
+				map1 [i, j] = Room.MakeNewRoom (cam_pos, this);
+				map1 [i, j].FindMinMax ();
 			}
 		}
 
@@ -100,7 +104,6 @@ public class RoomController : MonoBehaviour {
 		map1 [2, 3].needs_bomb_pickup = true;
 
 		map1 [2, 4].enemy_type = "WallMaster";
-		map1 [2, 4].needs_special_key_pickup = true;
 
 		map1 [3, 1].enemy_type = "Keese";
 		map1 [3, 1].num_enemies_total = 6;
@@ -111,7 +114,6 @@ public class RoomController : MonoBehaviour {
 		map1 [3, 2].num_enemies_total = 5;
 		map1 [3, 2].num_enemies_left = 5;
 		map1 [3, 2].needs_key_pickup = true;
-		map1 [3, 2].needs_clock_pickup = true;
 
 		map1 [3, 3].enemy_type = "Keese";
 		map1 [3, 3].num_enemies_total = 8;
@@ -136,8 +138,8 @@ public class RoomController : MonoBehaviour {
 		map1 [5, 2].is_active = true;
 		active_row_index = 5;
 		active_col_index = 2;
-		//print ("INITIAL ACTIVE ROW INDEX " + active_row_index);
-		//print ("INITIAL ACTIVE COL INDEX " + active_col_index);
+//		print ("INITIAL ACTIVE ROW INDEX " + active_row_index);
+//		print ("INITIAL ACTIVE COL INDEX " + active_col_index);
 	}
 	
 	// Update is called once per frame
@@ -161,6 +163,11 @@ public class RoomController : MonoBehaviour {
 		    && !(CameraPan.c.panning_down || CameraPan.c.panning_up
 		    || CameraPan.c.panning_left || CameraPan.c.panning_right)) {
 			ChangeActiveRoom ();
+			for (int i = 0; i < 6; i++) {
+				for (int j = 0; j < 6; j++) {
+					map1 [i, j].FindMinMax ();
+				}
+			}
 			if (map1 [active_row_index, active_col_index].enemy_type == "Spiketrap") {
 				map1 [active_row_index, active_col_index].InstantiateSpiketraps ();
 			} else if (map1[active_row_index, active_col_index].enemy_type != "WallMaster") {
@@ -177,9 +184,8 @@ public class RoomController : MonoBehaviour {
 		row_index = 5f - row_index;
 		float col_index = (this.transform.position.x - x_start) / room_width;
 		//print ("col index = " + col_index);
-		//col_index = 5f - col_index;
-		//print ("Row_index = " + row_index);
-		//print ("Col_index = " + col_index);
+		print ("Row_index = " + row_index);
+		print ("Col_index = " + col_index);
 		map1 [(int)row_index, (int)col_index].is_active = true;
 		active_row_index = (int)row_index;
 		active_col_index = (int)col_index;
