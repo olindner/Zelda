@@ -30,7 +30,6 @@ public class RoomController : MonoBehaviour {
 			for (int j = 0; j < 6; j++) {
 				Vector3 cam_pos = new Vector3 (i * room_width + x_start, (5-j) * room_height + y_start, z);
 				map1 [j, i] = Room.MakeNewRoom (cam_pos, this);
-//				map1 [i, j].FindMinMax ();
 			}
 		}
 
@@ -155,6 +154,7 @@ public class RoomController : MonoBehaviour {
 	void Update () {
 		if ((CameraPan.c.panning_down || CameraPan.c.panning_up || CameraPan.c.panning_left || CameraPan.c.panning_right)
 			&& active_row_index != -1 && active_col_index != -1) {
+			map1 [active_row_index, active_col_index].is_active = false;
 			if (map1 [active_row_index, active_col_index].things_inside_room.Count > 0) {
 				foreach (GameObject go in map1[active_row_index, active_col_index].things_inside_room) {
 					Destroy (go);
@@ -162,7 +162,6 @@ public class RoomController : MonoBehaviour {
 				map1 [active_row_index, active_col_index].things_inside_room.Clear();
 				map1 [active_row_index, active_col_index].init_pos_of_enemies.Clear();
 			}
-			map1 [active_row_index, active_col_index].is_active = false;
 			print ("camera is panning!");
 			active_row_index = -1;
 			active_col_index = -1;
@@ -174,6 +173,8 @@ public class RoomController : MonoBehaviour {
 			map1 [active_row_index, active_col_index].FindMinMax ();
 			if (map1 [active_row_index, active_col_index].enemy_type == "Spiketrap") {
 				map1 [active_row_index, active_col_index].InstantiateSpiketraps ();
+			} else if (map1 [active_row_index, active_col_index].enemy_type == "Aquamentus") {
+				map1 [active_row_index, active_col_index].InstantiateAquamentus ();
 			} else if (map1[active_row_index, active_col_index].enemy_type != "WallMaster") {
 				map1 [active_row_index, active_col_index].InstantiateEnemies ();
 			}

@@ -72,6 +72,7 @@ public class PlayerController : MonoBehaviour {
 	public bool have_boomerang = false;
 
 	public static PlayerController instance;
+	public static RoomController rc;
 
 	public bool done_dying = false;
 	public float gameRestartDelay = 2f;
@@ -96,7 +97,7 @@ public class PlayerController : MonoBehaviour {
 
 		animation_state_machine = new StateMachine ();
 		animation_state_machine.ChangeState (new StateIdleWithSprite (this, 
-			GetComponent<SpriteRenderer> (), link_run_down[0]));
+			GetComponent<SpriteRenderer> (), link_run_up[1]));
 
 		GameObject c_w = new GameObject ();
 		current_weapon_A = new Weapon (WeaponType.none, getWeaponDefinition(WeaponType.none), c_w, this);
@@ -573,6 +574,7 @@ public class PlayerController : MonoBehaviour {
 	void OnTriggerEnter(Collider collider) {
 		if (collider.gameObject.tag == "Rupee") {
 			num_rupees++;
+			rc.map1 [rc.active_row_index, rc.active_col_index].things_inside_room.Remove (collider.gameObject);
 			//print ("num rupees:" + num_rupees);
 			Destroy (collider.gameObject);
 			//print ("collected rupee");
@@ -582,18 +584,23 @@ public class PlayerController : MonoBehaviour {
 			} else {
 				num_hearts = heart_capacity;
 			}
+			rc.map1 [rc.active_row_index, rc.active_col_index].things_inside_room.Remove (collider.gameObject);
 			//print ("num hearts:" + num_hearts);
 			Destroy (collider.gameObject);
 			//print ("collected heart");
 		} else if (collider.gameObject.tag == "BigHeart") {
 			heart_capacity++;
 			num_hearts += 1;
+			rc.map1 [rc.active_row_index, rc.active_col_index].things_inside_room.Remove (collider.gameObject);
 			Destroy (collider.gameObject);
 		} else if (collider.gameObject.tag == "Key") {
 			num_keys++;
+			rc.map1 [rc.active_row_index, rc.active_col_index].key_picked_up = true;
+			rc.map1 [rc.active_row_index, rc.active_col_index].things_inside_room.Remove (collider.gameObject);
 			Destroy (collider.gameObject);
 		} else if (collider.gameObject.tag == "Bomb") {
 			num_bombs++;
+			rc.map1 [rc.active_row_index, rc.active_col_index].things_inside_room.Remove (collider.gameObject);
 			Destroy (collider.gameObject);
 		} else if (collider.gameObject.tag == "Bow") {
 			has_bow = true;
@@ -601,12 +608,21 @@ public class PlayerController : MonoBehaviour {
 			Destroy (collider.gameObject);
 		} else if (collider.gameObject.tag == "Map") {
 			has_map = true;
+			rc.map1 [rc.active_row_index, rc.active_col_index].map_picked_up = true;
+			rc.map1 [rc.active_row_index, rc.active_col_index].things_inside_room.Remove (collider.gameObject);
 			Destroy (collider.gameObject);
 			//put map on hud
 		} else if (collider.gameObject.tag == "Compass") {
 			has_compass = true;
+			rc.map1 [rc.active_row_index, rc.active_col_index].compass_picked_up = true;
+			rc.map1 [rc.active_row_index, rc.active_col_index].things_inside_room.Remove (collider.gameObject);
 			Destroy (collider.gameObject);
 			//put little red dot on hud
+		} else if (collider.gameObject.tag == "Boomerang") {
+			//somehow show in the dropdown menu that we have boomerang now
+			rc.map1 [rc.active_row_index, rc.active_col_index].boomerang_picked_up = true;
+			rc.map1 [rc.active_row_index, rc.active_col_index].things_inside_room.Remove (collider.gameObject);
+			Destroy (collider.gameObject);
 		} else if (collider.gameObject.tag == "Enemy" && num_cooldown_frames == 0) {
 			//print ("dude you touched me");
 			if (num_hearts > 0) {

@@ -15,7 +15,6 @@ public class Room : MonoBehaviour {
 	public int num_enemies_total = 0;
 	public int num_enemies_left = 0;
 	public string enemy_type = "None";
-	public GameObject enemy_prefab;
 
 	public bool needs_key_pickup = false;
 	public bool needs_compass_pickup = false;
@@ -49,6 +48,12 @@ public class Room : MonoBehaviour {
 	public int tile_ymin;
 	public int tile_ymax;
 
+	public GameObject enemy_prefab;
+	public GameObject key_prefab;
+	public GameObject compass_prefab;
+	public GameObject map_prefab;
+	public GameObject boomerang_prefab;
+
 	void Start() {
 	}
 
@@ -66,11 +71,11 @@ public class Room : MonoBehaviour {
 
 	// Use this for initialization
 	public void FindMinMax () {
-		print ("cam_pos " + cam_pos);
-		print ("xmin " + xmin);
-		print ("xmax " + xmax);
-		print ("ymin " + ymin);
-		print ("ymax " + ymax);
+//		print ("cam_pos " + cam_pos);
+//		print ("xmin " + xmin);
+//		print ("xmax " + xmax);
+//		print ("ymin " + ymin);
+//		print ("ymax " + ymax);
 
 		//print ("roomcontroller print message hi");
 		bool found_corner = false;
@@ -97,10 +102,10 @@ public class Room : MonoBehaviour {
 		tile_xmax = tile_xmin + 11;
 		tile_ymax = tile_ymin + 6;
 
-		print ("tile xmin " + tile_xmin);
-		print ("tile xmax " + tile_xmax);
-		print ("tile ymin " + tile_ymin);
-		print ("tile ymax " + tile_ymax);
+//		print ("tile xmin " + tile_xmin);
+//		print ("tile xmax " + tile_xmax);
+//		print ("tile ymin " + tile_ymin);
+//		print ("tile ymax " + tile_ymax);
 //		print ("tile xmin ymin " + ShowMapOnCamera.MAP_TILES [tile_xmin, tile_ymin].transform.position);
 //		print ("tile xmax ymax " + ShowMapOnCamera.MAP_TILES [tile_xmax, tile_ymax].transform.position);
 	}
@@ -110,20 +115,57 @@ public class Room : MonoBehaviour {
 			enemy_prefab = room_controller.enemies [0];
 		} else if (enemy_type == "Gel") {
 			enemy_prefab = room_controller.enemies [1];
-		} else if (enemy_type == "WallMaster") {
+		} else if (enemy_type == "Goriya") {
 			enemy_prefab = room_controller.enemies [2];
 		} else if (enemy_type == "Spiketrap") {
 			enemy_prefab = room_controller.enemies [3];
-		} else if (enemy_type == "Aquamentus") {
-			enemy_prefab = room_controller.enemies [4];
 		} else if (enemy_type == "Keese") {
+			enemy_prefab = room_controller.enemies [4];
+		} else if (enemy_type == "Aquamentus") {
 			enemy_prefab = room_controller.enemies [5];
 		}
 	}
 	
 	// Update is called once per frame
 	void Update () {
-		
+		if (is_active && needs_key_pickup) {
+			bool has_enemies = false;
+			foreach (GameObject go in things_inside_room) {
+				if (go.tag == "Enemy") {
+					has_enemies = true;
+					break;
+				}
+			}
+			if (is_active && !has_enemies) {
+				init_pos_of_enemies.Clear ();
+				Vector3 temp = FindFreeTile ();
+				GameObject key = Instantiate (key_prefab) as GameObject;
+				key.transform.position = temp;
+				things_inside_room.Add (key);
+			}
+		}
+
+		if (is_active && must_kill_all_enemies) {
+			//I DON'T KNOW HOW TO CHANGE THE DOOR
+		}
+
+		if (is_active && needs_boomerang_pickup) {
+			bool has_enemies = false;
+			foreach (GameObject go in things_inside_room) {
+				if (go.tag == "Enemy") {
+					has_enemies = true;
+					break;
+				}
+			}
+			if (is_active && !has_enemies) {
+				init_pos_of_enemies.Clear ();
+				Vector3 temp = FindFreeTile ();
+				GameObject boomerang = Instantiate (boomerang_prefab) as GameObject;
+				boomerang.GetComponent<BoxCollider> ().isTrigger = true;
+				boomerang.transform.position = temp;
+				things_inside_room.Add (boomerang);
+			}
+		}
 	}
 
 	public void InstantiateEnemies() {
@@ -151,6 +193,12 @@ public class Room : MonoBehaviour {
 		things_inside_room.Add(st2);
 		things_inside_room.Add(st3);
 		things_inside_room.Add(st4);
+	}
+
+	public void InstantiateAquamentus() {
+		GameObject aq = Instantiate (enemy_prefab) as GameObject;
+		aq.transform.position = new Vector3 (76f, 49.5f, 0f);
+		things_inside_room.Add (aq);
 	}
 
 	Vector3 FindFreeTile() {
