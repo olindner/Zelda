@@ -21,6 +21,8 @@ public class Hud : MonoBehaviour {
 	private float blinkTimer;
 	public Image map;
 	public Image compass;
+	public Image redDot;
+	//public Image grayDot;
 
 	// Use this for initialization
 	void Start ()
@@ -28,6 +30,8 @@ public class Hud : MonoBehaviour {
 		blinkTimer = Time.time + blinkDelay;
 		Red0Empty.enabled = true;
 		Blue0Empty.enabled = false;
+		redDot.enabled = false;
+		//grayDot.enabled = false;
 
 		map.enabled = false;
 		compass.enabled = false;
@@ -83,14 +87,21 @@ public class Hud : MonoBehaviour {
 			hidden = !hidden;
 		}
 
-		if (Time.time >= blinkTimer && !hidden) {
+		if (Time.time >= blinkTimer && !hidden) { //issue: only when !hidden (menu is down)
 			if (Red0Empty.enabled == true) {
 				Red0Empty.enabled = false;
 				Blue0Empty.enabled = true;
 			} else if (Blue0Empty.enabled == true) {
 				Blue0Empty.enabled = false;
 				Red0Empty.enabled = true;
-			}
+			} 
+//			else if (redDot.enabled == true) {
+//				redDot.enabled = false;
+//				grayDot.enabled = true;
+//			} else if (grayDot.enabled == true) {
+//				grayDot.enabled = false;
+//				redDot.enabled = true;
+//			}
 			blinkTimer = Time.time + blinkDelay;
 		}
 
@@ -98,8 +109,10 @@ public class Hud : MonoBehaviour {
 			map.enabled = true;
 			//create map on menu
 		}
-		if (PlayerController.instance.hasCompass) {
+		if (PlayerController.instance.hasCompass) { //issue? does everytime
 			compass.enabled = true;
+			//create blinking red finish dot
+			redDot.enabled = true;
 		}
 
 		Vector2 desired_ui_position = new Vector2(400, 375);

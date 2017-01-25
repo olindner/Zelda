@@ -528,10 +528,10 @@ public class PlayerController : MonoBehaviour {
 
 	void OnTriggerExit (Collider col)
 	{
-		print("hello?");
-		print (col.gameObject.name);
+		//print("hello?");
+		//print (col.gameObject.name);
 		if (col.gameObject.name == "WallMaster") {
-		print("In");
+		//print("In");
 			GetComponent<Collider>().isTrigger = false; //allow Player to collide properly again
 			//black screen wipe
 			//move to first room
