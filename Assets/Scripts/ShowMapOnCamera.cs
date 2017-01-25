@@ -101,6 +101,8 @@ public class ShowMapOnCamera : MonoBehaviour {
         string[] tileNums = lines[0].Split(' ');
         w = tileNums.Length;
 
+		print ("show map on camera has called start");
+
         // Place the map data into a 2D Array to make it faster to access
         MAP = new int[w,h];
         for (int j=0; j<h; j++) {
