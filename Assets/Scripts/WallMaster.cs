@@ -17,7 +17,10 @@ public class WallMaster : MonoBehaviour {
 	private bool set1;
 	private bool set2;
 	private bool set3;
-	private bool isLeft;
+	private bool isLeft = false;
+	private bool isRight = false;
+	private bool isUp = false;
+	private bool isDown = false;
 
 	// Use this for initialization
 	void Start () {
@@ -28,12 +31,12 @@ public class WallMaster : MonoBehaviour {
 		target = transform.position;
 		checks = 0;
 		set1 = set2 = set3 = false;
-		isLeft = false;
 	}
 	
 	// Main/Camera will handle spawning/instantiating them!!! ********************
 	void Update ()
 	{
+		isLeft = isRight = isUp = isDown = false;
 		float playerx = PlayerController.instance.transform.position.x;
 		float playery = PlayerController.instance.transform.position.y;
 		float playerxFloor = Mathf.Floor (playerx);
@@ -49,9 +52,14 @@ public class WallMaster : MonoBehaviour {
 			spriteTimer = Time.time + spriteDelay;
 		}
 
-		//Left side
-		if (playerx % 16f >= 1.5f && playerx % 16f <= 2.5f)
+		if (playerx >= 65.5f && playerx <= 66.5f)
 			isLeft = true;
+		if (playerx >= 76.5f && playerx <= 77.5f)
+			isRight = true;
+		if (playerx >= 40.5f && playerx <= 41.5f)
+			isUp = true;
+		if (playerx >= 34.5f && playerx <= 35.5f)
+			isDown = true;
 
 		if (isLeft) {	
 			if (!set1) {
@@ -77,7 +85,14 @@ public class WallMaster : MonoBehaviour {
 			if (transform.position == target) {
 				checks++;
 				if (checks == 3) {
-					//print ("hi");
+					PlayerController.instance.transform.position = new Vector3 (39.5f, 2f, 0f);
+					CameraPan.c.transform.position = new Vector3 (39.52f, 5.79f, -11f);
+					foreach (GameObject go in CameraPan.c.gameObject.GetComponent<RoomController>().map1[2,4].things_inside_room) {
+						Destroy (go);
+					}
+					CameraPan.c.gameObject.GetComponent<RoomController>().map1[2,4].things_inside_room.Clear();
+					CameraPan.c.gameObject.GetComponent<RoomController>().active_col_index = 2;
+					CameraPan.c.gameObject.GetComponent<RoomController>().active_row_index = 5;
 					Destroy (gameObject);
 				}
 			}

@@ -105,11 +105,11 @@ public class Hud : MonoBehaviour {
 			blinkTimer = Time.time + blinkDelay;
 		}
 
-		if (PlayerController.instance.hasMap) {
+		if (PlayerController.instance.has_map) {
 			map.enabled = true;
 			//create map on menu
 		}
-		if (PlayerController.instance.hasCompass) { //issue? does everytime
+		if (PlayerController.instance.has_compass) { //issue? does everytime
 			compass.enabled = true;
 			//create blinking red finish dot
 			redDot.enabled = true;
