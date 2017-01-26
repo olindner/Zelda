@@ -17,6 +17,11 @@ public class RoomController : MonoBehaviour {
 
 	public PlayerController pc;
 
+	public GameObject key_prefab;
+	public GameObject compass_prefab;
+	public GameObject map_prefab;
+	public GameObject boomerang_prefab;
+
 //	public RoomController() {
 //	}
 

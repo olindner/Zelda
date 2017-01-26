@@ -23,6 +23,7 @@ public class Hud : MonoBehaviour {
 	public Image compass;
 	public Image redDot;
 	//public Image grayDot;
+	public Image blueMapFull;
 
 	// Use this for initialization
 	void Start ()
@@ -32,6 +33,7 @@ public class Hud : MonoBehaviour {
 		Blue0Empty.enabled = false;
 		redDot.enabled = false;
 		//grayDot.enabled = false;
+		blueMapFull.enabled = false;
 
 		map.enabled = false;
 		compass.enabled = false;
@@ -108,6 +110,7 @@ public class Hud : MonoBehaviour {
 		if (PlayerController.instance.has_map) {
 			map.enabled = true;
 			//create map on menu
+			blueMapFull.enabled = true;
 		}
 		if (PlayerController.instance.has_compass) { //issue? does everytime
 			compass.enabled = true;
@@ -118,8 +121,8 @@ public class Hud : MonoBehaviour {
 		Vector2 desired_ui_position = new Vector2(400, 375);
 
 		if (!hidden)
-            desired_ui_position = new Vector2(400, -241);
-
+            //desired_ui_position = new Vector2(400, -241);
+			desired_ui_position = new Vector2(400, -41);
         rt.anchoredPosition += (desired_ui_position - rt.anchoredPosition) * ease_factor;
 
 		int rupees = PlayerController.instance.num_rupees;

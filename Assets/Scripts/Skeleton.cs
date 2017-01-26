@@ -12,6 +12,7 @@ public class Skeleton : MonoBehaviour {
 	private int dir;
 	public float spriteTimeDelay;
 	private float timer;
+	private bool isStunned;
 
 	public float prob_drop_rupee = 0.75f;
 	public GameObject rupee;
@@ -77,15 +78,22 @@ public class Skeleton : MonoBehaviour {
 			//print ("no damage flashes left!");
 			UnshowDamage ();
 		}
+		if (isStunned) {
+			this.GetComponent<Rigidbody> ().velocity = Vector3.zero;
+		}
 
 		if (num_cooldown_frames > 0) {
 			num_cooldown_frames--;
 			if (num_cooldown_frames == 0) {
 				this.GetComponent<Rigidbody> ().velocity = Vector3.zero;
+				if (isStunned) {
+					isStunned = false;
+					GetComponent<Rigidbody> ().constraints = RigidbodyConstraints.FreezeRotation | RigidbodyConstraints.FreezePositionZ;
+				}
 			}
 		}
 
-		if (!isMoving) {
+		if (!isMoving && !isStunned) {
 			int num = Random.Range (0, 15);
 
 			Vector3 rayUp = transform.TransformDirection (Vector3.up);
@@ -181,7 +189,7 @@ public class Skeleton : MonoBehaviour {
 		if (col.gameObject.tag == "Sword") {
 			GetComponent<Rigidbody> ().velocity = damage_hopback_vel * col.rigidbody.velocity;
 			num_cooldown_frames = 5;
-			Destroy(col.gameObject);
+			Destroy (col.gameObject);
 			health--;
 			ShowDamage (5);
 			if (health <= 0) {
@@ -199,6 +207,11 @@ public class Skeleton : MonoBehaviour {
 				}
 				Destroy (this.gameObject);
 			}
+		} else if (col.gameObject.tag == "Boomerang") {
+			GetComponent<Rigidbody> ().velocity = Vector3.zero;
+			GetComponent<Rigidbody> ().constraints = RigidbodyConstraints.FreezeAll;
+			num_cooldown_frames = 300;
+			isStunned = true;
 		}
 	}
 

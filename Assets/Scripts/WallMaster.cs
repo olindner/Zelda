@@ -34,7 +34,7 @@ public class WallMaster : MonoBehaviour {
 		checks = 0;
 		set1 = set2 = set3 = false;
 	}
-	
+
 	// Main/Camera will handle spawning/instantiating them!!! ********************
 	void Update ()
 	{

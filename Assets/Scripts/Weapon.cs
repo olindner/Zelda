@@ -75,11 +75,6 @@ public class Weapon : MonoBehaviour {
 			Vector3 new_direction = PlayerController.instance.transform.position - this.transform.position;
 			this.gameObject.GetComponent<Rigidbody> ().velocity = new_direction.normalized * this.def.velocity;
 		}
-
-		if (coll.gameObject.layer == 12)
-			Destroy (coll.gameObject);
-//		if (coll.gameObject.layer == 13)
-//			coll.gameObject.GetComponent<Aquamentus> ().health--;
 	}
 
 	// Use this for initialization

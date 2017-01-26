@@ -108,7 +108,7 @@ public class Bat : MonoBehaviour {
 	}
 
 	void OnCollisionEnter(Collision coll) {
-		if (coll.gameObject.tag == "Weapon") {
+		if (coll.gameObject.tag == "Sword" || coll.gameObject.tag == "Boomerang") {
 			room.num_enemies_left--;
 			room.things_inside_room.Remove(this.gameObject);
 			Destroy (coll.gameObject);
