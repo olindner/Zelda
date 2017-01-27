@@ -482,11 +482,25 @@ public class PlayerController : MonoBehaviour {
 		Room cur_room = rc.map1 [rc.active_row_index, rc.active_col_index];
 		for (int i = 0; i < cur_room.things_inside_room.Count; i++) {
 			if (cur_room.things_inside_room [i].tag == "Enemy" && isNeighbor (pos, cur_room.things_inside_room[i].transform.position)) {
-				GameObject go = cur_room.things_inside_room [i];
-				cur_room.num_enemies_left--;
-				cur_room.things_inside_room.Remove (go);
-				Destroy (go);
-				i--;
+				if (cur_room.things_inside_room [i].layer != 13) {
+					GameObject go = cur_room.things_inside_room [i];
+					cur_room.num_enemies_left--;
+					cur_room.things_inside_room.Remove (go);
+					Destroy (go);
+					i--;
+				} else {
+					GameObject go = cur_room.things_inside_room [i];
+					go.GetComponent<Aquamentus> ().health--;
+					if (go.GetComponent<Aquamentus> ().health == 0) {
+						cur_room.num_enemies_left--;
+						cur_room.things_inside_room.Remove (go);
+						GameObject bigHeart = Instantiate (go.GetComponent<Aquamentus>().bigheart) as GameObject;
+						bigHeart.transform.position = go.transform.position;
+						cur_room.things_inside_room.Add (bigHeart);
+						Destroy (go);
+						i--;
+					}
+				}
 			}
 		}
 				
@@ -592,7 +606,8 @@ public class PlayerController : MonoBehaviour {
 	}
 
 	void OnCollisionEnter(Collision coll) {
-		if (coll.gameObject.tag == "Enemy" && num_cooldown_frames == 0) {
+		if ((coll.gameObject.tag == "Enemy" || coll.gameObject.tag == "GoriyaBoomerang")
+			&& num_cooldown_frames == 0) {
 			//print ("dude you touched me");
 			if (num_hearts > 0) {
 				ShowDamage (5);
