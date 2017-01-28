@@ -21,6 +21,7 @@ public class RoomController : MonoBehaviour {
 	public GameObject compass_prefab;
 	public GameObject map_prefab;
 	public GameObject boomerang_prefab;
+	public GameObject pushable_block_prefab;
 
 //	public RoomController() {
 //	}
@@ -34,12 +35,13 @@ public class RoomController : MonoBehaviour {
 		for (int i = 0; i < 6; i++) {
 			for (int j = 0; j < 6; j++) {
 				Vector3 cam_pos = new Vector3 (i * room_width + x_start, (5-j) * room_height + y_start, z);
-				map1 [j, i] = Room.MakeNewRoom (cam_pos, this);
+				map1 [j, i] = Room.MakeNewRoom (cam_pos, this, i, j);
 			}
 		}
 
 		map1 [0, 1].real_room = true;
 		map1 [0, 2].real_room = true;
+		map1 [1, 1].real_room = true;
 		map1 [1, 2].real_room = true;
 		map1 [1, 4].real_room = true;
 		map1 [1, 5].real_room = true;
@@ -61,12 +63,17 @@ public class RoomController : MonoBehaviour {
 		map1 [0, 1].num_enemies_total = 4;
 		map1 [0, 1].num_enemies_left = 4;
 		map1 [0, 1].SetEnemyPrefab ();
+		map1 [0, 1].has_push_block = true;
 
-		map1 [0, 2].needs_bomb_pickup = true;
 		map1 [0, 2].enemy_type = "Goriya";
 		map1 [0, 2].num_enemies_total = 3;
 		map1 [0, 2].num_enemies_left = 3;
 		map1 [0, 1].SetEnemyPrefab ();
+
+		map1 [1, 1].enemy_type = "Keese";
+		map1 [1, 1].num_enemies_total = 4;
+		map1 [1, 1].num_enemies_left = 4;
+		map1 [1, 1].SetEnemyPrefab ();
 
 		map1 [1, 2].needs_key_pickup = true;
 		map1 [1, 2].enemy_type = "Stalfos";
@@ -94,6 +101,7 @@ public class RoomController : MonoBehaviour {
 		map1 [2, 1].num_enemies_total = 3;
 		map1 [2, 1].num_enemies_left = 3;
 		map1 [2, 1].SetEnemyPrefab ();
+		map1 [2, 1].has_push_block = true;
 
 		map1 [2, 2].enemy_type = "Gel";
 		map1 [2, 2].num_enemies_total = 5;
@@ -105,7 +113,6 @@ public class RoomController : MonoBehaviour {
 		map1 [2, 3].num_enemies_total = 3;
 		map1 [2, 3].num_enemies_left = 3;
 		map1 [2, 3].needs_boomerang_pickup = true;
-		map1 [2, 3].needs_bomb_pickup = true;
 		map1 [2, 3].SetEnemyPrefab ();
 
 		map1 [2, 4].enemy_type = "WallMaster";

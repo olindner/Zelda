@@ -9,6 +9,8 @@ public class Room : MonoBehaviour {
 
 	System.Random random = new System.Random();
 
+	public int row, col;
+
 	public bool is_active = false;
 	public bool real_room = false;
 
@@ -20,15 +22,14 @@ public class Room : MonoBehaviour {
 	public bool needs_compass_pickup = false;
 	public bool needs_map_pickup = false;
 	public bool needs_boomerang_pickup = false;
-	public bool needs_bomb_pickup = false;
 	public bool has_triforce = false;
 	public bool must_kill_all_enemies = false;
+	public bool has_push_block = false;
 
 	public bool key_picked_up = false;
 	public bool compass_picked_up = false;
 	public bool map_picked_up = false;
 	public bool boomerang_picked_up = false;
-	public bool bomb_picked_up = false;
 	public bool triforce_picked_up = false;
 	public bool all_enemies_killed = false;
 
@@ -53,10 +54,13 @@ public class Room : MonoBehaviour {
 	void Start() {
 	}
 
-	static public Room MakeNewRoom(Vector3 cam_pos, RoomController rc) {
+	static public Room MakeNewRoom(Vector3 cam_pos, RoomController rc, int ex, int ey) {
 		Room room = new Room ();
 		room.cam_pos = cam_pos;
 		room.room_controller = rc;
+
+		room.row = ex;
+		room.col = ey;
 
 		room.xmax = cam_pos.x + 6f;
 		room.xmin = cam_pos.x - 6f;
@@ -154,7 +158,7 @@ public class Room : MonoBehaviour {
 	}
 
 	public void InstantiateEnemies() {
-		for (int i = 0; i < num_enemies_total; i++) {
+		for (int i = 0; i < num_enemies_left; i++) {
 			Vector3 new_pos = FindFreeTile ();
 			GameObject go = Instantiate (enemy_prefab) as GameObject;
 			go.transform.position = new_pos;
@@ -217,5 +221,17 @@ public class Room : MonoBehaviour {
 		float temp_x = Mathf.Floor(ShowMapOnCamera.MAP_TILES [temp_xtile, temp_ytile].transform.position.x);
 		float temp_y = Mathf.Floor(ShowMapOnCamera.MAP_TILES [temp_xtile, temp_ytile].transform.position.y);
 		return new Vector3 (temp_x, temp_y, 0f);
+	}
+
+	public void SetPushableBlocks() {
+		GameObject go = Instantiate (room_controller.pushable_block_prefab) as GameObject;
+		if (row == 0 && col == 1) {
+			go.transform.position = new Vector3 (22f, 60f, 0f);
+			go.GetComponent<PushableBlock> ().target = new Vector3 (22f, 61f, 0f);
+			//more stuff idk???
+		} else if (row == 2 && col == 1) {
+			go.transform.position = new Vector3 (23f, 38f, 0f);
+			go.GetComponent<PushableBlock> ().target = new Vector3 (24f, 38f, 0f);
+		}
 	}
 }
