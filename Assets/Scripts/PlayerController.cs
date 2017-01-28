@@ -38,6 +38,8 @@ public class PlayerController : MonoBehaviour {
 	public bool has_map;
 	public bool has_compass;
 	public bool has_bow;
+	public GameObject chomper;
+	public bool has_chomper = false;
 
 	//state machine stuff
 	public Sprite[] link_run_down;
@@ -164,7 +166,7 @@ public class PlayerController : MonoBehaviour {
 		if (current_weapon_B.type == WeaponType.bomb) {
 			current_weapon_B.def.delayBetweenShots--;
 			if (current_weapon_B.def.delayBetweenShots == 0) {
-				print ("BOMB GOES BOOM");
+				//print ("BOMB GOES BOOM");
 				BombKills ();
 				Destroy (current_weapon_B.w_go);
 				GameObject c_w = new GameObject ();
@@ -175,7 +177,7 @@ public class PlayerController : MonoBehaviour {
 //		print ("boomerang position " + current_weapon_B.w_go.transform.position);
 //		print ("boomerang target " + current_weapon_B.target1);
 //		print ("on way back " + current_weapon_B.on_way_back);
-		if (current_weapon_B.type == WeaponType.boomerang && !current_weapon_B.on_way_back 
+		if (current_weapon_B.type == WeaponType.boomerang && !current_weapon_B.on_way_back && current_weapon_B != null //had error if returning
 			&& (Mathf.Abs (current_weapon_B.w_go.transform.position.x - current_weapon_B.target1.x) <= 0.1
 			&& Mathf.Abs (current_weapon_B.w_go.transform.position.y - current_weapon_B.target1.y) <= 0.1)) {
 			//print ("ON MAH WAY BACK DAWG");
@@ -697,6 +699,10 @@ public class PlayerController : MonoBehaviour {
 			new_pos.y += 1;
 			collider.gameObject.transform.position = new_pos;
 			num_frames_hold_triforce = 50;
+		} else if (collider.gameObject.tag == "ChomperPickup") {
+			chomper.SetActive(true);
+			has_chomper = true;
+			Destroy(collider.gameObject);
 		} else if (collider.gameObject.tag == "Enemy" && num_cooldown_frames == 0) {
 			//print ("dude you touched me");
 			if (num_hearts > 0) {

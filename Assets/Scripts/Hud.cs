@@ -15,24 +15,38 @@ public class Hud : MonoBehaviour {
 	private bool hidden;
 	private RectTransform rt;
 	public float ease_factor = 0.1f;
-	public Image Red0Empty;
-	public Image Blue0Empty;
-	public float blinkDelay = 0.2f;
+	//public Image Red0Empty;
+	//public Image Blue0Empty;
+	public Image[] weapons;
+	public Image[] slots;
+	public Image[] isSelected;
+	public float blinkDelay;
 	private float blinkTimer;
 	public Image map;
 	public Image compass;
 	public Image redDot;
-	//public Image grayDot;
+	public Image grayDot;
 	public Image blueMapFull;
+	public int activeSlot = 0;
+	private bool redSet = false;
 
 	// Use this for initialization
 	void Start ()
 	{
 		blinkTimer = Time.time + blinkDelay;
-		Red0Empty.enabled = true;
-		Blue0Empty.enabled = false;
+		foreach (Image i in weapons) {
+			i.enabled = false;
+		}
+		foreach (Image e in slots) {
+			e.enabled = false;
+		}
+		foreach (Image g in isSelected) {
+			g.enabled = false;
+		}
+		slots[0].enabled = true; //enable red0empty first
+
 		redDot.enabled = false;
-		//grayDot.enabled = false;
+		grayDot.enabled = false;
 		blueMapFull.enabled = false;
 
 		map.enabled = false;
@@ -87,24 +101,95 @@ public class Hud : MonoBehaviour {
 
 		if (Input.GetKeyDown (KeyCode.Return)) {
 			hidden = !hidden;
+			//find way to freeze game
+		}
+		if (!hidden) {
+			if (Input.GetKeyDown (KeyCode.RightArrow)) {
+				if (activeSlot == 0)
+					activeSlot = 1;
+				else if (activeSlot == 1)
+					activeSlot = 2;
+				else if (activeSlot == 2)
+					activeSlot = 3;
+			}
+			if (Input.GetKeyDown (KeyCode.LeftArrow)) {
+				if (activeSlot == 3)
+					activeSlot = 2;
+				else if (activeSlot == 2)
+					activeSlot = 1;
+				else if (activeSlot == 1)
+					activeSlot = 0;
+			}
 		}
 
-		if (Time.time >= blinkTimer && !hidden) { //issue: only when !hidden (menu is down)
-			if (Red0Empty.enabled == true) {
-				Red0Empty.enabled = false;
-				Blue0Empty.enabled = true;
-			} else if (Blue0Empty.enabled == true) {
-				Blue0Empty.enabled = false;
-				Red0Empty.enabled = true;
-			} 
-//			else if (redDot.enabled == true) {
-//				redDot.enabled = false;
-//				grayDot.enabled = true;
-//			} else if (grayDot.enabled == true) {
-//				grayDot.enabled = false;
-//				redDot.enabled = true;
-//			}
+		if (Time.time >= blinkTimer) {
+			if (activeSlot == 0) {
+				slots [2].enabled = false; //disable slot 1
+				slots [3].enabled = false; //disable slot 1
+				if (slots [0].enabled == false) {
+					slots [0].enabled = true;
+					slots [1].enabled = false;
+				} else if (slots [1].enabled == false) {
+					slots [1].enabled = true;
+					slots [0].enabled = false;
+				} 
+			} else if (activeSlot == 1) {
+				slots [0].enabled = false; //disable slot 0
+				slots [1].enabled = false; //disable slot 0
+				slots [4].enabled = false; //disable slot 2
+				slots [5].enabled = false; //disable slot 2
+				if (slots [2].enabled == false) {
+					slots [2].enabled = true;
+					slots [3].enabled = false;
+				} else if (slots [3].enabled == false) {
+					slots [3].enabled = true;
+					slots [2].enabled = false;
+				} 
+			} else if (activeSlot == 2) {
+				slots [2].enabled = false; //disable slot 1
+				slots [3].enabled = false; //disable slot 1
+				slots [6].enabled = false; //disable slot 3
+				slots [7].enabled = false; //disable slot 3
+				if (slots [4].enabled == false) {
+					slots [4].enabled = true;
+					slots [5].enabled = false;
+				} else if (slots [5].enabled == false) {
+					slots [5].enabled = true;
+					slots [4].enabled = false;
+				} 
+			} else if (activeSlot == 3) {
+				slots [4].enabled = false; //disable slot 2
+				slots [5].enabled = false; //disable slot 2
+				if (slots [6].enabled == false) {
+					slots [6].enabled = true;
+					slots [7].enabled = false;
+				} else if (slots [7].enabled == false) {
+					slots [7].enabled = true;
+					slots [6].enabled = false;
+				} 
+			}
+			if (redDot.enabled == true) {
+				redDot.enabled = false;
+				grayDot.enabled = true;
+			} else if (grayDot.enabled == true) {
+				grayDot.enabled = false;
+				redDot.enabled = true;
+			}
 			blinkTimer = Time.time + blinkDelay;
+		}
+
+		if (PlayerController.instance.have_boomerang) {
+			weapons [0].enabled = true;
+		}
+		if (PlayerController.instance.num_bombs > 0) {
+			weapons [1].enabled = true;
+		} else
+			weapons [1].enabled = false;
+		if (PlayerController.instance.has_bow) {
+			weapons [2].enabled = true;
+		}
+		if (PlayerController.instance.has_chomper) {
+			weapons [3].enabled = true;
 		}
 
 		if (PlayerController.instance.has_map) {
@@ -115,10 +200,13 @@ public class Hud : MonoBehaviour {
 		if (PlayerController.instance.has_compass) { //issue? does everytime
 			compass.enabled = true;
 			//create blinking red finish dot
-			redDot.enabled = true;
+			if (!redSet) {
+				redDot.enabled = true;
+				redSet = true;
+			}
 		}
 
-		Vector2 desired_ui_position = new Vector2(400, 375);
+		Vector2 desired_ui_position = new Vector2(400, 575); //375 to build properly
 
 		if (!hidden)
             //desired_ui_position = new Vector2(400, -241);
