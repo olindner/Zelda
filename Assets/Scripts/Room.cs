@@ -4,8 +4,7 @@ using UnityEngine;
 using System;
 
 public class Room : MonoBehaviour {
-	static public Room r;
-	public RoomController room_controller;
+	//public RoomController room_controller;
 
 	System.Random random = new System.Random();
 
@@ -16,6 +15,8 @@ public class Room : MonoBehaviour {
 
 	public int num_enemies_total = 0;
 	public int num_enemies_left = 0;
+	public int num_push_blocks_total = 0;
+	public int num_push_blocks_left = 0;
 	public string enemy_type = "None";
 
 	public bool needs_key_pickup = false;
@@ -27,11 +28,14 @@ public class Room : MonoBehaviour {
 	public bool has_push_block = false;
 
 	public bool key_picked_up = false;
+	public bool key_dropped = false;
 	public bool compass_picked_up = false;
 	public bool map_picked_up = false;
 	public bool boomerang_picked_up = false;
+	public bool boomerang_dropped = false;
 	public bool triforce_picked_up = false;
 	public bool all_enemies_killed = false;
+	public bool all_blocks_pushed = false;
 
 	public int num_times_attacked_old_man = 0; //once, only right fire attacks; twice, both fires attack 
 
@@ -54,10 +58,11 @@ public class Room : MonoBehaviour {
 	void Start() {
 	}
 
-	static public Room MakeNewRoom(Vector3 cam_pos, RoomController rc, int ex, int ey) {
+	//static public Room MakeNewRoom(Vector3 cam_pos, RoomController rc, int ex, int ey) {
+	static public Room MakeNewRoom(Vector3 cam_pos, int ex, int ey) {
 		Room room = new Room ();
 		room.cam_pos = cam_pos;
-		room.room_controller = rc;
+		//room.room_controller = rc;
 
 		room.row = ex;
 		room.col = ey;
@@ -102,6 +107,9 @@ public class Room : MonoBehaviour {
 		tile_xmax = tile_xmin + 11;
 		tile_ymax = tile_ymin + 6;
 
+		tile_ymax += 1;
+		tile_ymin += 1;
+
 //		print ("tile xmin " + tile_xmin);
 //		print ("tile xmax " + tile_xmax);
 //		print ("tile ymin " + tile_ymin);
@@ -111,53 +119,29 @@ public class Room : MonoBehaviour {
 	}
 
 	public void SetEnemyPrefab() {
+		print ("setting enemy prefab at " + row + " " + col);
 		if (enemy_type == "Stalfos") {
-			enemy_prefab = room_controller.enemies [0];
+			enemy_prefab = RoomController.rc.enemies [0];
 		} else if (enemy_type == "Gel") {
-			enemy_prefab = room_controller.enemies [1];
+			enemy_prefab = RoomController.rc.enemies [1];
 		} else if (enemy_type == "Goriya") {
-			enemy_prefab = room_controller.enemies [2];
+			enemy_prefab = RoomController.rc.enemies [2];
 		} else if (enemy_type == "Spiketrap") {
-			enemy_prefab = room_controller.enemies [3];
+			enemy_prefab = RoomController.rc.enemies [3];
 		} else if (enemy_type == "Keese") {
-			enemy_prefab = room_controller.enemies [4];
+			enemy_prefab = RoomController.rc.enemies [4];
 		} else if (enemy_type == "Aquamentus") {
-			enemy_prefab = room_controller.enemies [5];
+			enemy_prefab = RoomController.rc.enemies [5];
 		}
 	}
 	
 	// Update is called once per frame
 	void Update () {
-		if (is_active && needs_key_pickup) {
-			print ("this room needs key pickup");
-			if (num_enemies_left == 0 && !key_picked_up) {
-				print ("can drop key now because no enemies left");
-				//I KNOW WHAT'S WRONG I DIDN'T SET THE VARIABLES FJDKSFJDLSKFJKDSLJFKLSJS
-				init_pos_of_enemies.Clear ();
-				Vector3 temp = FindFreeTile ();
-				GameObject key = Instantiate (room_controller.key_prefab) as GameObject;
-				key.transform.position = temp;
-				things_inside_room.Add (key);
-			}
-		}
 
-		if (is_active && must_kill_all_enemies) {
-			//I DON'T KNOW HOW TO CHANGE THE DOOR
-		}
-
-		if (is_active && needs_boomerang_pickup) {
-			if (num_enemies_left == 0 && !boomerang_picked_up) {
-				init_pos_of_enemies.Clear ();
-				Vector3 temp = FindFreeTile ();
-				GameObject boomerang = Instantiate (room_controller.boomerang_prefab) as GameObject;
-				boomerang.GetComponent<BoxCollider> ().isTrigger = true;
-				boomerang.transform.position = temp;
-				things_inside_room.Add (boomerang);
-			}
-		}
 	}
 
 	public void InstantiateEnemies() {
+		print ("enemy type is " + enemy_type);
 		for (int i = 0; i < num_enemies_left; i++) {
 			Vector3 new_pos = FindFreeTile ();
 			GameObject go = Instantiate (enemy_prefab) as GameObject;
@@ -183,10 +167,10 @@ public class Room : MonoBehaviour {
 		GameObject st3 = Instantiate (enemy_prefab) as GameObject;
 		GameObject st4 = Instantiate (enemy_prefab) as GameObject;
 
-		st1.transform.position = ShowMapOnCamera.MAP_TILES[tile_xmin, tile_ymin+1].transform.position;
-		st2.transform.position = ShowMapOnCamera.MAP_TILES[tile_xmin, tile_ymax+1].transform.position;
-		st3.transform.position = ShowMapOnCamera.MAP_TILES[tile_xmax, tile_ymin+1].transform.position;
-		st4.transform.position = ShowMapOnCamera.MAP_TILES[tile_xmax, tile_ymax+1].transform.position;
+		st1.transform.position = ShowMapOnCamera.MAP_TILES[tile_xmin, tile_ymin].transform.position;
+		st2.transform.position = ShowMapOnCamera.MAP_TILES[tile_xmin, tile_ymax].transform.position;
+		st3.transform.position = ShowMapOnCamera.MAP_TILES[tile_xmax, tile_ymin].transform.position;
+		st4.transform.position = ShowMapOnCamera.MAP_TILES[tile_xmax, tile_ymax].transform.position;
 
 		things_inside_room.Add(st1);
 		things_inside_room.Add(st2);
@@ -200,7 +184,24 @@ public class Room : MonoBehaviour {
 		things_inside_room.Add (aq);
 	}
 
-	Vector3 FindFreeTile() {
+	public void InstantiateBatsInBowRoom() {
+		GameObject b1 = Instantiate (enemy_prefab) as GameObject;
+		GameObject b2 = Instantiate (enemy_prefab) as GameObject;
+		GameObject b3 = Instantiate (enemy_prefab) as GameObject;
+		GameObject b4 = Instantiate (enemy_prefab) as GameObject;
+
+		b1.transform.position = new Vector3 (16.84f, 48.65f, 0f);
+		b2.transform.position = new Vector3 (20.47f, 48.65f, 0f);
+		b3.transform.position = new Vector3 (24.57f, 48.65f, 0f);
+		b4.transform.position = new Vector3 (16.84f, 48.65f, 0f);
+
+		things_inside_room.Add (b1);
+		things_inside_room.Add (b2);
+		things_inside_room.Add (b3);
+		things_inside_room.Add (b4);
+	}
+
+	public Vector3 FindFreeTile() {
 		int temp_xtile = random.Next (tile_xmin, tile_xmax);
 		int temp_ytile = random.Next (tile_ymin, tile_ymax);
 //		print ("tile xmin " + tile_xmin);
@@ -224,14 +225,29 @@ public class Room : MonoBehaviour {
 	}
 
 	public void SetPushableBlocks() {
-		GameObject go = Instantiate (room_controller.pushable_block_prefab) as GameObject;
-		if (row == 0 && col == 1) {
-			go.transform.position = new Vector3 (22f, 60f, 0f);
-			go.GetComponent<PushableBlock> ().target = new Vector3 (22f, 61f, 0f);
-			//more stuff idk???
-		} else if (row == 2 && col == 1) {
-			go.transform.position = new Vector3 (23f, 38f, 0f);
-			go.GetComponent<PushableBlock> ().target = new Vector3 (24f, 38f, 0f);
+		if (num_push_blocks_total == 1) {
+			print ("in " + row + ", " + col + "; setting push blocks");
+			//GameObject go = Instantiate (room_controller.pushable_block_prefab) as GameObject;
+			GameObject go = Instantiate (RoomController.rc.pushable_block_prefab) as GameObject;
+			if (row == 0 && col == 1) {
+				go.transform.position = new Vector3 (22f, 60f, 0f);
+				go.GetComponent<PushableBlock> ().target = new Vector3 (22f, 61f, 0f);
+				go.GetComponent<PushableBlock> ().original_pos = new Vector3 (22f, 60f, 0f);
+				go.GetComponent<Rigidbody> ().constraints = RigidbodyConstraints.FreezeRotation
+				//| RigidbodyConstraints.FreezePositionX | RigidbodyConstraints.FreezePositionZ;
+				| RigidbodyConstraints.FreezePositionZ;
+				//more stuff idk???
+			} else if (row == 2 && col == 1) {
+				print ("about to make push block by old man room");
+				go.transform.position = new Vector3 (23f, 38f, 0f);
+				go.GetComponent<PushableBlock> ().target = new Vector3 (24f, 38f, 0f);
+				go.GetComponent<PushableBlock> ().original_pos = new Vector3 (23f, 38f, 0f);
+				go.GetComponent<Rigidbody> ().constraints = RigidbodyConstraints.FreezeRotation
+				| RigidbodyConstraints.FreezePositionY | RigidbodyConstraints.FreezePositionZ;
+				//| RigidbodyConstraints.FreezePositionZ;
+			}
+			//go.GetComponent<PushableBlock> ().rc = room_controller;
+			things_inside_room.Add (go);
 		}
 	}
 }

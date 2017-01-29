@@ -47,6 +47,7 @@ public class Aquamentus : MonoBehaviour {
 		for (int i = 0; i < materials.Length; i++) {
 			originalColors [i] = materials [i].color;
 		}
+		room = RoomController.rc.map1 [RoomController.rc.active_row_index, RoomController.rc.active_col_index];
 	}
 	
 	// Update is called once per frame
@@ -136,8 +137,10 @@ public class Aquamentus : MonoBehaviour {
 	void OnCollisionEnter(Collision coll) {
 		if (coll.gameObject.tag == "Sword" || coll.gameObject.tag == "Boomerang") {
 			health--;
+
 			if (coll.gameObject.tag == "Sword") 
 				Destroy(coll.gameObject);
+
 			ShowDamage (5);
 			if (health <= 0) {
 				print("hi");

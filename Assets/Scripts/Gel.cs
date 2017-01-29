@@ -143,8 +143,10 @@ public class Gel : MonoBehaviour {
 	}
 
 	void OnTriggerEnter (Collider col) {
-		if (col.gameObject.tag == "Sword") {
-			Destroy(col.gameObject);
+		if (col.gameObject.tag == "Sword" || col.gameObject.tag == "Boomerang") {
+			if (col.gameObject.tag == "Sword") {
+				Destroy (col.gameObject);
+			}
 			health--;
 			if (health <= 0) {
 				room.num_enemies_left--;

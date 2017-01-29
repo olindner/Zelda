@@ -27,6 +27,7 @@ public class PlayerController : MonoBehaviour {
 	public int num_cooldown_weapon_frames = 0;
 	public int num_cooldown_attack_frames = 0;
 	public float damage_hopback_vel = 2.65f; //how fast Link hops back when damaged in comparison to velocity before
+	public int num_frozen_frames = 0;
 
 	public int num_rupees = 0;
 	public float num_hearts;
@@ -145,6 +146,14 @@ public class PlayerController : MonoBehaviour {
 		if (current_state == EntityState.ATTACKING)
 			current_state = EntityState.NORMAL;
 
+		if (num_frozen_frames > 0) {
+			num_frozen_frames--;
+			if (num_frozen_frames == 0) {
+				print ("not frozen anymore");
+				GetComponent<Rigidbody> ().constraints = RigidbodyConstraints.FreezeRotation | RigidbodyConstraints.FreezePositionY;
+			}
+		}
+
 		if (current_weapon_A.type != WeaponType.none) {
 			current_weapon_A.def.delayBetweenShots--;
 			if (current_weapon_A.def.delayBetweenShots == 0) {
@@ -246,59 +255,95 @@ public class PlayerController : MonoBehaviour {
     /* TODO: Deal with user-invoked movement of the player character */
     void ProcessMovement ()
     {
-		float grid_offset_y = 0.0f;
-        Vector3 desired_velocity = Vector3.zero;
+			float grid_offset_y = 0.0f;
+			Vector3 desired_velocity = Vector3.zero;
 
-		if (num_cooldown_frames == 0 
-			&& (!CameraPan.c.panning_down && !CameraPan.c.panning_up 
-				&& !CameraPan.c.panning_left && !CameraPan.c.panning_right)
-			&& num_frames_hold_triforce == 0) {
+		if (num_cooldown_frames == 0
+		    && (!CameraPan.c.panning_down && !CameraPan.c.panning_up
+		    && !CameraPan.c.panning_left && !CameraPan.c.panning_right)
+		    && num_frames_hold_triforce == 0) {
 			if (Input.GetKey (KeyCode.UpArrow)) {
 				desired_velocity = new Vector3 (0, 1, 0);
-				float temp;
-				if (rb.position.x % 0.5f < 0.25) {
-					temp = Mathf.Floor (rb.position.x / 0.5f) * 0.5f;
+				if (RoomController.rc.active_row_index == 1 && RoomController.rc.active_col_index == 1) {
+					Vector3 pos = rb.position;
+					if (Mathf.Abs (rb.position.x - 19f) <= 0.1f) {
+						rb.position = new Vector3 (19f, pos.y, 0f);
+					} else if (Mathf.Abs (rb.position.x - 27f) <= 0.1f) {
+						rb.position = new Vector3 (27f, pos.y, 0f);
+					}
 				} else {
-					temp = Mathf.Ceil (rb.position.x / 0.5f) * 0.5f;
+					float temp;
+					if (rb.position.x % 0.5f < 0.25) {
+						temp = Mathf.Floor (rb.position.x / 0.5f) * 0.5f;
+					} else {
+						temp = Mathf.Ceil (rb.position.x / 0.5f) * 0.5f;
+					}
+					Vector3 newpos = new Vector3 (temp, rb.transform.position.y, 0);
+					rb.transform.position = newpos;
 				}
-				Vector3 newpos = new Vector3 (temp, rb.transform.position.y, 0);
-				rb.transform.position = newpos;
 			} else if (Input.GetKey (KeyCode.LeftArrow)) {
 				desired_velocity = new Vector3 (-1, 0, 0);
-				float temp;
-				if ((rb.position.y - grid_offset_y) % 0.5f < 0.25) {
-					temp = Mathf.Floor ((rb.position.y - grid_offset_y) / 0.5f) * 0.5f + grid_offset_y;
+				if (RoomController.rc.active_row_index == 1 && RoomController.rc.active_col_index == 1) {
+					Vector3 pos = rb.position;
+					if (Mathf.Abs (rb.position.y - 46.25f) <= 0.1f) {
+						rb.position = new Vector3 (pos.x, 46.25f, 0f);
+					} else if (Mathf.Abs (transform.position.y - 49f) <= 0.1f) {
+						rb.position = new Vector3 (pos.x, 49f, 0f);
+					}
 				} else {
-					temp = Mathf.Ceil ((rb.position.y - grid_offset_y) / 0.5f) * 0.5f + grid_offset_y;
+					float temp;
+					if ((rb.position.y - grid_offset_y) % 0.5f < 0.25) {
+						temp = Mathf.Floor ((rb.position.y - grid_offset_y) / 0.5f) * 0.5f + grid_offset_y;
+					} else {
+						temp = Mathf.Ceil ((rb.position.y - grid_offset_y) / 0.5f) * 0.5f + grid_offset_y;
+					}
+					Vector3 newpos = new Vector3 (rb.transform.position.x, temp, 0);
+					rb.transform.position = newpos;
 				}
-				Vector3 newpos = new Vector3 (rb.transform.position.x, temp, 0);
-				rb.transform.position = newpos;
 			} else if (Input.GetKey (KeyCode.RightArrow)) {
 				desired_velocity = Vector3.right;
-				float temp;
-				if ((rb.position.y - grid_offset_y) % 0.5f < 0.25) {
-					temp = Mathf.Floor ((rb.position.y - grid_offset_y) / 0.5f) * 0.5f + grid_offset_y;
+				if (RoomController.rc.active_row_index == 1 && RoomController.rc.active_col_index == 1) {
+					Vector3 pos = rb.position;
+					if (Mathf.Abs (rb.position.y - 46.25f) <= 0.1f) {
+						rb.position = new Vector3 (pos.x, 46.25f, 0f);
+					} else if (Mathf.Abs (rb.position.y - 49f) <= 0.1f) {
+						rb.position = new Vector3 (pos.x, 49f, 0f);
+					}
 				} else {
-					temp = Mathf.Ceil ((rb.position.y - grid_offset_y) / 0.5f) * 0.5f + grid_offset_y;
+					float temp;
+					if ((rb.position.y - grid_offset_y) % 0.5f < 0.25) {
+						temp = Mathf.Floor ((rb.position.y - grid_offset_y) / 0.5f) * 0.5f + grid_offset_y;
+					} else {
+						temp = Mathf.Ceil ((rb.position.y - grid_offset_y) / 0.5f) * 0.5f + grid_offset_y;
+					}
+					Vector3 newpos = new Vector3 (rb.transform.position.x, temp, 0);
+					rb.transform.position = newpos;
 				}
-				Vector3 newpos = new Vector3 (rb.transform.position.x, temp, 0);
-				rb.transform.position = newpos;
 			} else if (Input.GetKey (KeyCode.DownArrow)) {
 				desired_velocity = Vector3.down;
-				float temp;
-				if (rb.position.x % 0.5f < 0.25) {
-					temp = Mathf.Floor (rb.position.x / 0.5f) * 0.5f;
+				if (RoomController.rc.active_row_index == 1 && RoomController.rc.active_col_index == 1) {
+					Vector3 pos = rb.position;
+					if (Mathf.Abs (rb.position.x - 19f) <= 0.1f) {
+						rb.position = new Vector3 (19f, pos.y, 0f);
+					} else if (Mathf.Abs (rb.position.x - 27f) <= 0.1f) {
+						rb.position = new Vector3 (27f, pos.y, 0f);
+					}
 				} else {
-					temp = Mathf.Ceil (rb.position.x / 0.5f) * 0.5f;
+					float temp;
+					if (rb.position.x % 0.5f < 0.25) {
+						temp = Mathf.Floor (rb.position.x / 0.5f) * 0.5f;
+					} else {
+						temp = Mathf.Ceil (rb.position.x / 0.5f) * 0.5f;
+					}
+					Vector3 newpos = new Vector3 (temp, rb.transform.position.y, 0);
+					rb.transform.position = newpos;
 				}
-				Vector3 newpos = new Vector3 (temp, rb.transform.position.y, 0);
-				rb.transform.position = newpos;
 			}
 
 			rb.velocity = desired_velocity * PlayerMovementVelocity;
 		}
 
-        /* NOTE:
+			/* NOTE:
          * A reminder to study and implement the grid-movement mechanic.
          * Also, consider using Rigidbodies (GetComponent<Rigidbody>().velocity)
          * to attain movement automatic collision-detection.
@@ -306,6 +351,7 @@ public class PlayerController : MonoBehaviour {
          * Also also, remember to attain framerate-independence via Time.deltaTime
          * https://docs.unity3d.com/ScriptReference/Time-deltaTime.html 
          */
+//		}
     }
 
 	static public WeaponDefinition getWeaponDefinition(WeaponType wt) {
