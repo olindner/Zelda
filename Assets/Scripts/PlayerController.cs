@@ -728,7 +728,10 @@ public class PlayerController : MonoBehaviour {
 			chomper.SetActive(true);
 			has_chomper = true;
 			Destroy(collider.gameObject);
-		} else if (collider.gameObject.tag == "Enemy" && num_cooldown_frames == 0) {
+		} else if (collider.gameObject.tag == "WallMaster") {
+			GetComponent<BoxCollider>().isTrigger = true;
+			//print("turned player into trigger");
+		}else if (collider.gameObject.tag == "Enemy" && num_cooldown_frames == 0) {
 			//print ("dude you touched me");
 			if (num_hearts > 0) {
 				ShowDamage (5);
@@ -754,12 +757,12 @@ public class PlayerController : MonoBehaviour {
 	{
 		//print("hello?");
 		//print (col.gameObject.name);
-		if (col.gameObject.name == "WallMaster") {
-		//print("In");
+		if (col.gameObject.tag == "WallMaster") {
+			transform.position = new Vector3(40f, 4f, 0);
 			GetComponent<Collider>().isTrigger = false; //allow Player to collide properly again
 			//black screen wipe
 			//move to first room
-			transform.position = new Vector3(40f, 2f, 0);
+			//transform.position = new Vector3(40f, 2f, 0);
 			//set direction to north/up
 		}
 	}

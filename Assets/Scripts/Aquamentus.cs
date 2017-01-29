@@ -137,14 +137,18 @@ public class Aquamentus : MonoBehaviour {
 	void OnCollisionEnter(Collision coll) {
 		if (coll.gameObject.tag == "Sword" || coll.gameObject.tag == "Boomerang") {
 			health--;
-			if (coll.gameObject.tag == "Sword")
-				Destroy (coll.gameObject);
+
+			if (coll.gameObject.tag == "Sword") 
+				Destroy(coll.gameObject);
+
 			ShowDamage (5);
-			if (health == 0) {
+			if (health <= 0) {
+				print("hi");
 				room.num_enemies_left--;
 				room.things_inside_room.Remove (this.gameObject);
 				Vector3 current_pos = this.gameObject.transform.position;
-				Destroy (this.gameObject);
+				print("dead");
+				Destroy (gameObject);
 				GameObject bigHeart = Instantiate (bigheart) as GameObject;
 				bigHeart.transform.position = current_pos;
 				room.things_inside_room.Add (bigHeart);

@@ -182,7 +182,7 @@ public class RoomController : MonoBehaviour {
 				map1 [active_row_index, active_col_index].things_inside_room.Clear();
 				map1 [active_row_index, active_col_index].init_pos_of_enemies.Clear();
 			}
-			print ("camera is panning!");
+			//print ("camera is panning!");
 			active_row_index = -1;
 			active_col_index = -1;
 		}
@@ -290,8 +290,8 @@ public class RoomController : MonoBehaviour {
 		row_index = 5f - row_index;
 		float col_index = (this.transform.position.x - x_start) / room_width;
 		//print ("col index = " + col_index);
-		print ("Row_index = " + row_index);
-		print ("Col_index = " + col_index);
+		//print ("Row_index = " + row_index);
+		//print ("Col_index = " + col_index);
 		map1 [(int)row_index, (int)col_index].is_active = true;
 		active_row_index = (int)row_index;
 		active_col_index = (int)col_index;
