@@ -14,8 +14,6 @@ public class Tile : MonoBehaviour {
 
     private SpriteRenderer  sprend;
 
-	public RoomController rc;
-
     void Awake() {
         if (spriteArray == null) {
             spriteArray = Resources.LoadAll<Sprite>(spriteTexture.name);
@@ -178,17 +176,20 @@ public class Tile : MonoBehaviour {
 				CameraPan.c.panning_left = true;
 			}
 		} else if (this.gameObject.tag == "Stairs" && coll.gameObject.tag == "Player") {
-			Room cur_room = rc.map1 [rc.active_row_index, rc.active_col_index];
+			print ("current active room " + RoomController.rc.active_row_index + " " + RoomController.rc.active_col_index);
+			Room cur_room = RoomController.rc.map1 [RoomController.rc.active_row_index, RoomController.rc.active_col_index];
 			for (int i = 0; i < cur_room.things_inside_room.Count; i++) {
 				GameObject go = cur_room.things_inside_room [i];
 				cur_room.things_inside_room.Remove (go);
 				Destroy (go);
 				i--;
 			}
-			CameraPan.c.transform.position = new Vector3 (23.52f, 60.79f, -11f);
-			rc.active_row_index = 1;
-			rc.active_col_index = 1;
+			CameraPan.c.transform.position = new Vector3 (23.52f, 49.79f, -11f);
+			RoomController.rc.active_row_index = 1;
+			RoomController.rc.active_col_index = 1;
 			PlayerController.instance.transform.position = new Vector3 (19f, 52f, 0f);
+			PlayerController.instance.num_frozen_frames = 24;
+			PlayerController.instance.GetComponent<Rigidbody> ().constraints = RigidbodyConstraints.FreezeAll;
 		}
 	}
 
