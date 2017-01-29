@@ -27,6 +27,8 @@ public class Room : MonoBehaviour {
 	public bool must_kill_all_enemies = false;
 	public bool has_push_block = false;
 
+	public bool bats_instantiated = false;
+
 	public bool key_picked_up = false;
 	public bool key_dropped = false;
 	public bool compass_picked_up = false;

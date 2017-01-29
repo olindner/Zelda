@@ -199,12 +199,16 @@ public class RoomController : MonoBehaviour {
 				&& map1[active_row_index, active_col_index].enemy_type != "None") {
 				if (!(active_row_index == 1 && active_col_index == 1))
 					map1 [active_row_index, active_col_index].InstantiateEnemies ();
-				else
-					map1 [active_row_index, active_col_index].InstantiateBatsInBowRoom ();
 			}
-			if (map1 [active_row_index, active_col_index].has_push_block) {
+			if (map1 [active_row_index, active_col_index].has_push_block && !map1[active_row_index, active_col_index].all_blocks_pushed) {
 				map1 [active_row_index, active_col_index].SetPushableBlocks ();
 			}
+		}
+
+		if (active_row_index == 1 && active_col_index == 1 && !map1[active_row_index, active_col_index].bats_instantiated) {
+			print ("should instantiate bats in bow room now");
+			map1 [active_row_index, active_col_index].InstantiateBatsInBowRoom ();
+			map1 [active_row_index, active_col_index].bats_instantiated = true;
 		}
 
 		if (active_row_index != -1 && active_col_index != -1 
@@ -274,22 +278,6 @@ public class RoomController : MonoBehaviour {
 				ShowMapOnCamera.MAP_TILES [cur_room.tile_xmin - 1, cur_room.tile_ymin + 3].gameObject.layer = 11;
 				ShowMapOnCamera.MAP_TILES [cur_room.tile_xmin - 1, cur_room.tile_ymin + 3].gameObject.tag = "DoorLeft";
 				ShowMapOnCamera.MAP [cur_room.tile_xmin - 1, cur_room.tile_ymin + 3] = 51;
-			}
-		}
-
-		if (active_row_index == 1 && active_col_index == 1) {
-			//constrain movement???
-			if (RoomController.rc.active_row_index == 1 && RoomController.rc.active_col_index == 1) {
-				Vector3 pos = transform.position;
-				if (Mathf.Abs (PlayerController.instance.transform.position.x - 19f) <= 0.1f) {
-					PlayerController.instance.transform.position = new Vector3 (19f, transform.position.y, 0f);
-				} else if (Mathf.Abs (PlayerController.instance.transform.position.x - 27f) <= 0.1f) {
-					PlayerController.instance.transform.position = new Vector3 (27f, transform.position.y, 0f);
-				} else if (Mathf.Abs (PlayerController.instance.transform.position.y - 46.25f) <= 0.1f) {
-					PlayerController.instance.transform.position = new Vector3 (transform.position.x, 46.25f, 0f);
-				} else if (Mathf.Abs (PlayerController.instance.transform.position.y - 49f) <= 0.1f) {
-					PlayerController.instance.transform.position = new Vector3 (transform.position.x, 49f, 0f);
-				}
 			}
 		}
 	}
