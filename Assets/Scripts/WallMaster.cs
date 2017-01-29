@@ -88,6 +88,7 @@ public class WallMaster : MonoBehaviour {
 				checks++;
 				if (checks == 3) {
 					Destroy (gameObject);
+					//need proper delete lines of code (Lillian)
 				}
 			}
 		}
@@ -107,12 +108,13 @@ public class WallMaster : MonoBehaviour {
 		}
 	}
 
-	void OnCollisionEnter (Collision coll)
-	{
-		if (coll.gameObject.tag == "Player") {
-			coll.gameObject.GetComponent<Collider>().isTrigger = true; //Player will now be a TRIGGER
-		}
-	}
+//	void OnCollisionEnter (Collision coll)
+//	{
+//		if (coll.gameObject.tag == "Player") {
+//			coll.gameObject.GetComponent<Collider>().isTrigger = true; //Player will now be a TRIGGER
+//			print("made player into trigger");
+//		}
+//	}
 
 	void OnTriggerStay (Collider col)
 	{

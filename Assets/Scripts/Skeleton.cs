@@ -96,6 +96,10 @@ public class Skeleton : MonoBehaviour {
 		if (!isMoving && !isStunned) {
 			int num = Random.Range (0, 15);
 
+			//Make sure set position in middle of square
+			CorrectPosition();
+			////////////////////////////////////////////
+
 			Vector3 rayUp = transform.TransformDirection (Vector3.up);
 			Vector3 rayDown = transform.TransformDirection (Vector3.down);
 			Vector3 rayLeft = transform.TransformDirection (Vector3.left);
@@ -229,5 +233,25 @@ public class Skeleton : MonoBehaviour {
 		for (int i = 0; i < materials.Length; i++) {
 			materials [i].color = originalColors [i];
 		}
+	}
+
+	void CorrectPosition ()
+	{
+		float tempx;
+		float tempy;
+		if (transform.position.x - Mathf.Floor (transform.position.x) <= 0.5) {
+			tempx = Mathf.Floor (transform.position.x);
+		}
+		else {
+			tempx = Mathf.Ceil(transform.position.x);
+		}
+
+		if (transform.position.y - Mathf.Floor (transform.position.y) <= 0.5) {
+			tempy = Mathf.Floor (transform.position.y);
+		}
+		else {
+			tempy = Mathf.Ceil(transform.position.y);
+		}
+		transform.position = new Vector3(tempx, tempy, 0);
 	}
 }
