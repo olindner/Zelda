@@ -12,7 +12,7 @@ public class Skeleton : MonoBehaviour {
 	private int dir;
 	public float spriteTimeDelay;
 	private float timer;
-	private bool isStunned;
+	private bool isStunned = false;
 
 	public float prob_drop_rupee = 0.75f;
 	public GameObject rupee;
@@ -104,42 +104,26 @@ public class Skeleton : MonoBehaviour {
 			Vector3 rayDown = transform.TransformDirection (Vector3.down);
 			Vector3 rayLeft = transform.TransformDirection (Vector3.left);
 			Vector3 rayRight = transform.TransformDirection (Vector3.right);
-			RaycastHit hit;
+			//RaycastHit hit;
 
 			//Equal percentages each direction...
 			if (num == 0 || num == 1) { //Up
-				if (!Physics.Raycast (transform.position, rayUp, out hit, 1) || //no collision whatsoever
-				    (Physics.Raycast (transform.position, rayUp, out hit, 1) && hit.transform.tag == "Key") || //okay to walk on key
-				    (Physics.Raycast (transform.position, rayUp, out hit, 1) && hit.transform.tag == "Bomb") || //okay to walk on bomb
-				    (Physics.Raycast (transform.position, rayUp, out hit, 1) && hit.transform.tag == "Rupee")) { //okay to walk on rupee
-
+				if (!Physics.Raycast (transform.position, rayUp, 1)) {
 					pos += Vector3.up;
 					dir = 0;
 				}
 			} else if (num == 2 || num == 3) { //Down
-				if (!Physics.Raycast (transform.position, rayDown, out hit, 1) || //no collision whatsoever
-				    (Physics.Raycast (transform.position, rayDown, out hit, 1) && hit.transform.tag == "Key") || //okay to walk on key
-				    (Physics.Raycast (transform.position, rayDown, out hit, 1) && hit.transform.tag == "Bomb") || //okay to walk on bomb
-				    (Physics.Raycast (transform.position, rayDown, out hit, 1) && hit.transform.tag == "Rupee")) { //okay to walk on rupee
-
+				if (!Physics.Raycast (transform.position, rayDown, 1)) {
 					pos += Vector3.down;
 					dir = 1;
 				}
 			} else if (num == 4 || num == 5) { //Left
-				if (!Physics.Raycast (transform.position, rayLeft, out hit, 1) || //no collision whatsoever
-				    (Physics.Raycast (transform.position, rayLeft, out hit, 1) && hit.transform.tag == "Key") || //okay to walk on key
-				    (Physics.Raycast (transform.position, rayLeft, out hit, 1) && hit.transform.tag == "Bomb") || //okay to walk on bomb
-				    (Physics.Raycast (transform.position, rayLeft, out hit, 1) && hit.transform.tag == "Rupee")) { //okay to walk on rupee
-
+				if (!Physics.Raycast (transform.position, rayLeft, 1)) {
 					pos += Vector3.left;
 					dir = 2;
 				}
 			} else if (num == 6 || num == 7) { //Right
-				if (!Physics.Raycast (transform.position, rayRight, out hit, 1) || //no collision whatsoever
-				    (Physics.Raycast (transform.position, rayRight, out hit, 1) && hit.transform.tag == "Key") || //okay to walk on key
-				    (Physics.Raycast (transform.position, rayRight, out hit, 1) && hit.transform.tag == "Bomb") || //okay to walk on bomb
-				    (Physics.Raycast (transform.position, rayRight, out hit, 1) && hit.transform.tag == "Rupee")) { //okay to walk on rupee
-
+				if (!Physics.Raycast (transform.position, rayRight, 1)) {
 					pos += Vector3.right;
 					dir = 3;
 				}
@@ -147,49 +131,17 @@ public class Skeleton : MonoBehaviour {
 			//...added likelihood to continue moving in same direction
 			//0=UP, 1=DOWN, 2=LEFT, 3=RIGHT
 			else if (num >= 8 && num <= 14) {
-				if (dir == 0) {
-					if (!Physics.Raycast (transform.position, rayUp, out hit, 1) || //no collision whatsoever
-				    	(Physics.Raycast (transform.position, rayUp, out hit, 1) && hit.transform.tag == "Key") || //okay to walk on key
-						(Physics.Raycast (transform.position, rayUp, out hit, 1) && hit.transform.tag == "Bomb") || //okay to walk on bomb
-						(Physics.Raycast (transform.position, rayUp, out hit, 1) && hit.transform.tag == "Rupee")) { //okay to walk on rupee
-
-						pos += Vector3.up;
-					}
-				} 
-				else if (dir == 1) {
-					if (!Physics.Raycast (transform.position, rayDown, out hit, 1) || //no collision whatsoever
-						(Physics.Raycast (transform.position, rayDown, out hit, 1) && hit.transform.tag == "Key") || //okay to walk on key
-						(Physics.Raycast (transform.position, rayDown, out hit, 1) && hit.transform.tag == "Bomb") || //okay to walk on bomb
-						(Physics.Raycast (transform.position, rayDown, out hit, 1) && hit.transform.tag == "Rupee")) { //okay to walk on rupee
-
-						pos += Vector3.down;
-					}
-				} 
-				else if (dir == 2) {
-					if (!Physics.Raycast (transform.position, rayLeft, out hit, 1) || //no collision whatsoever
-						(Physics.Raycast (transform.position, rayLeft, out hit, 1) && hit.transform.tag == "Key") || //okay to walk on key
-						(Physics.Raycast (transform.position, rayLeft, out hit, 1) && hit.transform.tag == "Bomb") || //okay to walk on bomb
-						(Physics.Raycast (transform.position, rayLeft, out hit, 1) && hit.transform.tag == "Rupee")) { //okay to walk on rupee
-
-						pos += Vector3.left;
-					}
-				} 
-				else if (dir == 3) {
-					if (!Physics.Raycast (transform.position, rayRight, out hit, 1) || //no collision whatsoever
-						(Physics.Raycast (transform.position, rayRight, out hit, 1) && hit.transform.tag == "Key") || //okay to walk on key
-						(Physics.Raycast (transform.position, rayRight, out hit, 1) && hit.transform.tag == "Bomb") || //okay to walk on bomb
-						(Physics.Raycast (transform.position, rayRight, out hit, 1) && hit.transform.tag == "Rupee")) { //okay to walk on rupee
-
-						pos += Vector3.right;
-					}
-
-				}
+				if (dir == 0 && !Physics.Raycast (transform.position, rayUp, 1)) pos += Vector3.up;
+				else if (dir == 1 && !Physics.Raycast (transform.position, rayDown, 1)) pos += Vector3.down;
+				else if (dir == 2 && !Physics.Raycast (transform.position, rayLeft, 1))	pos += Vector3.left;
+				else if (dir == 3 && !Physics.Raycast (transform.position, rayRight, 1)) pos += Vector3.right;
 			}
 		}
 		transform.position = Vector3.MoveTowards (transform.position, pos, Time.deltaTime * speed);
 	}
 
-	void OnCollisionEnter (Collision col) {
+	void OnCollisionEnter (Collision col)
+	{
 		if (col.gameObject.tag == "Sword") {
 			GetComponent<Rigidbody> ().velocity = damage_hopback_vel * col.rigidbody.velocity;
 			num_cooldown_frames = 5;
@@ -216,6 +168,9 @@ public class Skeleton : MonoBehaviour {
 			GetComponent<Rigidbody> ().constraints = RigidbodyConstraints.FreezeAll;
 			num_cooldown_frames = 300;
 			isStunned = true;
+		} else if (col.gameObject.name == "Skeleton") { //possibly do simple "else"
+			//CorrectPosition();
+			isMoving = false;
 		}
 	}
 
@@ -253,5 +208,6 @@ public class Skeleton : MonoBehaviour {
 			tempy = Mathf.Ceil(transform.position.y);
 		}
 		transform.position = new Vector3(tempx, tempy, 0);
+		isMoving = false; //hopefully make it pick new direction
 	}
 }

@@ -15,11 +15,10 @@ public class Hud : MonoBehaviour {
 	private bool hidden;
 	private RectTransform rt;
 	public float ease_factor = 0.1f;
-	//public Image Red0Empty;
-	//public Image Blue0Empty;
 	public Image[] weapons;
 	public Image[] slots;
 	public Image[] isSelected;
+	public Image[] BSelected;
 	public float blinkDelay;
 	private float blinkTimer;
 	public Image map;
@@ -42,6 +41,9 @@ public class Hud : MonoBehaviour {
 		}
 		foreach (Image g in isSelected) {
 			g.enabled = false;
+		}
+		foreach (Image h in BSelected) {
+			h.enabled = false;
 		}
 		slots[0].enabled = true; //enable red0empty first
 
@@ -178,6 +180,18 @@ public class Hud : MonoBehaviour {
 			blinkTimer = Time.time + blinkDelay;
 		}
 
+		//Weapon selection (put into "B slot")
+		if (Input.GetKeyDown (KeyCode.X)) { //making X to avoid key conflicts
+			foreach (Image g in isSelected) {
+				g.enabled = false;
+			}
+			isSelected[activeSlot].enabled = true;
+			foreach (Image h in BSelected) {
+				h.enabled = false;
+			}
+			BSelected[activeSlot].enabled = true;
+		}
+
 		if (PlayerController.instance.have_boomerang) {
 			weapons [0].enabled = true;
 		}
@@ -205,12 +219,12 @@ public class Hud : MonoBehaviour {
 				redSet = true;
 			}
 		}
-
-		Vector2 desired_ui_position = new Vector2(-200, 220); //375 to build properly
+			
+		Vector2 desired_ui_position = new Vector2(-200, 220); //when hidden above
 
 		if (!hidden)
             //desired_ui_position = new Vector2(400, -241);
-			desired_ui_position = new Vector2(-200, -210);
+			desired_ui_position = new Vector2(-200, -210); //when displayed
         rt.anchoredPosition += (desired_ui_position - rt.anchoredPosition) * ease_factor;
 
 		int rupees = PlayerController.instance.num_rupees;

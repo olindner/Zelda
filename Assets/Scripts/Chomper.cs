@@ -5,14 +5,30 @@ using UnityEngine;
 public class Chomper : MonoBehaviour {
 
 	private char dir = 'N';
+	public float spriteDelay;
+	private float spriteTimer;
+	public Sprite[] array;
+	private int here;
 
 	// Use this for initialization
 	void Start () {
-		gameObject.SetActive(false); //start off disabled
+		//gameObject.SetActive(false); //start off disabled
+		spriteTimer = Time.time + spriteDelay;
+		here = 0;
 	}
 
 	// Update is called once per frame
 	void Update () {
+
+		if (Time.time >= spriteTimer) {
+			GetComponent<SpriteRenderer> ().sprite = array [here];
+			if (here == 0)
+				here = 1;
+			else if (here == 1)
+				here = 0;
+			spriteTimer = Time.time + spriteDelay;
+		}
+
 		if (dir == 'N') transform.position = new Vector3(PlayerController.instance.transform.position.x, PlayerController.instance.transform.position.y + 2f, 0);
 		else if (dir == 'E') transform.position = new Vector3(PlayerController.instance.transform.position.x + 2f, PlayerController.instance.transform.position.y, 0);
 		else if (dir == 'S') transform.position = new Vector3(PlayerController.instance.transform.position.x, PlayerController.instance.transform.position.y - 2f, 0);
