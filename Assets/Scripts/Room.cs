@@ -26,6 +26,8 @@ public class Room : MonoBehaviour {
 	public bool has_triforce = false;
 	public bool must_kill_all_enemies = false;
 	public bool has_push_block = false;
+	public bool has_push_far_block = false;
+	public bool needs_chomper_pickup = false;
 
 	public bool bats_instantiated = false;
 
@@ -38,6 +40,8 @@ public class Room : MonoBehaviour {
 	public bool triforce_picked_up = false;
 	public bool all_enemies_killed = false;
 	public bool all_blocks_pushed = false;
+	public bool chomper_picked_up = false;
+	public bool chomper_dropped = false;
 
 	public int num_times_attacked_old_man = 0; //once, only right fire attacks; twice, both fires attack 
 
@@ -182,7 +186,7 @@ public class Room : MonoBehaviour {
 
 	public void InstantiateAquamentus() {
 		GameObject aq = Instantiate (enemy_prefab) as GameObject;
-		aq.transform.position = new Vector3 (76f, 49.5f, 0f);
+		aq.transform.position = new Vector3 (76f, 126.5f, 0f);
 		aq.GetComponent<Aquamentus> ().room = this;
 		things_inside_room.Add (aq);
 	}
@@ -193,10 +197,10 @@ public class Room : MonoBehaviour {
 		GameObject b3 = Instantiate (enemy_prefab) as GameObject;
 		GameObject b4 = Instantiate (enemy_prefab) as GameObject;
 
-		b1.transform.position = new Vector3 (16.84f, 48.65f, 0f);
-		b2.transform.position = new Vector3 (20.47f, 48.65f, 0f);
-		b3.transform.position = new Vector3 (24.57f, 48.65f, 0f);
-		b4.transform.position = new Vector3 (16.84f, 48.65f, 0f);
+		b1.transform.position = new Vector3 (16.84f, 125.65f, 0f);
+		b2.transform.position = new Vector3 (20.47f, 125.65f, 0f);
+		b3.transform.position = new Vector3 (24.57f, 125.65f, 0f);
+		b4.transform.position = new Vector3 (16.84f, 125.65f, 0f);
 
 		b1.GetComponent<Bat> ().room = this;
 		b2.GetComponent<Bat> ().room = this;
@@ -232,53 +236,266 @@ public class Room : MonoBehaviour {
 		return new Vector3 (temp_x, temp_y, 0f);
 	}
 
+	public void SetPushFarBlocks() {
+		if (num_push_blocks_total == 1) {
+			GameObject go = Instantiate (RoomController.rc.push_far_block_prefab) as GameObject;
+			go.transform.position = new Vector3 (60f, 14f, 0f);
+			go.GetComponent<PushableBlock> ().target = new Vector3 (58f, 19f, 0f);
+			go.GetComponent<PushableBlock> ().original_pos = new Vector3 (60f, 14f, 0f);
+			go.GetComponent<Rigidbody> ().constraints = RigidbodyConstraints.FreezeRotation | RigidbodyConstraints.FreezePositionZ;
+		} else if (num_push_blocks_total == 3) {
+			//these go in Mitchell boss room
+		}
+	}
+
+	public void SetPushFarBlocksAtTarget() {
+	}
+
 	public void SetPushableBlocks() {
 		if (num_push_blocks_total == 1) {
 			print ("in " + row + ", " + col + "; setting push blocks");
 			//GameObject go = Instantiate (room_controller.pushable_block_prefab) as GameObject;
 			GameObject go = Instantiate (RoomController.rc.pushable_block_prefab) as GameObject;
 			if (row == 0 && col == 1) {
-				go.transform.position = new Vector3 (22f, 60f, 0f);
-				go.GetComponent<PushableBlock> ().target = new Vector3 (22f, 61f, 0f);
-				go.GetComponent<PushableBlock> ().original_pos = new Vector3 (22f, 60f, 0f);
+				go.transform.position = new Vector3 (22f, 137f, 0f);
+				go.GetComponent<PushableBlock> ().target = new Vector3 (22f, 138f, 0f);
+				go.GetComponent<PushableBlock> ().original_pos = new Vector3 (22f, 137f, 0f);
 				go.GetComponent<Rigidbody> ().constraints = RigidbodyConstraints.FreezeRotation
-				//| RigidbodyConstraints.FreezePositionX | RigidbodyConstraints.FreezePositionZ;
-				| RigidbodyConstraints.FreezePositionZ;
+				| RigidbodyConstraints.FreezePositionX | RigidbodyConstraints.FreezePositionZ;
+				//| RigidbodyConstraints.FreezePositionZ;
 				//more stuff idk???
 			} else if (row == 2 && col == 1) {
 				print ("about to make push block by old man room");
-				go.transform.position = new Vector3 (23f, 38f, 0f);
-				go.GetComponent<PushableBlock> ().target = new Vector3 (24f, 38f, 0f);
-				go.GetComponent<PushableBlock> ().original_pos = new Vector3 (23f, 38f, 0f);
+				go.transform.position = new Vector3 (23f, 115f, 0f);
+				go.GetComponent<PushableBlock> ().target = new Vector3 (24f, 115f, 0f);
+				go.GetComponent<PushableBlock> ().original_pos = new Vector3 (23f, 115f, 0f);
 				go.GetComponent<Rigidbody> ().constraints = RigidbodyConstraints.FreezeRotation
 				| RigidbodyConstraints.FreezePositionY | RigidbodyConstraints.FreezePositionZ;
 				//| RigidbodyConstraints.FreezePositionZ;
+			} else if (row == 7 && col == 2) {
+				go.transform.position = new Vector3 (38f, 60f, 0f);
+				go.GetComponent<PushableBlock> ().target = new Vector3 (39f, 60f, 0f);
+				go.GetComponent<PushableBlock> ().original_pos = new Vector3 (38f, 60f, 0f);
+				go.GetComponent<Rigidbody> ().constraints = RigidbodyConstraints.FreezeRotation
+				| RigidbodyConstraints.FreezePositionY | RigidbodyConstraints.FreezePositionZ;
+			} else if (row == 7 && col == 1) {
+				go.transform.position = new Vector3 (23f, 57f, 0f);
+				go.GetComponent<PushableBlock> ().target = new Vector3 (24f, 57f, 0f);
+				go.GetComponent<PushableBlock> ().original_pos = new Vector3 (23f, 57f, 0f);
+				go.GetComponent<Rigidbody> ().constraints = RigidbodyConstraints.FreezeRotation
+				| RigidbodyConstraints.FreezePositionY | RigidbodyConstraints.FreezePositionZ;
+			} else if (row == 9 && col == 0) {
+				go.transform.position = new Vector3 (2f, 37f, 0f);
+				go.GetComponent<PushableBlock> ().target = new Vector3 (3f, 37f, 0f);
+				go.GetComponent<PushableBlock> ().original_pos = new Vector3 (2f, 37f, 0f);
+				go.GetComponent<Rigidbody> ().constraints = RigidbodyConstraints.FreezeRotation
+				| RigidbodyConstraints.FreezePositionX | RigidbodyConstraints.FreezePositionZ;
 			}
+			//else remember the one that goes a long way???
 			//go.GetComponent<PushableBlock> ().rc = room_controller;
 			things_inside_room.Add (go);
+		} else if (num_push_blocks_total == 2) {
+			GameObject go1 = Instantiate (RoomController.rc.pushable_block_prefab) as GameObject;
+			GameObject go2 = Instantiate (RoomController.rc.pushable_block_prefab) as GameObject;
+			if (row == 9 && col == 1) {
+				go1.transform.position = new Vector3 (19f, 36f, 0f);
+				go1.GetComponent<PushableBlock> ().target = new Vector3 (20f, 36f, 0f);
+				go1.GetComponent<PushableBlock> ().original_pos = new Vector3 (19f, 36f, 0f);
+				go1.GetComponent<Rigidbody> ().constraints = RigidbodyConstraints.FreezeRotation
+				| RigidbodyConstraints.FreezePositionY | RigidbodyConstraints.FreezePositionZ;
+				go2.transform.position = new Vector3 (19f, 40f, 0f);
+				go2.GetComponent<PushableBlock> ().target = new Vector3 (20f, 40f, 0f);
+				go2.GetComponent<PushableBlock> ().original_pos = new Vector3 (19f, 40f, 0f);
+				go2.GetComponent<Rigidbody> ().constraints = RigidbodyConstraints.FreezeRotation
+				| RigidbodyConstraints.FreezePositionY | RigidbodyConstraints.FreezePositionZ;
+			} else if (row == 10 && col == 1) {
+				go1.transform.position = new Vector3 (18f, 27f, 0f);
+				go1.GetComponent<PushableBlock> ().target = new Vector3 (18f, 28f, 0f);
+				go1.GetComponent<PushableBlock> ().original_pos = new Vector3 (18f, 27f, 0f);
+				go1.GetComponent<Rigidbody> ().constraints = RigidbodyConstraints.FreezeRotation
+				| RigidbodyConstraints.FreezePositionX | RigidbodyConstraints.FreezePositionZ;
+				go2.transform.position = new Vector3 (28f, 27f, 0f);
+				go2.GetComponent<PushableBlock> ().target = new Vector3 (28f, 28f, 0f);
+				go2.GetComponent<PushableBlock> ().original_pos = new Vector3 (28f, 27f, 0f);
+				go2.GetComponent<Rigidbody> ().constraints = RigidbodyConstraints.FreezeRotation
+				| RigidbodyConstraints.FreezePositionX | RigidbodyConstraints.FreezePositionZ;
+			}
+		} else if (num_push_blocks_total == 4) {
+			GameObject go1 = Instantiate (RoomController.rc.pushable_block_prefab) as GameObject;
+			GameObject go2 = Instantiate (RoomController.rc.pushable_block_prefab) as GameObject;
+			GameObject go3 = Instantiate (RoomController.rc.pushable_block_prefab) as GameObject;
+			GameObject go4 = Instantiate (RoomController.rc.pushable_block_prefab) as GameObject;
+			go1.transform.position = new Vector3 (22f, 16f, 0f);
+			go1.GetComponent<PushableBlock> ().target = new Vector3 (22f, 17f, 0f);
+			go1.GetComponent<PushableBlock> ().original_pos = new Vector3 (22f, 16f, 0f);
+			go1.GetComponent<Rigidbody> ().constraints = RigidbodyConstraints.FreezeRotation
+				| RigidbodyConstraints.FreezePositionX | RigidbodyConstraints.FreezePositionZ;
+			go2.transform.position = new Vector3 (23f, 16f, 0f);
+			go2.GetComponent<PushableBlock> ().target = new Vector3 (23f, 15f, 0f);
+			go2.GetComponent<PushableBlock> ().original_pos = new Vector3 (23f, 16f, 0f);
+			go2.GetComponent<Rigidbody> ().constraints = RigidbodyConstraints.FreezeRotation
+				| RigidbodyConstraints.FreezePositionX | RigidbodyConstraints.FreezePositionZ;
+			go3.transform.position = new Vector3 (24f, 16f, 0f);
+			go3.GetComponent<PushableBlock> ().target = new Vector3 (24f, 17f, 0f);
+			go3.GetComponent<PushableBlock> ().original_pos = new Vector3 (24f, 16f, 0f);
+			go3.GetComponent<Rigidbody> ().constraints = RigidbodyConstraints.FreezeRotation
+				| RigidbodyConstraints.FreezePositionX | RigidbodyConstraints.FreezePositionZ;
+			go4.transform.position = new Vector3 (25f, 16f, 0f);
+			go4.GetComponent<PushableBlock> ().target = new Vector3 (25f, 15f, 0f);
+			go4.GetComponent<PushableBlock> ().original_pos = new Vector3 (25f, 16f, 0f);
+			go4.GetComponent<Rigidbody> ().constraints = RigidbodyConstraints.FreezeRotation
+				| RigidbodyConstraints.FreezePositionX | RigidbodyConstraints.FreezePositionZ;
+		} else if (num_push_blocks_total == 6) {
+			GameObject go1 = Instantiate (RoomController.rc.pushable_block_prefab) as GameObject;
+			GameObject go2 = Instantiate (RoomController.rc.pushable_block_prefab) as GameObject;
+			GameObject go3 = Instantiate (RoomController.rc.pushable_block_prefab) as GameObject;
+			GameObject go4 = Instantiate (RoomController.rc.pushable_block_prefab) as GameObject;
+			GameObject go5 = Instantiate (RoomController.rc.pushable_block_prefab) as GameObject;
+			GameObject go6 = Instantiate (RoomController.rc.pushable_block_prefab) as GameObject;
+			go1.transform.position = new Vector3 (36f, 18f, 0f);
+			go1.GetComponent<PushableBlock> ().target = new Vector3 (35f, 18f, 0f);
+			go1.GetComponent<PushableBlock> ().original_pos = new Vector3 (36f, 18f, 0f);
+			go1.GetComponent<Rigidbody> ().constraints = RigidbodyConstraints.FreezeRotation
+				| RigidbodyConstraints.FreezePositionY | RigidbodyConstraints.FreezePositionZ;
+			go2.transform.position = new Vector3 (36f, 14f, 0f);
+			go2.GetComponent<PushableBlock> ().target = new Vector3 (35f, 14f, 0f);
+			go2.GetComponent<PushableBlock> ().original_pos = new Vector3 (36f, 14f, 0f);
+			go2.GetComponent<Rigidbody> ().constraints = RigidbodyConstraints.FreezeRotation
+				| RigidbodyConstraints.FreezePositionY | RigidbodyConstraints.FreezePositionZ;
+			go3.transform.position = new Vector3 (41f, 18f, 0f);
+			go3.GetComponent<PushableBlock> ().target = new Vector3 (42f, 18f, 0f);
+			go3.GetComponent<PushableBlock> ().original_pos = new Vector3 (41f, 18f, 0f);
+			go3.GetComponent<Rigidbody> ().constraints = RigidbodyConstraints.FreezeRotation
+				| RigidbodyConstraints.FreezePositionY | RigidbodyConstraints.FreezePositionZ;
+			go4.transform.position = new Vector3 (41f, 14f, 0f);
+			go4.GetComponent<PushableBlock> ().target = new Vector3 (42f, 14f, 0f);
+			go4.GetComponent<PushableBlock> ().original_pos = new Vector3 (41f, 14f, 0f);
+			go4.GetComponent<Rigidbody> ().constraints = RigidbodyConstraints.FreezeRotation
+				| RigidbodyConstraints.FreezePositionY | RigidbodyConstraints.FreezePositionZ;
+			go5.transform.position = new Vector3 (43f, 18f, 0f);
+			go5.GetComponent<PushableBlock> ().target = new Vector3 (44f, 18f, 0f);
+			go5.GetComponent<PushableBlock> ().original_pos = new Vector3 (43f, 18f, 0f);
+			go5.GetComponent<Rigidbody> ().constraints = RigidbodyConstraints.FreezeRotation
+				| RigidbodyConstraints.FreezePositionY | RigidbodyConstraints.FreezePositionZ;
+			go6.transform.position = new Vector3 (43f, 14f, 0f);
+			go6.GetComponent<PushableBlock> ().target = new Vector3 (44f, 14f, 0f);
+			go6.GetComponent<PushableBlock> ().original_pos = new Vector3 (43f, 14f, 0f);
+			go6.GetComponent<Rigidbody> ().constraints = RigidbodyConstraints.FreezeRotation
+				| RigidbodyConstraints.FreezePositionY | RigidbodyConstraints.FreezePositionZ;
 		}
 	}
 
 	public void SetPushableBlocksAtTarget() {
 		if (num_push_blocks_total == 1) {
-			print ("in " + row + ", " + col + "; setting push blocks");
+			print ("in " + row + ", " + col + "; setting target push blocks");
 			//GameObject go = Instantiate (room_controller.pushable_block_prefab) as GameObject;
 			GameObject go = Instantiate (RoomController.rc.pushable_block_prefab) as GameObject;
 			if (row == 0 && col == 1) {
-				go.transform.position = new Vector3 (22f, 61f, 0f);
-				go.GetComponent<PushableBlock> ().target = new Vector3 (22f, 61f, 0f);
-				go.GetComponent<PushableBlock> ().original_pos = new Vector3 (22f, 60f, 0f);
+				go.transform.position = new Vector3 (22f, 138f, 0f);
+				go.GetComponent<PushableBlock> ().target = new Vector3 (22f, 138f, 0f);
+				go.GetComponent<PushableBlock> ().original_pos = new Vector3 (22f, 137f, 0f);
 				go.GetComponent<Rigidbody> ().constraints = RigidbodyConstraints.FreezeAll;
+				go.GetComponent<PushableBlock> ().done_moving = true;
 				//more stuff idk???
 			} else if (row == 2 && col == 1) {
 				print ("about to make push block by old man room");
-				go.transform.position = new Vector3 (24f, 38f, 0f);
-				go.GetComponent<PushableBlock> ().target = new Vector3 (24f, 38f, 0f);
-				go.GetComponent<PushableBlock> ().original_pos = new Vector3 (23f, 38f, 0f);
+				go.transform.position = new Vector3 (24f, 115f, 0f);
+				go.GetComponent<PushableBlock> ().target = new Vector3 (24f, 115f, 0f);
+				go.GetComponent<PushableBlock> ().original_pos = new Vector3 (23f, 115f, 0f);
+				go.GetComponent<Rigidbody> ().constraints = RigidbodyConstraints.FreezeAll;
+				go.GetComponent<PushableBlock> ().done_moving = true;
+			} else if (row == 7 && col == 2) {
+				go.transform.position = new Vector3 (39f, 60f, 0f);
+				go.GetComponent<PushableBlock> ().target = new Vector3 (39f, 60f, 0f);
+				go.GetComponent<PushableBlock> ().original_pos = new Vector3 (38f, 60f, 0f);
+				go.GetComponent<Rigidbody> ().constraints = RigidbodyConstraints.FreezeAll;
+			} else if (row == 7 && col == 1) {
+				go.transform.position = new Vector3 (24f, 57f, 0f);
+				go.GetComponent<PushableBlock> ().target = new Vector3 (24f, 57f, 0f);
+				go.GetComponent<PushableBlock> ().original_pos = new Vector3 (23f, 57f, 0f);
+				go.GetComponent<Rigidbody> ().constraints = RigidbodyConstraints.FreezeAll;
+			} else if (row == 9 && col == 0) {
+				go.transform.position = new Vector3 (2f, 38f, 0f);
+				go.GetComponent<PushableBlock> ().target = new Vector3 (2f, 38f, 0f);
+				go.GetComponent<PushableBlock> ().original_pos = new Vector3 (2f, 37f, 0f);
 				go.GetComponent<Rigidbody> ().constraints = RigidbodyConstraints.FreezeAll;
 			}
 			//go.GetComponent<PushableBlock> ().rc = room_controller;
 			things_inside_room.Add (go);
+		}  else if (num_push_blocks_total == 2) {
+			GameObject go1 = Instantiate (RoomController.rc.pushable_block_prefab) as GameObject;
+			GameObject go2 = Instantiate (RoomController.rc.pushable_block_prefab) as GameObject;
+			if (row == 9 && col == 1) {
+				go1.transform.position = new Vector3 (20f, 36f, 0f);
+				go1.GetComponent<PushableBlock> ().target = new Vector3 (20f, 36f, 0f);
+				go1.GetComponent<PushableBlock> ().original_pos = new Vector3 (19f, 36f, 0f);
+				go1.GetComponent<Rigidbody> ().constraints = RigidbodyConstraints.FreezeAll;
+				go2.transform.position = new Vector3 (20f, 40f, 0f);
+				go2.GetComponent<PushableBlock> ().target = new Vector3 (20f, 40f, 0f);
+				go2.GetComponent<PushableBlock> ().original_pos = new Vector3 (19f, 40f, 0f);
+				go2.GetComponent<Rigidbody> ().constraints = RigidbodyConstraints.FreezeAll;
+			} else if (row == 10 && col == 1) {
+				go1.transform.position = new Vector3 (18f, 28f, 0f);
+				go1.GetComponent<PushableBlock> ().target = new Vector3 (18f, 28f, 0f);
+				go1.GetComponent<PushableBlock> ().original_pos = new Vector3 (18f, 27f, 0f);
+				go1.GetComponent<Rigidbody> ().constraints = RigidbodyConstraints.FreezeAll;
+				go2.transform.position = new Vector3 (28f, 28f, 0f);
+				go2.GetComponent<PushableBlock> ().target = new Vector3 (28f, 28f, 0f);
+				go2.GetComponent<PushableBlock> ().original_pos = new Vector3 (28f, 27f, 0f);
+				go2.GetComponent<Rigidbody> ().constraints = RigidbodyConstraints.FreezeAll;
+			}
+		} else if (num_push_blocks_total == 4) {
+			GameObject go1 = Instantiate (RoomController.rc.pushable_block_prefab) as GameObject;
+			GameObject go2 = Instantiate (RoomController.rc.pushable_block_prefab) as GameObject;
+			GameObject go3 = Instantiate (RoomController.rc.pushable_block_prefab) as GameObject;
+			GameObject go4 = Instantiate (RoomController.rc.pushable_block_prefab) as GameObject;
+			go1.transform.position = new Vector3 (22f, 17f, 0f);
+			go1.GetComponent<PushableBlock> ().target = new Vector3 (22f, 17f, 0f);
+			go1.GetComponent<PushableBlock> ().original_pos = new Vector3 (22f, 16f, 0f);
+			go1.GetComponent<Rigidbody> ().constraints = RigidbodyConstraints.FreezeAll;
+			go2.transform.position = new Vector3 (23f, 15f, 0f);
+			go2.GetComponent<PushableBlock> ().target = new Vector3 (23f, 15f, 0f);
+			go2.GetComponent<PushableBlock> ().original_pos = new Vector3 (23f, 16f, 0f);
+			go2.GetComponent<Rigidbody> ().constraints = RigidbodyConstraints.FreezeAll;
+			go3.transform.position = new Vector3 (24f, 17f, 0f);
+			go3.GetComponent<PushableBlock> ().target = new Vector3 (24f, 17f, 0f);
+			go3.GetComponent<PushableBlock> ().original_pos = new Vector3 (24f, 16f, 0f);
+			go3.GetComponent<Rigidbody> ().constraints = RigidbodyConstraints.FreezeAll;
+			go4.transform.position = new Vector3 (25f, 15f, 0f);
+			go4.GetComponent<PushableBlock> ().target = new Vector3 (25f, 15f, 0f);
+			go4.GetComponent<PushableBlock> ().original_pos = new Vector3 (25f, 16f, 0f);
+			go4.GetComponent<Rigidbody> ().constraints = RigidbodyConstraints.FreezeAll;
+		} else if (num_push_blocks_total == 6) {
+			GameObject go1 = Instantiate (RoomController.rc.pushable_block_prefab) as GameObject;
+			GameObject go2 = Instantiate (RoomController.rc.pushable_block_prefab) as GameObject;
+			GameObject go3 = Instantiate (RoomController.rc.pushable_block_prefab) as GameObject;
+			GameObject go4 = Instantiate (RoomController.rc.pushable_block_prefab) as GameObject;
+			GameObject go5 = Instantiate (RoomController.rc.pushable_block_prefab) as GameObject;
+			GameObject go6 = Instantiate (RoomController.rc.pushable_block_prefab) as GameObject;
+			go1.transform.position = new Vector3 (35f, 18f, 0f);
+			go1.GetComponent<PushableBlock> ().target = new Vector3 (35f, 18f, 0f);
+			go1.GetComponent<PushableBlock> ().original_pos = new Vector3 (36f, 18f, 0f);
+			go1.GetComponent<Rigidbody> ().constraints = RigidbodyConstraints.FreezeAll;
+			go2.transform.position = new Vector3 (35f, 14f, 0f);
+			go2.GetComponent<PushableBlock> ().target = new Vector3 (35f, 14f, 0f);
+			go2.GetComponent<PushableBlock> ().original_pos = new Vector3 (36f, 14f, 0f);
+			go2.GetComponent<Rigidbody> ().constraints = RigidbodyConstraints.FreezeAll;
+			go3.transform.position = new Vector3 (42f, 18f, 0f);
+			go3.GetComponent<PushableBlock> ().target = new Vector3 (42f, 18f, 0f);
+			go3.GetComponent<PushableBlock> ().original_pos = new Vector3 (41f, 18f, 0f);
+			go3.GetComponent<Rigidbody> ().constraints = RigidbodyConstraints.FreezeAll;
+			go4.transform.position = new Vector3 (42f, 14f, 0f);
+			go4.GetComponent<PushableBlock> ().target = new Vector3 (42f, 14f, 0f);
+			go4.GetComponent<PushableBlock> ().original_pos = new Vector3 (41f, 14f, 0f);
+			go4.GetComponent<Rigidbody> ().constraints = RigidbodyConstraints.FreezeAll;
+			go5.transform.position = new Vector3 (44f, 18f, 0f);
+			go5.GetComponent<PushableBlock> ().target = new Vector3 (44f, 18f, 0f);
+			go5.GetComponent<PushableBlock> ().original_pos = new Vector3 (43f, 18f, 0f);
+			go5.GetComponent<Rigidbody> ().constraints = RigidbodyConstraints.FreezeAll;
+			go6.transform.position = new Vector3 (44f, 14f, 0f);
+			go6.GetComponent<PushableBlock> ().target = new Vector3 (44f, 14f, 0f);
+			go6.GetComponent<PushableBlock> ().original_pos = new Vector3 (43f, 14f, 0f);
+			go6.GetComponent<Rigidbody> ().constraints = RigidbodyConstraints.FreezeAll;
 		}
 	}
 }

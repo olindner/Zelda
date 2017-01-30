@@ -24,6 +24,8 @@ public class RoomController : MonoBehaviour {
 	public GameObject map_prefab;
 	public GameObject boomerang_prefab;
 	public GameObject pushable_block_prefab;
+	public GameObject push_far_block_prefab;
+	public GameObject chomper_prefab;
 
 //	public RoomController() {
 //	}
@@ -34,10 +36,10 @@ public class RoomController : MonoBehaviour {
 		room_height = 11f;
 		room_width = 16f;
 
-		map1 = new Room[6, 6];
+		map1 = new Room[13, 6];
 		for (int i = 0; i < 6; i++) {
-			for (int j = 0; j < 6; j++) {
-				Vector3 cam_pos = new Vector3 (i * room_width + x_start, (5-j) * room_height + y_start, z);
+			for (int j = 0; j < 13; j++) {
+				Vector3 cam_pos = new Vector3 (i * room_width + x_start, (12-j) * room_height + y_start, z);
 				 //map1 [j, i] = Room.MakeNewRoom (cam_pos, this, j, i);
 				map1 [j, i] = Room.MakeNewRoom (cam_pos, j, i);
 			}
@@ -168,6 +170,103 @@ public class RoomController : MonoBehaviour {
 		map1 [5, 2].FindMinMax ();
 //		print ("INITIAL ACTIVE ROW INDEX " + active_row_index);
 //		print ("INITIAL ACTIVE COL INDEX " + active_col_index);
+
+		map1 [8, 2].enemy_type = "Stalfos";
+		map1 [8, 2].num_enemies_total = 5;
+		map1 [8, 2].num_enemies_left = 5;
+		map1 [8, 2].needs_chomper_pickup = true;
+		map1 [8, 2].SetEnemyPrefab ();
+
+		map1 [7, 2].enemy_type = "Gel";
+		map1 [7, 2].num_enemies_total = 5;
+		map1 [7, 2].num_enemies_left = 5;
+		map1 [7, 2].SetEnemyPrefab ();
+		map1 [7, 2].has_push_block = true;
+		map1 [7, 2].num_push_blocks_total = 1;
+		map1 [7, 2].num_push_blocks_left = 1;
+
+		map1 [7, 1].enemy_type = "Keese";
+		map1 [7, 1].num_enemies_total = 3;
+		map1 [7, 1].num_enemies_left = 3;
+		map1 [7, 1].SetEnemyPrefab ();
+		map1 [7, 1].has_push_block = true;
+		map1 [7, 1].num_push_blocks_total = 1;
+		map1 [7, 1].num_push_blocks_left = 1;
+
+		map1 [7, 0].enemy_type = "Gel";
+		map1 [7, 0].num_enemies_total = 5;
+		map1 [7, 0].num_enemies_left = 5;
+		map1 [7, 0].SetEnemyPrefab ();
+
+		map1 [8, 0].enemy_type = "Goriya";
+		map1 [8, 0].num_enemies_total = 3;
+		map1 [8, 0].num_enemies_left = 3;
+		map1 [8, 0].SetEnemyPrefab ();
+
+		map1 [9, 0].enemy_type = "Keese";
+		map1 [9, 0].num_enemies_total = 6;
+		map1 [9, 0].num_enemies_total = 6;
+		map1 [9, 0].SetEnemyPrefab ();
+		map1 [9, 0].has_push_block = true;
+		map1 [9, 0].num_push_blocks_total = 1;
+		map1 [9, 0].num_push_blocks_left = 1;
+
+		map1 [9, 1].enemy_type = "Stalfos";
+		map1 [9, 1].num_enemies_total = 3;
+		map1 [9, 1].num_enemies_left = 3;
+		map1 [9, 1].SetEnemyPrefab ();
+		map1 [9, 1].has_push_block = true;
+		map1 [9, 0].num_push_blocks_total = 2;
+		map1 [9, 0].num_push_blocks_left = 2;
+
+		map1 [10, 1].enemy_type = "Gel";
+		map1 [10, 1].num_enemies_total = 3;
+		map1 [10, 1].num_enemies_left = 3;
+		map1 [10, 1].SetEnemyPrefab ();
+		map1 [10, 1].has_push_block = true;
+		map1 [10, 1].num_push_blocks_total = 2;
+		map1 [10, 1].num_push_blocks_left = 2;
+
+		map1 [11, 1].enemy_type = "Keese";
+		map1 [11, 1].num_enemies_total = 3;
+		map1 [11, 1].num_enemies_left = 3;
+		map1 [11, 1].SetEnemyPrefab ();
+		map1 [11, 1].has_push_block = true;
+		map1 [11, 1].num_push_blocks_total = 4;
+		map1 [11, 1].num_push_blocks_left = 4;
+
+		map1 [11, 2].enemy_type = "Spiketrap";
+		map1 [11, 2].num_enemies_total = 6;
+		map1 [11, 2].num_enemies_left = 6;
+		map1 [11, 2].SetEnemyPrefab ();
+		map1 [11, 2].has_push_block = true;
+		map1 [11, 2].num_push_blocks_total = 6;
+		map1 [11, 2].num_push_blocks_left = 6;
+
+		map1 [11, 3].enemy_type = "Gel";
+		map1 [11, 3].num_enemies_total = 6;
+		map1 [11, 3].num_enemies_left = 6;
+		map1 [11, 3].SetEnemyPrefab ();
+		map1 [11, 3].has_push_far_block = true;
+		map1 [11, 3].num_push_blocks_total = 1;
+		map1 [11, 3].num_push_blocks_left = 1;
+
+		map1 [10, 3].enemy_type = "Stalfos";
+		map1 [10, 3].num_enemies_total = 4;
+		map1 [10, 3].num_enemies_left = 4;
+		map1 [10, 3].SetEnemyPrefab ();
+
+		map1 [10, 4].enemy_type = "Goriya";
+		map1 [10, 4].num_enemies_total = 3;
+		map1 [10, 4].num_enemies_left = 3;
+		map1 [10, 4].SetEnemyPrefab ();
+		map1 [10, 4].needs_key_pickup = true;
+
+		map1 [9, 4].enemy_type = "MitchellBoss";
+		map1 [9, 4].num_enemies_total = 1;
+		map1 [9, 4].num_enemies_left = 1;
+		map1 [9, 4].SetEnemyPrefab ();
+		//add blocks
 	}
 	
 	// Update is called once per frame
@@ -200,14 +299,21 @@ public class RoomController : MonoBehaviour {
 				if (!(active_row_index == 1 && active_col_index == 1))
 					map1 [active_row_index, active_col_index].InstantiateEnemies ();
 			}
-			if (map1 [active_row_index, active_col_index].has_push_block && !map1[active_row_index, active_col_index].all_blocks_pushed) {
+			if (map1 [active_row_index, active_col_index].has_push_block && !map1 [active_row_index, active_col_index].all_blocks_pushed) {
 				map1 [active_row_index, active_col_index].SetPushableBlocks ();
+			} else if (map1 [active_row_index, active_col_index].has_push_block && map1 [active_row_index, active_col_index].all_blocks_pushed) {
+				map1[active_row_index, active_col_index].SetPushableBlocksAtTarget ();
+			}
+			if (map1 [active_row_index, active_col_index].has_push_far_block && !map1 [active_row_index, active_col_index].all_blocks_pushed) {
+				map1 [active_row_index, active_col_index].SetPushFarBlocks ();
+			} else if (map1 [active_row_index, active_col_index].has_push_far_block && map1 [active_row_index, active_col_index].all_blocks_pushed) {
+				map1[active_row_index, active_col_index].SetPushFarBlocksAtTarget ();
 			}
 		}
 
-		if (active_row_index == 0 && active_col_index == 1 && map1[active_row_index, active_col_index].all_blocks_pushed) {
-			map1[active_row_index, active_col_index].SetPushableBlocksAtTarget ();
-		}
+//		if (active_row_index == 0 && active_col_index == 1 && map1[active_row_index, active_col_index].all_blocks_pushed) {
+//			map1[active_row_index, active_col_index].SetPushableBlocksAtTarget ();
+//		}
 
 		if (active_row_index == 1 && active_col_index == 1 && !map1[active_row_index, active_col_index].bats_instantiated) {
 			print ("should instantiate bats in bow room now");
@@ -228,6 +334,37 @@ public class RoomController : MonoBehaviour {
 				key.transform.position = temp;
 				map1[active_row_index, active_col_index].things_inside_room.Add (key);
 				map1 [active_row_index, active_col_index].key_dropped = true;
+			}
+		}
+
+		if (active_row_index != -1 && active_col_index != -1
+		    && map1 [active_row_index, active_col_index].needs_chomper_pickup
+		    && !map1 [active_row_index, active_col_index].chomper_dropped) {
+			if (map1 [active_row_index, active_col_index].num_enemies_left == 0
+			    && !map1 [active_row_index, active_col_index].chomper_picked_up) {
+				map1 [active_row_index, active_col_index].init_pos_of_enemies.Clear ();
+				Vector3 temp = map1 [active_row_index, active_col_index].FindFreeTile ();
+				GameObject chomper = Instantiate (chomper_prefab) as GameObject;
+				chomper.transform.position = temp;
+				map1 [active_row_index, active_col_index].things_inside_room.Add (chomper);
+				map1 [active_row_index, active_col_index].chomper_dropped = true;
+				Room cur_room = map1 [active_row_index, active_col_index];
+				ShowMapOnCamera.MAP_TILES [cur_room.tile_xmin + 5, cur_room.tile_ymax + 1].SetTile (cur_room.tile_xmin + 5, cur_room.tile_ymax + 1, 92);
+				ShowMapOnCamera.MAP_TILES [cur_room.tile_xmin + 6, cur_room.tile_ymax + 1].SetTile (cur_room.tile_xmin + 6, cur_room.tile_ymax + 1, 93);
+				ShowMapOnCamera.MAP_TILES [cur_room.tile_xmin + 5, cur_room.tile_ymax + 1].GetComponent<BoxCollider> ().enabled = true;
+				ShowMapOnCamera.MAP_TILES [cur_room.tile_xmin + 6, cur_room.tile_ymax + 1].GetComponent<BoxCollider> ().center = new Vector3(0.25f, 0f, 0f);
+				ShowMapOnCamera.MAP_TILES [cur_room.tile_xmin + 5, cur_room.tile_ymax + 1].GetComponent<BoxCollider> ().size = new Vector3(0.5f, 1f, 1f);
+				ShowMapOnCamera.MAP_TILES [cur_room.tile_xmin + 5, cur_room.tile_ymax + 1].GetComponent<BoxCollider> ().isTrigger = true;
+				ShowMapOnCamera.MAP_TILES [cur_room.tile_xmin + 5, cur_room.tile_ymax + 1].gameObject.layer = 11;
+				ShowMapOnCamera.MAP_TILES [cur_room.tile_xmin + 5, cur_room.tile_ymax + 1].gameObject.tag = "DoorUp";
+				ShowMapOnCamera.MAP [cur_room.tile_xmin + 5, cur_room.tile_ymax + 1] = 92;
+				ShowMapOnCamera.MAP_TILES [cur_room.tile_xmin + 6, cur_room.tile_ymax + 1].GetComponent<BoxCollider> ().enabled = true;
+				ShowMapOnCamera.MAP_TILES [cur_room.tile_xmin + 6, cur_room.tile_ymax + 1].GetComponent<BoxCollider> ().center = new Vector3(-0.25f, 0f, 0f);
+				ShowMapOnCamera.MAP_TILES [cur_room.tile_xmin + 6, cur_room.tile_ymax + 1].GetComponent<BoxCollider> ().size = new Vector3(0.5f, 1f, 1f);
+				ShowMapOnCamera.MAP_TILES [cur_room.tile_xmin + 6, cur_room.tile_ymax + 1].GetComponent<BoxCollider> ().isTrigger = true;
+				ShowMapOnCamera.MAP_TILES [cur_room.tile_xmin + 6, cur_room.tile_ymax + 1].gameObject.layer = 11;
+				ShowMapOnCamera.MAP_TILES [cur_room.tile_xmin + 6, cur_room.tile_ymax + 1].gameObject.tag = "DoorUp";
+				ShowMapOnCamera.MAP [cur_room.tile_xmin + 6, cur_room.tile_ymax + 1] = 93;
 			}
 		}
 			
@@ -273,15 +410,44 @@ public class RoomController : MonoBehaviour {
 
 		if (active_row_index != -1 && active_col_index != -1 
 			&& map1[active_row_index, active_col_index].all_blocks_pushed) {
-			if (active_row_index == 2 && active_col_index == 1) {
-				Room cur_room = map1 [active_row_index, active_col_index];
+			Room cur_room = map1 [active_row_index, active_col_index];
+			if ((active_row_index == 2 && active_col_index == 1) || (active_row_index == 7 && active_col_index == 1)
+				|| (active_row_index == 7 && active_col_index == 2)) {
 				ShowMapOnCamera.MAP_TILES [cur_room.tile_xmin - 1, cur_room.tile_ymin + 3].SetTile (cur_room.tile_xmin - 1, cur_room.tile_ymin + 3, 51);
 				ShowMapOnCamera.MAP_TILES [cur_room.tile_xmin - 1, cur_room.tile_ymin + 3].GetComponent<BoxCollider> ().enabled = true;
-				ShowMapOnCamera.MAP_TILES [cur_room.tile_xmin - 1, cur_room.tile_ymin + 3].GetComponent<BoxCollider> ().size = new Vector3(1f, 0.8f, 1f);
+				ShowMapOnCamera.MAP_TILES [cur_room.tile_xmin - 1, cur_room.tile_ymin + 3].GetComponent<BoxCollider> ().size = new Vector3 (1f, 0.8f, 1f);
 				ShowMapOnCamera.MAP_TILES [cur_room.tile_xmin - 1, cur_room.tile_ymin + 3].GetComponent<BoxCollider> ().isTrigger = true;
 				ShowMapOnCamera.MAP_TILES [cur_room.tile_xmin - 1, cur_room.tile_ymin + 3].gameObject.layer = 11;
 				ShowMapOnCamera.MAP_TILES [cur_room.tile_xmin - 1, cur_room.tile_ymin + 3].gameObject.tag = "DoorLeft";
 				ShowMapOnCamera.MAP [cur_room.tile_xmin - 1, cur_room.tile_ymin + 3] = 51;
+			} else if ((active_row_index == 9 && active_col_index == 0) || (active_row_index == 11 && active_col_index == 1)
+				|| (active_row_index == 11 && active_col_index == 2)) {
+				ShowMapOnCamera.MAP_TILES [cur_room.tile_xmax + 1, cur_room.tile_ymin + 3].SetTile (cur_room.tile_xmin - 1, cur_room.tile_ymin + 3, 48);
+				ShowMapOnCamera.MAP_TILES [cur_room.tile_xmax + 1, cur_room.tile_ymin + 3].GetComponent<BoxCollider> ().enabled = true;
+				ShowMapOnCamera.MAP_TILES [cur_room.tile_xmax + 1, cur_room.tile_ymin + 3].GetComponent<BoxCollider> ().size = new Vector3 (1f, 0.8f, 1f);
+				ShowMapOnCamera.MAP_TILES [cur_room.tile_xmax + 1, cur_room.tile_ymin + 3].GetComponent<BoxCollider> ().isTrigger = true;
+				ShowMapOnCamera.MAP_TILES [cur_room.tile_xmax + 1, cur_room.tile_ymin + 3].gameObject.layer = 11;
+				ShowMapOnCamera.MAP_TILES [cur_room.tile_xmax + 1, cur_room.tile_ymin + 3].gameObject.tag = "DoorRight";
+				ShowMapOnCamera.MAP [cur_room.tile_xmin - 1, cur_room.tile_ymin + 3] = 48;
+			} else if ((active_row_index == 9 && active_col_index == 1) || (active_row_index == 10 && active_col_index == 1)) {
+				//remove temporary blocks in front of doors
+			} else if (active_row_index == 11 && active_col_index == 3) {
+				ShowMapOnCamera.MAP_TILES [cur_room.tile_xmin + 5, cur_room.tile_ymax + 1].SetTile (cur_room.tile_xmin + 5, cur_room.tile_ymax + 1, 80);
+				ShowMapOnCamera.MAP_TILES [cur_room.tile_xmin + 5, cur_room.tile_ymax + 1].GetComponent<BoxCollider> ().enabled = true;
+				ShowMapOnCamera.MAP_TILES [cur_room.tile_xmin + 5, cur_room.tile_ymax + 1].GetComponent<BoxCollider> ().size = new Vector3 (0.5f, 1f, 1f);
+				ShowMapOnCamera.MAP_TILES [cur_room.tile_xmin + 5, cur_room.tile_ymax + 1].GetComponent<BoxCollider> ().center = new Vector3 (-0.25f, 0f, 0f);
+				ShowMapOnCamera.MAP_TILES [cur_room.tile_xmin + 5, cur_room.tile_ymax + 1].GetComponent<BoxCollider> ().isTrigger = true;
+				ShowMapOnCamera.MAP_TILES [cur_room.tile_xmin + 5, cur_room.tile_ymax + 1].gameObject.layer = 11;
+				ShowMapOnCamera.MAP_TILES [cur_room.tile_xmin + 5, cur_room.tile_ymax + 1].gameObject.tag = "DoorUp";
+				ShowMapOnCamera.MAP [cur_room.tile_xmin + 5, cur_room.tile_ymax + 3] = 80;
+				ShowMapOnCamera.MAP_TILES [cur_room.tile_xmin + 6, cur_room.tile_ymax + 1].SetTile (cur_room.tile_xmin + 5, cur_room.tile_ymax + 1, 80);
+				ShowMapOnCamera.MAP_TILES [cur_room.tile_xmin + 6, cur_room.tile_ymax + 1].GetComponent<BoxCollider> ().enabled = true;
+				ShowMapOnCamera.MAP_TILES [cur_room.tile_xmin + 6, cur_room.tile_ymax + 1].GetComponent<BoxCollider> ().size = new Vector3 (0.5f, 1f, 1f);
+				ShowMapOnCamera.MAP_TILES [cur_room.tile_xmin + 6, cur_room.tile_ymax + 1].GetComponent<BoxCollider> ().center = new Vector3 (0.25f, 0f, 0f);
+				ShowMapOnCamera.MAP_TILES [cur_room.tile_xmin + 6, cur_room.tile_ymax + 1].GetComponent<BoxCollider> ().isTrigger = true;
+				ShowMapOnCamera.MAP_TILES [cur_room.tile_xmin + 6, cur_room.tile_ymax + 1].gameObject.layer = 11;
+				ShowMapOnCamera.MAP_TILES [cur_room.tile_xmin + 6, cur_room.tile_ymax + 1].gameObject.tag = "DoorUp";
+				ShowMapOnCamera.MAP [cur_room.tile_xmin + 6, cur_room.tile_ymax + 3] = 81;
 			}
 		}
 	}
@@ -291,7 +457,7 @@ public class RoomController : MonoBehaviour {
 		float row_index = (this.transform.position.y - y_start) / room_height;
 		//print ("row index = " + row_index);
 		//print ("current cam pos x " + this.transform.position.x);
-		row_index = 5f - row_index;
+		row_index = 12f - row_index;
 		float col_index = (this.transform.position.x - x_start) / room_width;
 		//print ("col index = " + col_index);
 		//print ("Row_index = " + row_index);

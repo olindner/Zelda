@@ -184,10 +184,10 @@ public class Tile : MonoBehaviour {
 				Destroy (go);
 				i--;
 			}
-			CameraPan.c.transform.position = new Vector3 (23.52f, 49.79f, -11f);
+			CameraPan.c.transform.position = new Vector3 (23.52f, 126.79f, -11f);
 			RoomController.rc.active_row_index = 1;
 			RoomController.rc.active_col_index = 1;
-			PlayerController.instance.transform.position = new Vector3 (19f, 52f, 0f);
+			PlayerController.instance.transform.position = new Vector3 (19f, 129f, 0f);
 			PlayerController.instance.num_frozen_frames = 24;
 			PlayerController.instance.GetComponent<Rigidbody> ().constraints = RigidbodyConstraints.FreezeAll;
 		}

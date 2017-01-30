@@ -117,8 +117,8 @@ public class PlayerController : MonoBehaviour {
 	{
 
 		if (GetComponent<BoxCollider> ().isTrigger == true) { //WallMaster did this
-			transform.position = new Vector3 (39.5f, 2f, 0f);
-			CameraPan.c.transform.position = new Vector3 (39.52f, 5.79f, -11f);
+			transform.position = new Vector3 (39.5f, 79f, 0f);
+			CameraPan.c.transform.position = new Vector3 (39.52f, 82.79f, -11f);
 			foreach (GameObject go in CameraPan.c.gameObject.GetComponent<RoomController>().map1[2,4].things_inside_room) {
 				Destroy (go);
 			}
@@ -139,7 +139,16 @@ public class PlayerController : MonoBehaviour {
 		if (num_frames_hold_triforce > 0) {
 			num_frames_hold_triforce--;
 			if (num_frames_hold_triforce == 0) {
-				DelayedRestart (gameRestartDelay);
+				if (RoomController.rc.active_row_index == 8 && RoomController.rc.active_col_index == 4) {
+					DelayedRestart (gameRestartDelay);
+				} else {
+					transform.position = new Vector3 (39.52f, 38.79f, 0f);
+					CameraPan.c.transform.position = new Vector3 (39.52f, 38.79f, -11f);
+					RoomController.rc.active_col_index = 2;
+					RoomController.rc.active_row_index = 9;
+					num_frozen_frames = 24;
+					GetComponent<Rigidbody> ().constraints = RigidbodyConstraints.FreezeAll;
+				}
 			}
 		}
 
@@ -728,6 +737,8 @@ public class PlayerController : MonoBehaviour {
 		} else if (collider.gameObject.tag == "ChomperPickup") {
 			chomper.SetActive (true);
 			has_chomper = true;
+			RoomController.rc.map1 [RoomController.rc.active_row_index, RoomController.rc.active_col_index].chomper_picked_up = true;
+			RoomController.rc.map1 [RoomController.rc.active_row_index, RoomController.rc.active_col_index].things_inside_room.Remove (collider.gameObject);
 			Destroy (collider.gameObject);
 		} else if (collider.gameObject.tag == "WallMaster") {
 			GetComponent<BoxCollider> ().isTrigger = true;
@@ -741,10 +752,10 @@ public class PlayerController : MonoBehaviour {
 				Destroy (go);
 				i--;
 			}
-			CameraPan.c.transform.position = new Vector3 (23.52f, 60.79f, -11f);
+			CameraPan.c.transform.position = new Vector3 (23.52f, 137.79f, -11f);
 			RoomController.rc.active_row_index = 0;
 			RoomController.rc.active_col_index = 1;
-			transform.position = new Vector3 (23f, 60f, 0f);
+			transform.position = new Vector3 (23f, 137f, 0f);
 			num_frozen_frames = 24;
 			GetComponent<Rigidbody> ().constraints = RigidbodyConstraints.FreezeAll;
 		} else if (collider.gameObject.tag == "Enemy" && num_cooldown_frames == 0) {
@@ -774,7 +785,7 @@ public class PlayerController : MonoBehaviour {
 		//print("hello?");
 		//print (col.gameObject.name);
 		if (col.gameObject.tag == "WallMaster") {
-			transform.position = new Vector3(40f, 4f, 0);
+			transform.position = new Vector3(40f, 79f, 0);
 			GetComponent<Collider>().isTrigger = false; //allow Player to collide properly again
 			//black screen wipe
 			//move to first room

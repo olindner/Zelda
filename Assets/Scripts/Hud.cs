@@ -206,11 +206,11 @@ public class Hud : MonoBehaviour {
 			}
 		}
 
-		Vector2 desired_ui_position = new Vector2(400, 575); //375 to build properly
+		Vector2 desired_ui_position = new Vector2(-200, 220); //375 to build properly
 
 		if (!hidden)
             //desired_ui_position = new Vector2(400, -241);
-			desired_ui_position = new Vector2(400, -41);
+			desired_ui_position = new Vector2(-200, -210);
         rt.anchoredPosition += (desired_ui_position - rt.anchoredPosition) * ease_factor;
 
 		int rupees = PlayerController.instance.num_rupees;
