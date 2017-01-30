@@ -223,7 +223,7 @@ public class PlayerController : MonoBehaviour {
 			num_cooldown_frames--;
 			if (num_cooldown_frames == 0) {
 				GetComponent<Rigidbody>().velocity = Vector3.zero;
-				//print ("cooldown over!!!!");
+				print ("cooldown over!!!!");
 			}
 		}
 		if (num_cooldown_weapon_frames > 0) {
@@ -264,80 +264,44 @@ public class PlayerController : MonoBehaviour {
 		    && num_frames_hold_triforce == 0) {
 			if (Input.GetKey (KeyCode.UpArrow)) {
 				desired_velocity = new Vector3 (0, 1, 0);
-				if (RoomController.rc.active_row_index == 1 && RoomController.rc.active_col_index == 1) {
-					Vector3 pos = rb.position;
-					if (Mathf.Abs (rb.position.x - 19f) <= 0.1f) {
-						rb.position = new Vector3 (19f, pos.y, 0f);
-					} else if (Mathf.Abs (rb.position.x - 27f) <= 0.1f) {
-						rb.position = new Vector3 (27f, pos.y, 0f);
-					}
+				float temp;
+				if (rb.position.x % 0.5f < 0.25) {
+					temp = Mathf.Floor (rb.position.x / 0.5f) * 0.5f;
 				} else {
-					float temp;
-					if (rb.position.x % 0.5f < 0.25) {
-						temp = Mathf.Floor (rb.position.x / 0.5f) * 0.5f;
-					} else {
-						temp = Mathf.Ceil (rb.position.x / 0.5f) * 0.5f;
-					}
-					Vector3 newpos = new Vector3 (temp, rb.transform.position.y, 0);
-					rb.transform.position = newpos;
+					temp = Mathf.Ceil (rb.position.x / 0.5f) * 0.5f;
 				}
+				Vector3 newpos = new Vector3 (temp, rb.transform.position.y, 0);
+				rb.transform.position = newpos;
 			} else if (Input.GetKey (KeyCode.LeftArrow)) {
 				desired_velocity = new Vector3 (-1, 0, 0);
-				if (RoomController.rc.active_row_index == 1 && RoomController.rc.active_col_index == 1) {
-					Vector3 pos = rb.position;
-					if (Mathf.Abs (rb.position.y - 46.25f) <= 0.1f) {
-						rb.position = new Vector3 (pos.x, 46.25f, 0f);
-					} else if (Mathf.Abs (transform.position.y - 49f) <= 0.1f) {
-						rb.position = new Vector3 (pos.x, 49f, 0f);
-					}
+				float temp;
+				if ((rb.position.y - grid_offset_y) % 0.5f < 0.25) {
+					temp = Mathf.Floor ((rb.position.y - grid_offset_y) / 0.5f) * 0.5f + grid_offset_y;
 				} else {
-					float temp;
-					if ((rb.position.y - grid_offset_y) % 0.5f < 0.25) {
-						temp = Mathf.Floor ((rb.position.y - grid_offset_y) / 0.5f) * 0.5f + grid_offset_y;
-					} else {
-						temp = Mathf.Ceil ((rb.position.y - grid_offset_y) / 0.5f) * 0.5f + grid_offset_y;
-					}
-					Vector3 newpos = new Vector3 (rb.transform.position.x, temp, 0);
-					rb.transform.position = newpos;
+					temp = Mathf.Ceil ((rb.position.y - grid_offset_y) / 0.5f) * 0.5f + grid_offset_y;
 				}
+				Vector3 newpos = new Vector3 (rb.transform.position.x, temp, 0);
+				rb.transform.position = newpos;
 			} else if (Input.GetKey (KeyCode.RightArrow)) {
 				desired_velocity = Vector3.right;
-				if (RoomController.rc.active_row_index == 1 && RoomController.rc.active_col_index == 1) {
-					Vector3 pos = rb.position;
-					if (Mathf.Abs (rb.position.y - 46.25f) <= 0.1f) {
-						rb.position = new Vector3 (pos.x, 46.25f, 0f);
-					} else if (Mathf.Abs (rb.position.y - 49f) <= 0.1f) {
-						rb.position = new Vector3 (pos.x, 49f, 0f);
-					}
+				float temp;
+				if ((rb.position.y - grid_offset_y) % 0.5f < 0.25) {
+					temp = Mathf.Floor ((rb.position.y - grid_offset_y) / 0.5f) * 0.5f + grid_offset_y;
 				} else {
-					float temp;
-					if ((rb.position.y - grid_offset_y) % 0.5f < 0.25) {
-						temp = Mathf.Floor ((rb.position.y - grid_offset_y) / 0.5f) * 0.5f + grid_offset_y;
-					} else {
-						temp = Mathf.Ceil ((rb.position.y - grid_offset_y) / 0.5f) * 0.5f + grid_offset_y;
-					}
-					Vector3 newpos = new Vector3 (rb.transform.position.x, temp, 0);
-					rb.transform.position = newpos;
+					temp = Mathf.Ceil ((rb.position.y - grid_offset_y) / 0.5f) * 0.5f + grid_offset_y;
 				}
+				Vector3 newpos = new Vector3 (rb.transform.position.x, temp, 0);
+				rb.transform.position = newpos;
 			} else if (Input.GetKey (KeyCode.DownArrow)) {
 				desired_velocity = Vector3.down;
-				if (RoomController.rc.active_row_index == 1 && RoomController.rc.active_col_index == 1) {
-					Vector3 pos = rb.position;
-					if (Mathf.Abs (rb.position.x - 19f) <= 0.1f) {
-						rb.position = new Vector3 (19f, pos.y, 0f);
-					} else if (Mathf.Abs (rb.position.x - 27f) <= 0.1f) {
-						rb.position = new Vector3 (27f, pos.y, 0f);
-					}
+				float temp;
+				if (rb.position.x % 0.5f < 0.25) {
+					temp = Mathf.Floor (rb.position.x / 0.5f) * 0.5f;
 				} else {
-					float temp;
-					if (rb.position.x % 0.5f < 0.25) {
-						temp = Mathf.Floor (rb.position.x / 0.5f) * 0.5f;
-					} else {
-						temp = Mathf.Ceil (rb.position.x / 0.5f) * 0.5f;
-					}
-					Vector3 newpos = new Vector3 (temp, rb.transform.position.y, 0);
-					rb.transform.position = newpos;
+					temp = Mathf.Ceil (rb.position.x / 0.5f) * 0.5f;
 				}
+				Vector3 newpos = new Vector3 (temp, rb.transform.position.y, 0);
+				rb.transform.position = newpos;
 			}
 
 			rb.velocity = desired_velocity * PlayerMovementVelocity;
@@ -670,11 +634,11 @@ public class PlayerController : MonoBehaviour {
 	void OnCollisionEnter(Collision coll) {
 		if ((coll.gameObject.tag == "Enemy" || coll.gameObject.tag == "GoriyaBoomerang")
 			&& num_cooldown_frames == 0) {
-			//print ("dude you touched me");
+			print ("dude you touched me");
 			if (num_hearts > 0) {
 				ShowDamage (5);
 				num_hearts -= 0.5f;
-				thing.GetComponent<Hud> ().TookDamage ();
+				//thing.GetComponent<Hud> ().TookDamage ();
 				num_cooldown_frames = 50;
 				GetComponent<Rigidbody> ().velocity *= (-1f * damage_hopback_vel);
 				if (num_hearts == 0.0) {
@@ -697,6 +661,7 @@ public class PlayerController : MonoBehaviour {
 	}
 
 	void OnTriggerEnter(Collider collider) {
+		print ("player controller trigger entered");
 		if (collider.gameObject.tag == "Rupee") {
 			num_rupees++;
 			rc.map1 [rc.active_row_index, rc.active_col_index].things_inside_room.Remove (collider.gameObject);
@@ -761,18 +726,33 @@ public class PlayerController : MonoBehaviour {
 			collider.gameObject.transform.position = new_pos;
 			num_frames_hold_triforce = 50;
 		} else if (collider.gameObject.tag == "ChomperPickup") {
-			chomper.SetActive(true);
+			chomper.SetActive (true);
 			has_chomper = true;
-			Destroy(collider.gameObject);
+			Destroy (collider.gameObject);
 		} else if (collider.gameObject.tag == "WallMaster") {
-			GetComponent<BoxCollider>().isTrigger = true;
+			GetComponent<BoxCollider> ().isTrigger = true;
 			//print("turned player into trigger");
-		}else if (collider.gameObject.tag == "Enemy" && num_cooldown_frames == 0) {
+		} else if (collider.gameObject.tag == "DoorOutBowRoom" && this.current_direction == Direction.NORTH) {
+			print ("current active room " + RoomController.rc.active_row_index + " " + RoomController.rc.active_col_index);
+			Room cur_room = RoomController.rc.map1 [RoomController.rc.active_row_index, RoomController.rc.active_col_index];
+			for (int i = 0; i < cur_room.things_inside_room.Count; i++) {
+				GameObject go = cur_room.things_inside_room [i];
+				cur_room.things_inside_room.Remove (go);
+				Destroy (go);
+				i--;
+			}
+			CameraPan.c.transform.position = new Vector3 (23.52f, 60.79f, -11f);
+			RoomController.rc.active_row_index = 0;
+			RoomController.rc.active_col_index = 1;
+			transform.position = new Vector3 (23f, 60f, 0f);
+			num_frozen_frames = 24;
+			GetComponent<Rigidbody> ().constraints = RigidbodyConstraints.FreezeAll;
+		} else if (collider.gameObject.tag == "Enemy" && num_cooldown_frames == 0) {
 			//print ("dude you touched me");
 			if (num_hearts > 0) {
 				ShowDamage (5);
 				num_hearts -= 0.5f;
-				thing.GetComponent<Hud> ().TookDamage ();
+				//thing.GetComponent<Hud> ().TookDamage ();
 				num_cooldown_frames = 50;
 				GetComponent<Rigidbody> ().velocity *= (-1f * damage_hopback_vel);
 				if (num_hearts == 0.0) {
