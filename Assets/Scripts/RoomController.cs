@@ -205,6 +205,10 @@ public class RoomController : MonoBehaviour {
 			}
 		}
 
+		if (active_row_index == 0 && active_col_index == 1 && map1[active_row_index, active_col_index].all_blocks_pushed) {
+			map1[active_row_index, active_col_index].SetPushableBlocksAtTarget ();
+		}
+
 		if (active_row_index == 1 && active_col_index == 1 && !map1[active_row_index, active_col_index].bats_instantiated) {
 			print ("should instantiate bats in bow room now");
 			map1 [active_row_index, active_col_index].InstantiateBatsInBowRoom ();

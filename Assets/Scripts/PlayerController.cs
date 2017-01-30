@@ -638,7 +638,7 @@ public class PlayerController : MonoBehaviour {
 			if (num_hearts > 0) {
 				ShowDamage (5);
 				num_hearts -= 0.5f;
-				thing.GetComponent<Hud> ().TookDamage ();
+				//thing.GetComponent<Hud> ().TookDamage ();
 				num_cooldown_frames = 50;
 				GetComponent<Rigidbody> ().velocity *= (-1f * damage_hopback_vel);
 				if (num_hearts == 0.0) {
@@ -661,6 +661,7 @@ public class PlayerController : MonoBehaviour {
 	}
 
 	void OnTriggerEnter(Collider collider) {
+		print ("player controller trigger entered");
 		if (collider.gameObject.tag == "Rupee") {
 			num_rupees++;
 			rc.map1 [rc.active_row_index, rc.active_col_index].things_inside_room.Remove (collider.gameObject);
@@ -725,18 +726,33 @@ public class PlayerController : MonoBehaviour {
 			collider.gameObject.transform.position = new_pos;
 			num_frames_hold_triforce = 50;
 		} else if (collider.gameObject.tag == "ChomperPickup") {
-			chomper.SetActive(true);
+			chomper.SetActive (true);
 			has_chomper = true;
-			Destroy(collider.gameObject);
+			Destroy (collider.gameObject);
 		} else if (collider.gameObject.tag == "WallMaster") {
-			GetComponent<BoxCollider>().isTrigger = true;
+			GetComponent<BoxCollider> ().isTrigger = true;
 			//print("turned player into trigger");
-		}else if (collider.gameObject.tag == "Enemy" && num_cooldown_frames == 0) {
+		} else if (collider.gameObject.tag == "DoorOutBowRoom" && this.current_direction == Direction.NORTH) {
+			print ("current active room " + RoomController.rc.active_row_index + " " + RoomController.rc.active_col_index);
+			Room cur_room = RoomController.rc.map1 [RoomController.rc.active_row_index, RoomController.rc.active_col_index];
+			for (int i = 0; i < cur_room.things_inside_room.Count; i++) {
+				GameObject go = cur_room.things_inside_room [i];
+				cur_room.things_inside_room.Remove (go);
+				Destroy (go);
+				i--;
+			}
+			CameraPan.c.transform.position = new Vector3 (23.52f, 60.79f, -11f);
+			RoomController.rc.active_row_index = 0;
+			RoomController.rc.active_col_index = 1;
+			transform.position = new Vector3 (23f, 60f, 0f);
+			num_frozen_frames = 24;
+			GetComponent<Rigidbody> ().constraints = RigidbodyConstraints.FreezeAll;
+		} else if (collider.gameObject.tag == "Enemy" && num_cooldown_frames == 0) {
 			//print ("dude you touched me");
 			if (num_hearts > 0) {
 				ShowDamage (5);
 				num_hearts -= 0.5f;
-				thing.GetComponent<Hud> ().TookDamage ();
+				//thing.GetComponent<Hud> ().TookDamage ();
 				num_cooldown_frames = 50;
 				GetComponent<Rigidbody> ().velocity *= (-1f * damage_hopback_vel);
 				if (num_hearts == 0.0) {

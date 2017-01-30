@@ -183,6 +183,7 @@ public class Room : MonoBehaviour {
 	public void InstantiateAquamentus() {
 		GameObject aq = Instantiate (enemy_prefab) as GameObject;
 		aq.transform.position = new Vector3 (76f, 49.5f, 0f);
+		aq.GetComponent<Aquamentus> ().room = this;
 		things_inside_room.Add (aq);
 	}
 
@@ -196,6 +197,11 @@ public class Room : MonoBehaviour {
 		b2.transform.position = new Vector3 (20.47f, 48.65f, 0f);
 		b3.transform.position = new Vector3 (24.57f, 48.65f, 0f);
 		b4.transform.position = new Vector3 (16.84f, 48.65f, 0f);
+
+		b1.GetComponent<Bat> ().room = this;
+		b2.GetComponent<Bat> ().room = this;
+		b3.GetComponent<Bat> ().room = this;
+		b4.GetComponent<Bat> ().room = this;
 
 		things_inside_room.Add (b1);
 		things_inside_room.Add (b2);
@@ -247,6 +253,29 @@ public class Room : MonoBehaviour {
 				go.GetComponent<Rigidbody> ().constraints = RigidbodyConstraints.FreezeRotation
 				| RigidbodyConstraints.FreezePositionY | RigidbodyConstraints.FreezePositionZ;
 				//| RigidbodyConstraints.FreezePositionZ;
+			}
+			//go.GetComponent<PushableBlock> ().rc = room_controller;
+			things_inside_room.Add (go);
+		}
+	}
+
+	public void SetPushableBlocksAtTarget() {
+		if (num_push_blocks_total == 1) {
+			print ("in " + row + ", " + col + "; setting push blocks");
+			//GameObject go = Instantiate (room_controller.pushable_block_prefab) as GameObject;
+			GameObject go = Instantiate (RoomController.rc.pushable_block_prefab) as GameObject;
+			if (row == 0 && col == 1) {
+				go.transform.position = new Vector3 (22f, 61f, 0f);
+				go.GetComponent<PushableBlock> ().target = new Vector3 (22f, 61f, 0f);
+				go.GetComponent<PushableBlock> ().original_pos = new Vector3 (22f, 60f, 0f);
+				go.GetComponent<Rigidbody> ().constraints = RigidbodyConstraints.FreezeAll;
+				//more stuff idk???
+			} else if (row == 2 && col == 1) {
+				print ("about to make push block by old man room");
+				go.transform.position = new Vector3 (24f, 38f, 0f);
+				go.GetComponent<PushableBlock> ().target = new Vector3 (24f, 38f, 0f);
+				go.GetComponent<PushableBlock> ().original_pos = new Vector3 (23f, 38f, 0f);
+				go.GetComponent<Rigidbody> ().constraints = RigidbodyConstraints.FreezeAll;
 			}
 			//go.GetComponent<PushableBlock> ().rc = room_controller;
 			things_inside_room.Add (go);

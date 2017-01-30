@@ -49,8 +49,19 @@ public class PushableBlock : MonoBehaviour {
 			           && target.x - 1 == original_pos.x && target.y == original_pos.y) {
 				this.is_moving = true;
 			} else {
+				if (RoomController.rc.map1 [RoomController.rc.active_row_index, RoomController.rc.active_col_index].all_blocks_pushed) {
+					this.transform.position = target;
+				} else {
+					this.transform.position = original_pos;
+				}
+			}
+		} else if (coll.gameObject.tag == "Sword") {
+			if (RoomController.rc.map1 [RoomController.rc.active_row_index, RoomController.rc.active_col_index].all_blocks_pushed) {
+				this.transform.position = target;
+			} else {
 				this.transform.position = original_pos;
 			}
+			Destroy (coll.gameObject);
 		}
 	}
 }

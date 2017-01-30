@@ -58,7 +58,8 @@ public class Weapon : MonoBehaviour {
 			|| coll.gameObject.tag == "DoorUp" || coll.gameObject.tag == "DoorLeft"
 			|| coll.gameObject.tag == "DoorRight" || coll.gameObject.tag == "DoorDown"
 			|| coll.gameObject.tag == "LockedDoorUp" || coll.gameObject.tag == "LockedDoorLeft"
-			|| coll.gameObject.tag == "LockedDoorRight" || coll.gameObject.tag == "Enemy")) {
+			|| coll.gameObject.tag == "LockedDoorRight" || coll.gameObject.tag == "Enemy"
+			||coll.gameObject.tag == "MovableBlock")) {
 			//print ("Boomerang triggered player");
 			//print ("boom velocity " + this.gameObject.GetComponent<Rigidbody> ().velocity);
 //			if (PlayerController.instance.current_direction == Direction.EAST) {
