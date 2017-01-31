@@ -216,8 +216,8 @@ public class RoomController : MonoBehaviour {
 		map1 [9, 1].num_enemies_left = 3;
 		map1 [9, 1].SetEnemyPrefab ();
 		map1 [9, 1].has_push_block = true;
-		map1 [9, 0].num_push_blocks_total = 2;
-		map1 [9, 0].num_push_blocks_left = 2;
+		map1 [9, 1].num_push_blocks_total = 2;
+		map1 [9, 1].num_push_blocks_left = 2;
 
 		map1 [10, 1].enemy_type = "Gel";
 		map1 [10, 1].num_enemies_total = 3;

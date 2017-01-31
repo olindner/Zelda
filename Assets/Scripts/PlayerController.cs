@@ -161,6 +161,8 @@ public class PlayerController : MonoBehaviour {
 					RoomController.rc.active_row_index = 9;
 					num_frozen_frames = 24;
 					GetComponent<Rigidbody> ().constraints = RigidbodyConstraints.FreezeAll;
+					CameraPan.c.current_pos = CameraPan.c.transform.position;
+					CameraPan.c.destination = CameraPan.c.current_pos;
 				}
 			}
 		}
