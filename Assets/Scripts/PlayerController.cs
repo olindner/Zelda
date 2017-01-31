@@ -120,6 +120,7 @@ public class PlayerController : MonoBehaviour {
 	{
 		if (cheat_health) {
 			num_hearts = 16;
+			heart_capacity = 16;
 		}
 			
 		if (cheat_items) {
