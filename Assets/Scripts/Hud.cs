@@ -181,7 +181,7 @@ public class Hud : MonoBehaviour {
 		}
 
 		//Weapon selection (put into "B slot")
-		if (Input.GetKeyDown (KeyCode.X)) { //making X to avoid key conflicts
+		if (Input.GetKeyDown (KeyCode.LeftShift) || Input.GetKeyDown (KeyCode.RightShift)) {
 			foreach (Image g in isSelected) {
 				g.enabled = false;
 			}

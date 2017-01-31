@@ -81,6 +81,9 @@ public class PlayerController : MonoBehaviour {
 	public bool done_dying = false;
 	public float gameRestartDelay = 2f;
 
+	public bool cheat_health = false;
+	public bool cheat_items = false;
+
     // Use this for initialization
     void Start () {
         rb = GetComponent<Rigidbody>();
@@ -115,6 +118,15 @@ public class PlayerController : MonoBehaviour {
     // Update is called once per frame
     void Update ()
 	{
+		if (cheat_health) {
+			num_hearts = 16;
+		}
+			
+		if (cheat_items) {
+			num_rupees = 999;
+			num_bombs = 999;
+			num_keys = 999;
+		}
 
 		if (GetComponent<BoxCollider> ().isTrigger == true) { //WallMaster did this
 			transform.position = new Vector3 (39.5f, 79f, 0f);
@@ -734,6 +746,7 @@ public class PlayerController : MonoBehaviour {
 			new_pos.y += 1;
 			collider.gameObject.transform.position = new_pos;
 			num_frames_hold_triforce = 50;
+			num_hearts = heart_capacity;
 		} else if (collider.gameObject.tag == "ChomperPickup") {
 			chomper.SetActive (true);
 			has_chomper = true;
@@ -810,7 +823,7 @@ public class PlayerController : MonoBehaviour {
 		}
 	}
 
-	void DelayedRestart(float delay) {
+	public void DelayedRestart(float delay) {
 		Invoke("Restart", delay);
 	}
 
