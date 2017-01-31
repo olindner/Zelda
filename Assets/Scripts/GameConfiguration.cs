@@ -34,7 +34,9 @@ public class GameConfiguration : MonoBehaviour {
 			RoomController.rc.active_col_index = 2;
 			RoomController.rc.active_row_index = 9;
 			PlayerController.instance.num_frozen_frames = 24;
-			GetComponent<Rigidbody> ().constraints = RigidbodyConstraints.FreezeAll;
+			PlayerController.instance.GetComponent<Rigidbody> ().constraints = RigidbodyConstraints.FreezeAll;
+			CameraPan.c.current_pos = CameraPan.c.transform.position;
+			CameraPan.c.destination = CameraPan.c.current_pos;
 		} else if (Input.GetKey(KeyCode.F3)) {
 			PlayerController.instance.cheat_health = true;
 		} else if (Input.GetKey(KeyCode.F4)) {
