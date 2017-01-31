@@ -28,6 +28,7 @@ public class Hud : MonoBehaviour {
 	public Image blueMapFull;
 	public int activeSlot = 0;
 	private bool redSet = false;
+	public GameObject[] weaponPrefabs;
 
 	// Use this for initialization
 	void Start ()
@@ -108,7 +109,7 @@ public class Hud : MonoBehaviour {
 
 		float health = PlayerController.instance.num_hearts;
 		int capacity = PlayerController.instance.heart_capacity;
-		slot = (int)Mathf.Floor(health);
+		slot = (int)Mathf.Floor (health);
 
 		//Display red hearts
 		int count = (int)Mathf.Floor (health);
@@ -221,14 +222,27 @@ public class Hud : MonoBehaviour {
 
 		//Weapon selection (put into "B slot")
 		if (Input.GetKeyDown (KeyCode.LeftShift) || Input.GetKeyDown (KeyCode.RightShift)) {
-			foreach (Image g in isSelected) {
-				g.enabled = false;
+			bool okay = false;
+			if (activeSlot == 0 && PlayerController.instance.have_boomerang)
+				okay = true;
+			if (activeSlot == 1 && PlayerController.instance.num_bombs > 0)
+				okay = true;
+			if (activeSlot == 2 && PlayerController.instance.has_bow)
+				okay = true;
+			if (activeSlot == 3 && PlayerController.instance.has_chomper)
+				okay = true;
+
+			if (okay) {
+				foreach (Image g in isSelected) {
+					g.enabled = false;
+				}
+				isSelected [activeSlot].enabled = true;
+				foreach (Image h in BSelected) {
+					h.enabled = false;
+				}
+				BSelected [activeSlot].enabled = true;
+				PlayerController.instance.selected_weapon_prefab_b = weaponPrefabs[activeSlot];
 			}
-			isSelected[activeSlot].enabled = true;
-			foreach (Image h in BSelected) {
-				h.enabled = false;
-			}
-			BSelected[activeSlot].enabled = true;
 		}
 
 		if (PlayerController.instance.have_boomerang) {
@@ -250,7 +264,7 @@ public class Hud : MonoBehaviour {
 			//create map on menu
 			blueMapFull.enabled = true;
 		}
-		if (PlayerController.instance.has_compass) { //issue? does everytime
+		if (PlayerController.instance.has_compass) {
 			compass.enabled = true;
 			//create blinking red finish dot
 			if (!redSet) {
