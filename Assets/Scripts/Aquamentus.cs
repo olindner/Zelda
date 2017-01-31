@@ -35,7 +35,7 @@ public class Aquamentus : MonoBehaviour {
 	public Room room;
 	// Use this for initialization
 	void Start () {
-		health = 10; //? Not sure
+		health = 6;
 		isMoving = false;
 		pos = transform.position;
 		dir = Random.Range(0,1); //random starting direction, 0=RIGHT, 1=LEFT

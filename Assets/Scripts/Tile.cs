@@ -22,6 +22,8 @@ public class Tile : MonoBehaviour {
         bc = GetComponent<BoxCollider>();
 		bc.enabled = false;
 		this.gameObject.tag = "Untagged";
+		bc.isTrigger = false;
+		bc.gameObject.layer = 0;
 
         sprend = GetComponent<SpriteRenderer>();
         //Renderer rend = gameObject.GetComponent<Renderer>();
