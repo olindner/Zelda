@@ -239,16 +239,67 @@ public class Room : MonoBehaviour {
 	public void SetPushFarBlocks() {
 		if (num_push_blocks_total == 1) {
 			GameObject go = Instantiate (RoomController.rc.push_far_block_prefab) as GameObject;
+			go.GetComponent<SpriteRenderer> ().color = Color.black;
 			go.transform.position = new Vector3 (60f, 14f, 0f);
 			go.GetComponent<PushableBlock> ().target = new Vector3 (58f, 19f, 0f);
 			go.GetComponent<PushableBlock> ().original_pos = new Vector3 (60f, 14f, 0f);
 			go.GetComponent<Rigidbody> ().constraints = RigidbodyConstraints.FreezeRotation | RigidbodyConstraints.FreezePositionZ;
 		} else if (num_push_blocks_total == 3) {
-			//these go in Mitchell boss room
+			GameObject go1 = Instantiate (RoomController.rc.push_far_block_prefab) as GameObject;
+			GameObject go2 = Instantiate (RoomController.rc.push_far_block_prefab) as GameObject;
+			GameObject go3 = Instantiate (RoomController.rc.push_far_block_prefab) as GameObject;
+
+			go1.GetComponent<SpriteRenderer> ().color = Color.blue;
+			go1.transform.position = new Vector3 (76f, 40f, 0f);
+			go1.GetComponent<PushableBlock> ().target = new Vector3 (74f, 38f, 0f);
+			go1.GetComponent<PushableBlock> ().original_pos = new Vector3 (76f, 40f, 0f);
+			go1.GetComponent<Rigidbody> ().constraints = RigidbodyConstraints.FreezeRotation | RigidbodyConstraints.FreezePositionZ;
+
+			go2.GetComponent<SpriteRenderer> ().color = Color.red;
+			go2.transform.position = new Vector3 (72f, 40f, 0f);
+			go2.GetComponent<PushableBlock> ().target = new Vector3 (72f, 36f, 0f);
+			go2.GetComponent<PushableBlock> ().original_pos = new Vector3 (72f, 40f, 0f);
+			go2.GetComponent<Rigidbody> ().constraints = RigidbodyConstraints.FreezeRotation | RigidbodyConstraints.FreezePositionZ;
+
+			go3.GetComponent<SpriteRenderer> ().color = Color.green;
+			go3.transform.position = new Vector3 (68f, 39f, 0f);
+			go3.GetComponent<PushableBlock> ().target = new Vector3 (70f, 38f, 0f);
+			go3.GetComponent<PushableBlock> ().original_pos = new Vector3 (68f, 39f, 0f);
+			go3.GetComponent<Rigidbody> ().constraints = RigidbodyConstraints.FreezeRotation | RigidbodyConstraints.FreezePositionZ;
 		}
 	}
 
 	public void SetPushFarBlocksAtTarget() {
+		if (num_push_blocks_total == 1) {
+			GameObject go = Instantiate (RoomController.rc.push_far_block_prefab) as GameObject;
+			go.GetComponent<SpriteRenderer> ().color = Color.black;
+			go.transform.position = new Vector3 (58f, 19f, 0f);
+			go.GetComponent<PushableBlock> ().target = new Vector3 (58f, 19f, 0f);
+			go.GetComponent<PushableBlock> ().original_pos = new Vector3 (60f, 14f, 0f);
+			go.GetComponent<Rigidbody> ().constraints = RigidbodyConstraints.FreezeAll;
+		} else if (num_push_blocks_total == 3) {
+			GameObject go1 = Instantiate (RoomController.rc.push_far_block_prefab) as GameObject;
+			GameObject go2 = Instantiate (RoomController.rc.push_far_block_prefab) as GameObject;
+			GameObject go3 = Instantiate (RoomController.rc.push_far_block_prefab) as GameObject;
+
+			go1.GetComponent<SpriteRenderer> ().color = Color.blue;
+			go1.transform.position = new Vector3 (74f, 38f, 0f);
+			go1.GetComponent<PushableBlock> ().target = new Vector3 (74f, 38f, 0f);
+			go1.GetComponent<PushableBlock> ().original_pos = new Vector3 (76f, 40f, 0f);
+			go1.GetComponent<Rigidbody> ().constraints = RigidbodyConstraints.FreezeAll;
+
+			go2.GetComponent<SpriteRenderer> ().color = Color.red;
+			go2.transform.position = new Vector3 (72f, 36f, 0f);
+			go2.GetComponent<PushableBlock> ().target = new Vector3 (72f, 36f, 0f);
+			go2.GetComponent<PushableBlock> ().original_pos = new Vector3 (72f, 40f, 0f);
+			go2.GetComponent<Rigidbody> ().constraints = RigidbodyConstraints.FreezeAll;
+
+			go3.GetComponent<SpriteRenderer> ().color = Color.green;
+			go3.transform.position = new Vector3 (70f, 38f, 0f);
+			go3.GetComponent<PushableBlock> ().target = new Vector3 (70f, 38f, 0f);
+			go3.GetComponent<PushableBlock> ().original_pos = new Vector3 (68f, 39f, 0f);
+			go3.GetComponent<Rigidbody> ().constraints = RigidbodyConstraints.FreezeAll;
+		}
 	}
 
 	public void SetPushableBlocks() {
@@ -289,7 +340,7 @@ public class Room : MonoBehaviour {
 				go.GetComponent<PushableBlock> ().target = new Vector3 (3f, 37f, 0f);
 				go.GetComponent<PushableBlock> ().original_pos = new Vector3 (2f, 37f, 0f);
 				go.GetComponent<Rigidbody> ().constraints = RigidbodyConstraints.FreezeRotation
-				| RigidbodyConstraints.FreezePositionX | RigidbodyConstraints.FreezePositionZ;
+				| RigidbodyConstraints.FreezePositionY | RigidbodyConstraints.FreezePositionZ;
 			}
 			//else remember the one that goes a long way???
 			//go.GetComponent<PushableBlock> ().rc = room_controller;

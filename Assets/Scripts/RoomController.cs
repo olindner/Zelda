@@ -266,7 +266,9 @@ public class RoomController : MonoBehaviour {
 		map1 [9, 4].num_enemies_total = 1;
 		map1 [9, 4].num_enemies_left = 1;
 		map1 [9, 4].SetEnemyPrefab ();
-		//add blocks
+		map1 [9, 4].has_push_far_block = true;
+		map1 [9, 4].num_push_blocks_total = 3;
+		map1 [9, 4].num_push_blocks_left = 3;
 	}
 	
 	// Update is called once per frame
@@ -337,6 +339,36 @@ public class RoomController : MonoBehaviour {
 			}
 		}
 
+		if (active_row_index != -1 && active_col_index != -1) {
+			Room cur_room = map1 [active_row_index, active_col_index];
+			if ((active_row_index == 9 || active_row_index == 10) && active_col_index == 1
+			    && !map1 [active_row_index, active_col_index].all_blocks_pushed) {
+				ShowMapOnCamera.MAP_TILES [cur_room.tile_xmin + 5, cur_room.tile_ymin].SetTile (cur_room.tile_xmin + 5, cur_room.tile_ymin, 102);
+				ShowMapOnCamera.MAP_TILES [cur_room.tile_xmin + 5, cur_room.tile_ymin].GetComponent<BoxCollider> ().enabled = true;
+				ShowMapOnCamera.MAP_TILES[cur_room.tile_xmin + 5, cur_room.tile_ymin].GetComponent<BoxCollider>().center = Vector3.zero;
+				ShowMapOnCamera.MAP_TILES[cur_room.tile_xmin + 5, cur_room.tile_ymin].GetComponent<BoxCollider>().center = Vector3.one;
+				ShowMapOnCamera.MAP_TILES[cur_room.tile_xmin + 5, cur_room.tile_ymin].gameObject.layer = 10;
+
+				ShowMapOnCamera.MAP_TILES [cur_room.tile_xmin + 6, cur_room.tile_ymin].SetTile (cur_room.tile_xmin + 6, cur_room.tile_ymin, 102);
+				ShowMapOnCamera.MAP_TILES [cur_room.tile_xmin + 6, cur_room.tile_ymin].GetComponent<BoxCollider> ().enabled = true;
+				ShowMapOnCamera.MAP_TILES[cur_room.tile_xmin + 6, cur_room.tile_ymin].GetComponent<BoxCollider>().center = Vector3.zero;
+				ShowMapOnCamera.MAP_TILES[cur_room.tile_xmin + 6, cur_room.tile_ymin].GetComponent<BoxCollider>().center = Vector3.one;
+				ShowMapOnCamera.MAP_TILES[cur_room.tile_xmin + 6, cur_room.tile_ymin].gameObject.layer = 10;
+			}
+		}
+
+		if (active_row_index != -1 && active_col_index != -1
+		    && map1 [active_row_index, active_col_index].has_push_far_block) {
+			Room cur_room = map1 [active_row_index, active_col_index];
+			if (active_row_index == 11 && active_col_index == 3) {
+				ShowMapOnCamera.MAP_TILES [cur_room.tile_xmax - 3, cur_room.tile_ymax].GetComponent<SpriteRenderer> ().color = Color.black;
+			} else if (active_row_index == 9 && active_col_index == 4) {
+				ShowMapOnCamera.MAP_TILES [cur_room.tile_xmin + 4, cur_room.tile_ymax - 3].GetComponent<SpriteRenderer> ().color = Color.green;
+				ShowMapOnCamera.MAP_TILES [cur_room.tile_xmax - 3, cur_room.tile_ymax - 3].GetComponent<SpriteRenderer> ().color = Color.blue;
+				ShowMapOnCamera.MAP_TILES [cur_room.tile_xmin + 6, cur_room.tile_ymin + 1].GetComponent<SpriteRenderer> ().color = Color.red;
+			}
+		}
+
 		if (active_row_index != -1 && active_col_index != -1
 		    && map1 [active_row_index, active_col_index].needs_chomper_pickup
 		    && !map1 [active_row_index, active_col_index].chomper_dropped) {
@@ -352,7 +384,7 @@ public class RoomController : MonoBehaviour {
 				ShowMapOnCamera.MAP_TILES [cur_room.tile_xmin + 5, cur_room.tile_ymax + 1].SetTile (cur_room.tile_xmin + 5, cur_room.tile_ymax + 1, 92);
 				ShowMapOnCamera.MAP_TILES [cur_room.tile_xmin + 6, cur_room.tile_ymax + 1].SetTile (cur_room.tile_xmin + 6, cur_room.tile_ymax + 1, 93);
 				ShowMapOnCamera.MAP_TILES [cur_room.tile_xmin + 5, cur_room.tile_ymax + 1].GetComponent<BoxCollider> ().enabled = true;
-				ShowMapOnCamera.MAP_TILES [cur_room.tile_xmin + 6, cur_room.tile_ymax + 1].GetComponent<BoxCollider> ().center = new Vector3(0.25f, 0f, 0f);
+				ShowMapOnCamera.MAP_TILES [cur_room.tile_xmin + 5, cur_room.tile_ymax + 1].GetComponent<BoxCollider> ().center = new Vector3(0.25f, 0f, 0f);
 				ShowMapOnCamera.MAP_TILES [cur_room.tile_xmin + 5, cur_room.tile_ymax + 1].GetComponent<BoxCollider> ().size = new Vector3(0.5f, 1f, 1f);
 				ShowMapOnCamera.MAP_TILES [cur_room.tile_xmin + 5, cur_room.tile_ymax + 1].GetComponent<BoxCollider> ().isTrigger = true;
 				ShowMapOnCamera.MAP_TILES [cur_room.tile_xmin + 5, cur_room.tile_ymax + 1].gameObject.layer = 11;
@@ -430,8 +462,18 @@ public class RoomController : MonoBehaviour {
 				ShowMapOnCamera.MAP_TILES [cur_room.tile_xmax + 1, cur_room.tile_ymin + 3].gameObject.tag = "DoorRight";
 				ShowMapOnCamera.MAP [cur_room.tile_xmin - 1, cur_room.tile_ymin + 3] = 48;
 			} else if ((active_row_index == 9 && active_col_index == 1) || (active_row_index == 10 && active_col_index == 1)) {
-				//remove temporary blocks in front of doors
-			} else if (active_row_index == 11 && active_col_index == 3) {
+				ShowMapOnCamera.MAP_TILES [cur_room.tile_xmin + 5, cur_room.tile_ymin].SetTile (cur_room.tile_xmin + 5, cur_room.tile_ymin, 029);
+				ShowMapOnCamera.MAP_TILES [cur_room.tile_xmin + 5, cur_room.tile_ymin].GetComponent<BoxCollider> ().enabled = false;
+				ShowMapOnCamera.MAP_TILES[cur_room.tile_xmin + 5, cur_room.tile_ymin].GetComponent<BoxCollider>().center = Vector3.zero;
+				ShowMapOnCamera.MAP_TILES[cur_room.tile_xmin + 5, cur_room.tile_ymin].GetComponent<BoxCollider>().center = Vector3.one;
+				ShowMapOnCamera.MAP_TILES[cur_room.tile_xmin + 5, cur_room.tile_ymin].gameObject.layer = 0;
+
+				ShowMapOnCamera.MAP_TILES [cur_room.tile_xmin + 6, cur_room.tile_ymin].SetTile (cur_room.tile_xmin + 6, cur_room.tile_ymin, 029);
+				ShowMapOnCamera.MAP_TILES [cur_room.tile_xmin + 6, cur_room.tile_ymin].GetComponent<BoxCollider> ().enabled = false;
+				ShowMapOnCamera.MAP_TILES[cur_room.tile_xmin + 6, cur_room.tile_ymin].GetComponent<BoxCollider>().center = Vector3.zero;
+				ShowMapOnCamera.MAP_TILES[cur_room.tile_xmin + 6, cur_room.tile_ymin].GetComponent<BoxCollider>().center = Vector3.one;
+				ShowMapOnCamera.MAP_TILES[cur_room.tile_xmin + 6, cur_room.tile_ymin].gameObject.layer = 0;
+			} else if (active_row_index == 11 && active_col_index == 3 || active_row_index == 9 && active_col_index == 4) {
 				ShowMapOnCamera.MAP_TILES [cur_room.tile_xmin + 5, cur_room.tile_ymax + 1].SetTile (cur_room.tile_xmin + 5, cur_room.tile_ymax + 1, 80);
 				ShowMapOnCamera.MAP_TILES [cur_room.tile_xmin + 5, cur_room.tile_ymax + 1].GetComponent<BoxCollider> ().enabled = true;
 				ShowMapOnCamera.MAP_TILES [cur_room.tile_xmin + 5, cur_room.tile_ymax + 1].GetComponent<BoxCollider> ().size = new Vector3 (0.5f, 1f, 1f);
