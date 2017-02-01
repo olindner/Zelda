@@ -36,18 +36,31 @@ public class Chomper : MonoBehaviour {
 		Vector3 rayDown = transform.TransformDirection (Vector3.down);
 		Vector3 rayLeft = transform.TransformDirection (Vector3.left);
 		Vector3 rayRight = transform.TransformDirection (Vector3.right);
-		//RaycastHit hit;
+		RaycastHit hit;
 
 		//Lengthen distance
-		if ((Input.GetKeyDown (KeyCode.UpArrow) && Physics.Raycast(transform.position, rayUp, 1) && dir == 'S') ||
-			(Input.GetKeyDown (KeyCode.DownArrow) && Physics.Raycast(transform.position, rayDown, 1) && dir == 'N') ||
-			(Input.GetKeyDown (KeyCode.LeftArrow) && Physics.Raycast(transform.position, rayLeft, 1) && dir == 'E') ||
-			(Input.GetKeyDown (KeyCode.RightArrow) && Physics.Raycast(transform.position, rayRight, 1) && dir == 'W')) distance += 1;
+		if ((Input.GetKey (KeyCode.UpArrow) && Physics.Raycast(transform.position, rayUp, out hit, 1) 
+			&& hit.transform.tag != "MovableBlock" && dir == 'S') ||
+			(Input.GetKey (KeyCode.DownArrow) && Physics.Raycast(transform.position, rayDown, out hit, 1) 
+				&& hit.transform.tag != "MovableBlock" && dir == 'N') ||
+			(Input.GetKey (KeyCode.LeftArrow) && Physics.Raycast(transform.position, rayLeft, out hit, 1) 
+				&& hit.transform.tag != "MovableBlock" && dir == 'E') ||
+			(Input.GetKey (KeyCode.RightArrow) && Physics.Raycast(transform.position, rayRight, out hit, 1)
+				&& hit.transform.tag != "MovableBlock" && dir == 'W') && distance <= 6) distance += 1;
 		//Shorten distance
-		if ((Input.GetKeyDown (KeyCode.UpArrow) && Physics.Raycast(transform.position, rayUp, 1) && dir == 'N') ||
-			(Input.GetKeyDown (KeyCode.DownArrow) && Physics.Raycast(transform.position, rayDown, 1) && dir == 'S') ||
-			(Input.GetKeyDown (KeyCode.LeftArrow) && Physics.Raycast(transform.position, rayLeft, 1) && dir == 'W') ||
-			(Input.GetKeyDown (KeyCode.RightArrow) && Physics.Raycast(transform.position, rayRight, 1) && dir == 'E') && distance >= 2) distance -= 1;
+		if ((Input.GetKey (KeyCode.UpArrow) && Physics.Raycast(transform.position, rayUp, out hit, 1)
+			&& hit.transform.tag != "MovableBlock" && dir == 'N') ||
+			(Input.GetKey (KeyCode.DownArrow) && Physics.Raycast(transform.position, rayDown, out hit, 1) 
+				&& hit.transform.tag != "MovableBlock" && dir == 'S') ||
+			(Input.GetKey (KeyCode.LeftArrow) && Physics.Raycast(transform.position, rayLeft, out hit, 1) 
+				&& hit.transform.tag != "MovableBlock" && dir == 'W') ||
+			(Input.GetKey (KeyCode.RightArrow) && Physics.Raycast(transform.position, rayRight, out hit, 1)
+				&& hit.transform.tag != "MovableBlock" && dir == 'E') && distance > 2) distance -= 1;
+
+		if (distance < 2)
+			distance = 2;
+		else if (distance > 6)
+			distance = 6;
 
 		if (dir == 'N') transform.position = new Vector3(PlayerController.instance.transform.position.x, PlayerController.instance.transform.position.y + distance, 0);
 		else if (dir == 'E') transform.position = new Vector3(PlayerController.instance.transform.position.x + distance, PlayerController.instance.transform.position.y, 0);

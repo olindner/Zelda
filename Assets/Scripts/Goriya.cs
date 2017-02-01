@@ -12,15 +12,30 @@ public class Goriya : MonoBehaviour {
 	private float spriteTimer;
 	public float throwDelay;
 	private float throwTimer;
-	private bool isMoving =  false;
+	public float failsafeDelay = 3f;
+	private float failsafeTimer;
+	//private bool isMoving =  false;
 	Vector3 pos;
 	private int dir;
 	private bool isStunned = false;
 	private int here = 0;
 
-	public Room room;
+	public GameObject rupee;
+	public GameObject blue_rupee;
+	public GameObject bomb;
+	public GameObject heart;
 
-	public Direction current_direction;
+	public int health = 3;
+	public int showDamageForFrames = 2;
+	public Material[] materials;
+	public Material[] tile_materials;
+	public int remainingDamageFrames = 0;
+	public int remainingDamageFlashes = 0;
+	public Color[] originalColors;
+	public int num_cooldown_frames = 0;
+	public float damage_hopback_vel = 2.65f;
+
+	public Room room;
 
 	public GameObject boomerang;
 	public bool has_boomerang = true;
@@ -30,23 +45,67 @@ public class Goriya : MonoBehaviour {
 
 	// Use this for initialization
 	void Start () {
-		spriteTimer = Time.time + spriteDelay;
+		health = 3;
+		spriteTimer = 0f;
 		throwTimer = Time.time + throwDelay;
 		pos = transform.position;
 		dir = Random.Range(0,3);
 		sr = GetComponent<SpriteRenderer>();
+
+		materials = Utils.GetAllMaterials (gameObject);
+		originalColors = new Color[materials.Length];
+		for (int i = 0; i < materials.Length; i++) {
+			originalColors [i] = materials [i].color;
+		}
 	}
 	
 	// Update is called once per frame
 	void Update ()
 	{
 
-		if (transform.position == pos)
-			isMoving = false;
-		else
-			isMoving = true;
+		//Failsafe
+		if (!has_boomerang && Time.time >= failsafeTimer) {
+			has_boomerang = true;
+			CorrectPosition();
+			pos = transform.position;
+		}
 
-		if (!isMoving && !isStunned) {
+		if (isStunned) {
+			this.GetComponent<Rigidbody> ().velocity = Vector3.zero;
+		}
+
+		if (remainingDamageFlashes > 0) {
+			//print ("frame number: " + frame);
+			//print (remainingDamageFlashes + " damage flashes left");
+			if (remainingDamageFrames > 0) {
+				//print (remainingDamageFrames + " damage frames left");
+				remainingDamageFrames--;
+				if (remainingDamageFrames == showDamageForFrames / 2) {
+					//print ("no damage frames left!");
+					UnshowDamage ();
+				}
+			} else {
+				//print ("decreasing damage flashes left");
+				remainingDamageFlashes--;
+				ShowDamage (remainingDamageFlashes);
+			}
+		} else {
+			//print ("no damage flashes left!");
+			UnshowDamage ();
+		}
+
+		if (num_cooldown_frames > 0) {
+			num_cooldown_frames--;
+			if (num_cooldown_frames == 0) {
+				this.GetComponent<Rigidbody> ().velocity = Vector3.zero;
+				if (isStunned) {
+					isStunned = false;
+					GetComponent<Rigidbody> ().constraints = RigidbodyConstraints.FreezeRotation | RigidbodyConstraints.FreezePositionZ;
+				}
+			}
+		}
+
+		if (has_boomerang && transform.position == pos) {
 			int num = Random.Range (0, 15);
 
 			//Make sure set position in middle of square
@@ -128,76 +187,50 @@ public class Goriya : MonoBehaviour {
 			spriteTimer = Time.time + spriteDelay;
 		}
 
-		transform.position = Vector3.MoveTowards (transform.position, pos, Time.deltaTime * speed);
-
-		if (has_boomerang && Time.time >= throwTimer) {
-			//ThrowBoomerang ();
-			GameObject go = Instantiate (boomerang);
-			//go.GetComponent<SpriteRenderer>().gameObject.transform.position = transform.position;
-			go.gameObject.transform.position = transform.position;
-			print(go.gameObject.transform.position == transform.position);
-//			//Vector3 current_pos = transform.position;
-//			if (current_direction == Direction.NORTH) {
-//				go.GetComponent<GoriyaBoomerang>().current_direction = Direction.NORTH;
-//				go.GetComponent<GoriyaBoomerang>().target = new Vector3 (transform.position.x, transform.position.y + 4f, 0);
-//			} else if (current_direction == Direction.EAST) {
-//				go.GetComponent<GoriyaBoomerang>().current_direction = Direction.EAST;
-//				go.GetComponent<GoriyaBoomerang>().target = new Vector3 (transform.position.x + 4f, transform.position.y, 0);
-//			} else if (current_direction == Direction.SOUTH) {
-//				go.GetComponent<GoriyaBoomerang>().current_direction = Direction.SOUTH;
-//				go.GetComponent<GoriyaBoomerang>().target = new Vector3 (transform.position.x, transform.position.y - 4f, 0);
-//			} else { //current direction is WEST
-//				go.GetComponent<GoriyaBoomerang>().current_direction = Direction.WEST;
-//				go.GetComponent<GoriyaBoomerang>().target = new Vector3 (transform.position.x - 4f, transform.position.y, 0);
-//			}
-			has_boomerang = false;
+		if (has_boomerang) {
+			//isMoving = true;
+			transform.position = Vector3.MoveTowards (transform.position, pos, Time.deltaTime * speed);
+		
+			if (Time.time >= throwTimer) {
+				ThrowBoomerang ();
+				failsafeTimer = Time.time + failsafeDelay;
+			}
 		}
 	}
 
 	void ThrowBoomerang() {
-		//print("b4");
-		//GameObject go = Instantiate (boomerang);
-		//print("after");
-//		if (go.GetComponent<GoriyaBoomerang> ().speed == 5f) {
-//			print ("WHHHHAFJFLFDKA");
-//		}
-//		current_gb = new GoriyaBoomerang ();
-//		current_gb.the_boomerang = go;
-//		current_gb.goriya_pos = this.transform.position;
-		//Vector3 current_pos = transform.position;
-		if (current_direction == Direction.NORTH) {
-			GameObject go = Instantiate (boomerang, new Vector3(transform.position.x, transform.position.y + 0.5f, 0), Quaternion.identity);
+		if (dir == 0) {
+			print("up");
+			GameObject go = Instantiate (boomerang, new Vector3(transform.position.x, transform.position.y + 1f, 0), Quaternion.identity);
 			go.GetComponent<GoriyaBoomerang>().target = new Vector3 (transform.position.x, transform.position.y + 3.5f, 0);
-		} else if (current_direction == Direction.EAST) {
-			GameObject go = Instantiate (boomerang, new Vector3(transform.position.x + 0.5f, transform.position.y, 0), Quaternion.identity);
-			go.GetComponent<GoriyaBoomerang>().target = new Vector3 (transform.position.x + 3.5f, transform.position.y, 0);
-		} else if (current_direction == Direction.SOUTH) {
-			GameObject go = Instantiate (boomerang, new Vector3(transform.position.x, transform.position.y - 0.5f, 0), Quaternion.identity);
+			go.GetComponent<GoriyaBoomerang>().origin = transform.position;
+		} else if (dir == 1) {
+			print("down");
+			GameObject go = Instantiate (boomerang, new Vector3(transform.position.x, transform.position.y - 1f, 0), Quaternion.identity);
 			go.GetComponent<GoriyaBoomerang>().target = new Vector3 (transform.position.x, transform.position.y - 3.5f, 0);
-		} else { //current direction is WEST
-			GameObject go = Instantiate (boomerang, new Vector3(transform.position.x - 0.5f, transform.position.y, 0), Quaternion.identity);
+			go.GetComponent<GoriyaBoomerang>().origin = transform.position;
+		} else if (dir == 2) {
+			print("left");
+			GameObject go = Instantiate (boomerang, new Vector3(transform.position.x - 1f, transform.position.y, 0), Quaternion.identity);
 			go.GetComponent<GoriyaBoomerang>().target = new Vector3 (transform.position.x - 3.5f, transform.position.y, 0);
+			go.GetComponent<GoriyaBoomerang>().origin = transform.position;
+		}else if (dir == 3) {
+			print("right");
+			GameObject go = Instantiate (boomerang, new Vector3(transform.position.x + 1f, transform.position.y, 0), Quaternion.identity);
+			go.GetComponent<GoriyaBoomerang>().target = new Vector3 (transform.position.x + 3.5f, transform.position.y, 0);
+			go.GetComponent<GoriyaBoomerang>().origin = transform.position;
 		}
-		//go.transform.position = current_pos;
-//		if (current_direction == Direction.NORTH) {
-//			go.GetComponent<Rigidbody> ().velocity = Vector3.up * current_gb.speed;
-//		} else if (current_direction == Direction.EAST) {
-//			go.GetComponent<Rigidbody> ().velocity = Vector3.right * current_gb.speed;
-//		} else if (current_direction == Direction.SOUTH) {
-//			go.GetComponent<Rigidbody> ().velocity = Vector3.down * current_gb.speed;
-//		} else { //curent direction is WEST
-//			go.GetComponent<Rigidbody> ().velocity = Vector3.left * current_gb.speed;
-//		}
+
 		has_boomerang = false;
 	}
 
-//	void OnCollisionEnter(Collision coll) { //caught it!
-//		if (coll.gameObject.tag == "GoriyaBoomerang") {
-//			Destroy (coll.gameObject);
-//			has_boomerang = true;
-//			throwTimer = Time.time + throwDelay;
-//		}
-//	}
+	void OnTriggerEnter(Collider coll) { //caught it!
+		if (coll.gameObject.tag == "GoriyaBoomerang") {
+			Destroy (coll.gameObject);
+			has_boomerang = true;
+			throwTimer = Time.time + throwDelay;
+		}
+	}
 
 	void CorrectPosition ()
 	{
@@ -217,6 +250,74 @@ public class Goriya : MonoBehaviour {
 			tempy = Mathf.Ceil(transform.position.y);
 		}
 		transform.position = new Vector3(tempx, tempy, 0);
-		isMoving = false; //hopefully make it pick new direction
+		//isMoving = false; //hopefully make it pick new direction
+	}
+
+	void OnCollisionEnter (Collision col)
+	{
+		if (col.gameObject.tag == "Sword" || col.gameObject.tag == "Chomper") {
+			print ("current goriya velocity is " + GetComponent < Rigidbody> ().velocity);
+			if (GetComponent<Rigidbody> ().velocity.normalized == Vector3.up) {
+				GetComponent<Rigidbody> ().velocity = damage_hopback_vel * Vector3.up;
+			} else if (GetComponent<Rigidbody> ().velocity.normalized == Vector3.down) {
+				GetComponent<Rigidbody> ().velocity = damage_hopback_vel * Vector3.down;
+			} else if (GetComponent<Rigidbody> ().velocity.normalized == Vector3.left) {
+				GetComponent<Rigidbody> ().velocity = damage_hopback_vel * Vector3.left;
+			} else {
+				GetComponent<Rigidbody> ().velocity = damage_hopback_vel * Vector3.right;
+			}
+
+			//GetComponent<Rigidbody> ().velocity = damage_hopback_vel * col.rigidbody.velocity;
+			num_cooldown_frames = 25;
+			if (col.gameObject.tag == "Sword") {
+				Destroy (col.gameObject);
+			}
+			health--;
+			ShowDamage (5);
+			if (health <= 0) {
+				room.num_enemies_left--;
+				room.things_inside_room.Remove (this.gameObject);
+				int temp = Random.Range (1, 5);
+				GameObject go;
+				if (temp == 1 || temp == 2 || temp == 3 || temp == 4) {
+					if (temp == 1) {
+						go = Instantiate (rupee) as GameObject;
+					} else if (temp == 2) {
+						go = Instantiate (blue_rupee) as GameObject;
+					} else if (temp == 3) {
+						go = Instantiate (heart) as GameObject;
+					} else {
+						go = Instantiate (bomb) as GameObject;
+					}
+					go.transform.position = this.transform.position;
+					room.things_inside_room.Add (go);
+				}
+				Destroy (this.gameObject);
+			}
+		} else if (col.gameObject.tag == "Boomerang") {
+			GetComponent<Rigidbody> ().velocity = Vector3.zero;
+			GetComponent<Rigidbody> ().constraints = RigidbodyConstraints.FreezeAll;
+			num_cooldown_frames = 300;
+			isStunned = true;
+		} else if (col.gameObject.name == "Skeleton") { //possibly do simple "else"
+			//CorrectPosition();
+			//isMoving = false;
+		}
+	}
+
+	void ShowDamage(int flashes_left) {
+		//print ("entered ShowDamage");
+		//receive_damage = false;
+		remainingDamageFlashes = flashes_left;
+		foreach (Material m in materials) {
+			m.color = Color.red;
+		}
+		remainingDamageFrames = showDamageForFrames;
+	}
+
+	void UnshowDamage() {
+		for (int i = 0; i < materials.Length; i++) {
+			materials [i].color = originalColors [i];
+		}
 	}
 }

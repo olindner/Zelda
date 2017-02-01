@@ -143,7 +143,7 @@ public class Gel : MonoBehaviour {
 	}
 
 	void OnTriggerEnter (Collider col) {
-		if (col.gameObject.tag == "Sword" || col.gameObject.tag == "Boomerang") {
+		if (col.gameObject.tag == "Sword" || col.gameObject.tag == "Boomerang" || col.gameObject.tag == "Chomper") {
 			if (col.gameObject.tag == "Sword") {
 				Destroy (col.gameObject);
 			}

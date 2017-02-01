@@ -46,7 +46,7 @@ public class PushFarBlock : MonoBehaviour {
 	}
 
 	void OnCollisionEnter(Collision coll) {
-		if (coll.gameObject.tag == "Player" && !done_moving_forever && !is_moving) {
+		if ((coll.gameObject.tag == "Player" || coll.gameObject.tag == "Chomper") && !done_moving_forever && !is_moving) {
 			Vector3 direction_of_push = this.transform.position - original_pos;
 			direction_of_push = direction_of_push.normalized;
 			Vector3 temp = last_pos;

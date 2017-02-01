@@ -144,7 +144,7 @@ public class Skeleton : MonoBehaviour {
 
 	void OnCollisionEnter (Collision col)
 	{
-		if (col.gameObject.tag == "Sword") {
+		if (col.gameObject.tag == "Sword" || col.gameObject.tag == "Chomper") {
 			print ("current skeleton velocity is " + GetComponent < Rigidbody> ().velocity);
 			if (GetComponent<Rigidbody> ().velocity.normalized == Vector3.up) {
 				GetComponent<Rigidbody> ().velocity = damage_hopback_vel * Vector3.up;
@@ -158,7 +158,9 @@ public class Skeleton : MonoBehaviour {
 
 			//GetComponent<Rigidbody> ().velocity = damage_hopback_vel * col.rigidbody.velocity;
 			num_cooldown_frames = 25;
-			Destroy (col.gameObject);
+			if (col.gameObject.tag == "Sword") {
+				Destroy (col.gameObject);
+			}
 			health--;
 			ShowDamage (5);
 			if (health <= 0) {

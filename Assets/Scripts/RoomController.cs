@@ -497,15 +497,15 @@ public class RoomController : MonoBehaviour {
 	void ChangeActiveRoom() {
 		//print ("current cam pos y " + this.transform.position.y);
 		float row_index = (this.transform.position.y - y_start) / room_height;
-		//print ("row index = " + row_index);
 		//print ("current cam pos x " + this.transform.position.x);
 		row_index = 12f - row_index;
+		print ("row index = " + row_index);
 		float col_index = (this.transform.position.x - x_start) / room_width;
-		//print ("col index = " + col_index);
+		print ("col index = " + col_index);
 		//print ("Row_index = " + row_index);
 		//print ("Col_index = " + col_index);
-		map1 [(int)row_index, (int)col_index].is_active = true;
-		active_row_index = (int)row_index;
-		active_col_index = (int)col_index;
+		map1 [Mathf.RoundToInt(row_index), Mathf.RoundToInt(col_index)].is_active = true;
+		active_row_index = Mathf.RoundToInt(row_index);
+		active_col_index = Mathf.RoundToInt(col_index);
 	}
 }

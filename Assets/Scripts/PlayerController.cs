@@ -769,6 +769,7 @@ public class PlayerController : MonoBehaviour {
 			num_frames_hold_triforce = 100;
 			num_hearts = heart_capacity;
 		} else if (collider.gameObject.tag == "ChomperPickup") {
+			print ("GOT CHOMPER PICKUP");
 			Instantiate(chomper, new Vector3(transform.position.x, transform.position.y + 2f, 0 ), Quaternion.identity);
 			has_chomper = true;
 			RoomController.rc.map1 [RoomController.rc.active_row_index, RoomController.rc.active_col_index].chomper_picked_up = true;
@@ -792,7 +793,7 @@ public class PlayerController : MonoBehaviour {
 			transform.position = new Vector3 (23f, 137f, 0f);
 			num_frozen_frames = 24;
 			GetComponent<Rigidbody> ().constraints = RigidbodyConstraints.FreezeAll;
-		} else if (collider.gameObject.tag == "Enemy" && num_cooldown_frames == 0) {
+		} else if ((collider.gameObject.tag == "Enemy" || collider.gameObject.tag == "GoriyaBoomerang") && num_cooldown_frames == 0) {
 			//print ("dude you touched me");
 			if (num_hearts > 0) {
 				ShowDamage (5);
