@@ -14,7 +14,6 @@ public class Skeleton : MonoBehaviour {
 	private float timer;
 	private bool isStunned = false;
 
-	public float prob_drop_rupee = 0.75f;
 	public GameObject rupee;
 	public GameObject blue_rupee;
 	public GameObject bomb;

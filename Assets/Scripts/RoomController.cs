@@ -296,6 +296,8 @@ public class RoomController : MonoBehaviour {
 				map1 [active_row_index, active_col_index].InstantiateSpiketraps ();
 			} else if (map1 [active_row_index, active_col_index].enemy_type == "Aquamentus") {
 				map1 [active_row_index, active_col_index].InstantiateAquamentus ();
+			} else if (map1 [active_row_index, active_col_index].enemy_type == "MitchellBoss") {
+				map1 [active_row_index, active_col_index].InstantiateMitchell ();
 			} else if (map1[active_row_index, active_col_index].enemy_type != "WallMaster"
 				&& map1[active_row_index, active_col_index].enemy_type != "None") {
 				if (!(active_row_index == 1 && active_col_index == 1))
@@ -474,22 +476,22 @@ public class RoomController : MonoBehaviour {
 				ShowMapOnCamera.MAP_TILES[cur_room.tile_xmin + 6, cur_room.tile_ymin].GetComponent<BoxCollider>().center = Vector3.one;
 				ShowMapOnCamera.MAP_TILES[cur_room.tile_xmin + 6, cur_room.tile_ymin].gameObject.layer = 0;
 			} else if (active_row_index == 11 && active_col_index == 3 || active_row_index == 9 && active_col_index == 4) {
-				ShowMapOnCamera.MAP_TILES [cur_room.tile_xmin + 5, cur_room.tile_ymax + 1].SetTile (cur_room.tile_xmin + 5, cur_room.tile_ymax + 1, 80);
+				ShowMapOnCamera.MAP_TILES [cur_room.tile_xmin + 5, cur_room.tile_ymax + 1].SetTile (cur_room.tile_xmin + 5, cur_room.tile_ymax + 1, 92);
 				ShowMapOnCamera.MAP_TILES [cur_room.tile_xmin + 5, cur_room.tile_ymax + 1].GetComponent<BoxCollider> ().enabled = true;
 				ShowMapOnCamera.MAP_TILES [cur_room.tile_xmin + 5, cur_room.tile_ymax + 1].GetComponent<BoxCollider> ().size = new Vector3 (0.5f, 1f, 1f);
 				ShowMapOnCamera.MAP_TILES [cur_room.tile_xmin + 5, cur_room.tile_ymax + 1].GetComponent<BoxCollider> ().center = new Vector3 (-0.25f, 0f, 0f);
 				ShowMapOnCamera.MAP_TILES [cur_room.tile_xmin + 5, cur_room.tile_ymax + 1].GetComponent<BoxCollider> ().isTrigger = true;
 				ShowMapOnCamera.MAP_TILES [cur_room.tile_xmin + 5, cur_room.tile_ymax + 1].gameObject.layer = 11;
 				ShowMapOnCamera.MAP_TILES [cur_room.tile_xmin + 5, cur_room.tile_ymax + 1].gameObject.tag = "DoorUp";
-				ShowMapOnCamera.MAP [cur_room.tile_xmin + 5, cur_room.tile_ymax + 3] = 80;
-				ShowMapOnCamera.MAP_TILES [cur_room.tile_xmin + 6, cur_room.tile_ymax + 1].SetTile (cur_room.tile_xmin + 5, cur_room.tile_ymax + 1, 80);
+				ShowMapOnCamera.MAP [cur_room.tile_xmin + 5, cur_room.tile_ymax + 1] = 92;
+				ShowMapOnCamera.MAP_TILES [cur_room.tile_xmin + 6, cur_room.tile_ymax + 1].SetTile (cur_room.tile_xmin + 6, cur_room.tile_ymax + 1, 93);
 				ShowMapOnCamera.MAP_TILES [cur_room.tile_xmin + 6, cur_room.tile_ymax + 1].GetComponent<BoxCollider> ().enabled = true;
 				ShowMapOnCamera.MAP_TILES [cur_room.tile_xmin + 6, cur_room.tile_ymax + 1].GetComponent<BoxCollider> ().size = new Vector3 (0.5f, 1f, 1f);
 				ShowMapOnCamera.MAP_TILES [cur_room.tile_xmin + 6, cur_room.tile_ymax + 1].GetComponent<BoxCollider> ().center = new Vector3 (0.25f, 0f, 0f);
 				ShowMapOnCamera.MAP_TILES [cur_room.tile_xmin + 6, cur_room.tile_ymax + 1].GetComponent<BoxCollider> ().isTrigger = true;
 				ShowMapOnCamera.MAP_TILES [cur_room.tile_xmin + 6, cur_room.tile_ymax + 1].gameObject.layer = 11;
 				ShowMapOnCamera.MAP_TILES [cur_room.tile_xmin + 6, cur_room.tile_ymax + 1].gameObject.tag = "DoorUp";
-				ShowMapOnCamera.MAP [cur_room.tile_xmin + 6, cur_room.tile_ymax + 3] = 81;
+				ShowMapOnCamera.MAP [cur_room.tile_xmin + 6, cur_room.tile_ymax + 1] = 93;
 			}
 		}
 	}

@@ -37,5 +37,12 @@ public class RightClaw : MonoBehaviour {
 
 		if(movingout && Time.time >= extendTimer) sr.transform.position = Vector3.MoveTowards(sr.transform.position, target, Time.deltaTime * speed);
 		else if (movingin) sr.transform.position = Vector3.MoveTowards(sr.transform.position, origin, Time.deltaTime * speed);
+
+		Vector3 rayRight = transform.TransformDirection (Vector3.right);
+		RaycastHit hit;
+
+		if (Physics.Raycast(transform.position, rayRight, out hit, 1)){// && hit.transform.tag == "MovableBlock") {
+			GetComponent<Rigidbody>().constraints = RigidbodyConstraints.FreezeAll;
+		}
 	}
 }

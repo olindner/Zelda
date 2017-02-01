@@ -795,21 +795,27 @@ public class PlayerController : MonoBehaviour {
 			GetComponent<Rigidbody> ().constraints = RigidbodyConstraints.FreezeAll;
 		} else if ((collider.gameObject.tag == "Enemy" || collider.gameObject.tag == "GoriyaBoomerang") && num_cooldown_frames == 0) {
 			//print ("dude you touched me");
-			if (num_hearts > 0) {
-				ShowDamage (5);
-				num_hearts -= 0.5f;
-				//thing.GetComponent<Hud> ().TookDamage ();
-				num_cooldown_frames = 24;
-				GetComponent<Rigidbody> ().velocity *= (-1f * damage_hopback_vel);
-				if (num_hearts == 0.0) {
-					//print ("ah dude I ded");
-					//DestroyStuffOnDeath ();
-					GetComponent<Rigidbody> ().velocity = Vector3.zero;
-					animation_state_machine.ChangeState (new StatePlayAnimationForDead (this, 
-						GetComponent<SpriteRenderer> (), link_dead, 6));
-					//foreach (Material m in tile_materials) {
-					//m.color = Color.red;
-				//}
+			if (collider.gameObject.tag == "GoriyaBoomerang") {
+				if ((collider.gameObject.GetComponent<Rigidbody> ().velocity.normalized == Vector3.up && current_direction == Direction.SOUTH)
+				    || (collider.gameObject.GetComponent<Rigidbody> ().velocity.normalized == Vector3.down && current_direction == Direction.NORTH)
+				    || (collider.gameObject.GetComponent<Rigidbody> ().velocity.normalized == Vector3.left && current_direction == Direction.EAST)
+				    || (collider.gameObject.GetComponent<Rigidbody> ().velocity.normalized == Vector3.right && current_direction == Direction.WEST)) {
+					return;
+				}
+			} else {
+				if (num_hearts > 0) {
+					ShowDamage (5);
+					num_hearts -= 0.5f;
+					//thing.GetComponent<Hud> ().TookDamage ();
+					num_cooldown_frames = 24;
+					GetComponent<Rigidbody> ().velocity *= (-1f * damage_hopback_vel);
+					if (num_hearts == 0.0) {
+						//print ("ah dude I ded");
+						//DestroyStuffOnDeath ();
+						GetComponent<Rigidbody> ().velocity = Vector3.zero;
+						animation_state_machine.ChangeState (new StatePlayAnimationForDead (this, 
+							GetComponent<SpriteRenderer> (), link_dead, 6));
+					}
 				}
 			}
 		}

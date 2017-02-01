@@ -138,6 +138,8 @@ public class Room : MonoBehaviour {
 			enemy_prefab = RoomController.rc.enemies [4];
 		} else if (enemy_type == "Aquamentus") {
 			enemy_prefab = RoomController.rc.enemies [5];
+		} else if (enemy_type == "MitchellBoss") {
+			enemy_prefab = RoomController.rc.enemies [6];
 		}
 	}
 	
@@ -210,6 +212,13 @@ public class Room : MonoBehaviour {
 		things_inside_room.Add (aq);
 	}
 
+	public void InstantiateMitchell() {
+		GameObject mitchell = Instantiate (enemy_prefab) as GameObject;
+		mitchell.transform.position = new Vector3 (72f, 38f, 0f);
+		mitchell.GetComponent<MitchellAttack> ().room = this;
+		things_inside_room.Add (mitchell);
+	}
+
 	public void InstantiateBatsInBowRoom() {
 		GameObject b1 = Instantiate (enemy_prefab) as GameObject;
 		GameObject b2 = Instantiate (enemy_prefab) as GameObject;
@@ -263,6 +272,7 @@ public class Room : MonoBehaviour {
 			go.GetComponent<PushFarBlock> ().target = new Vector3 (58f, 19f, 0f);
 			go.GetComponent<PushFarBlock> ().original_pos = new Vector3 (60f, 14f, 0f);
 			go.GetComponent<Rigidbody> ().constraints = RigidbodyConstraints.FreezeRotation | RigidbodyConstraints.FreezePositionZ;
+			things_inside_room.Add (go);
 		} else if (num_push_blocks_total == 3) {
 			GameObject go1 = Instantiate (RoomController.rc.push_far_block_prefab) as GameObject;
 			GameObject go2 = Instantiate (RoomController.rc.push_far_block_prefab) as GameObject;
@@ -285,6 +295,10 @@ public class Room : MonoBehaviour {
 			go3.GetComponent<PushFarBlock> ().target = new Vector3 (70f, 38f, 0f);
 			go3.GetComponent<PushFarBlock> ().original_pos = new Vector3 (68f, 39f, 0f);
 			go3.GetComponent<Rigidbody> ().constraints = RigidbodyConstraints.FreezeRotation | RigidbodyConstraints.FreezePositionZ;
+
+			things_inside_room.Add (go1);
+			things_inside_room.Add (go2);
+			things_inside_room.Add (go3);
 		}
 	}
 
@@ -296,6 +310,7 @@ public class Room : MonoBehaviour {
 			go.GetComponent<PushableBlock> ().target = new Vector3 (58f, 19f, 0f);
 			go.GetComponent<PushableBlock> ().original_pos = new Vector3 (60f, 14f, 0f);
 			go.GetComponent<Rigidbody> ().constraints = RigidbodyConstraints.FreezeAll;
+			things_inside_room.Add (go);
 		} else if (num_push_blocks_total == 3) {
 			GameObject go1 = Instantiate (RoomController.rc.push_far_block_prefab) as GameObject;
 			GameObject go2 = Instantiate (RoomController.rc.push_far_block_prefab) as GameObject;
@@ -314,10 +329,13 @@ public class Room : MonoBehaviour {
 			go2.GetComponent<Rigidbody> ().constraints = RigidbodyConstraints.FreezeAll;
 
 			go3.GetComponent<SpriteRenderer> ().color = Color.green;
-			go3.transform.position = new Vector3 (70f, 38f, 0f);
+			go3.transform.position = new Vector3 (68f, 38f, 0f);
 			go3.GetComponent<PushableBlock> ().target = new Vector3 (70f, 38f, 0f);
 			go3.GetComponent<PushableBlock> ().original_pos = new Vector3 (68f, 39f, 0f);
 			go3.GetComponent<Rigidbody> ().constraints = RigidbodyConstraints.FreezeAll;
+			things_inside_room.Add (go1);
+			things_inside_room.Add (go2);
+			things_inside_room.Add (go3);
 		}
 	}
 
@@ -390,6 +408,8 @@ public class Room : MonoBehaviour {
 				go2.GetComponent<Rigidbody> ().constraints = RigidbodyConstraints.FreezeRotation
 				| RigidbodyConstraints.FreezePositionX | RigidbodyConstraints.FreezePositionZ;
 			}
+			things_inside_room.Add (go1);
+			things_inside_room.Add (go2);
 		} else if (num_push_blocks_total == 4) {
 			GameObject go1 = Instantiate (RoomController.rc.pushable_block_prefab) as GameObject;
 			GameObject go2 = Instantiate (RoomController.rc.pushable_block_prefab) as GameObject;
@@ -415,6 +435,10 @@ public class Room : MonoBehaviour {
 			go4.GetComponent<PushableBlock> ().original_pos = new Vector3 (25f, 16f, 0f);
 			go4.GetComponent<Rigidbody> ().constraints = RigidbodyConstraints.FreezeRotation
 				| RigidbodyConstraints.FreezePositionX | RigidbodyConstraints.FreezePositionZ;
+			things_inside_room.Add (go1);
+			things_inside_room.Add (go2);
+			things_inside_room.Add (go3);
+			things_inside_room.Add (go4);
 		} else if (num_push_blocks_total == 6) {
 			GameObject go1 = Instantiate (RoomController.rc.pushable_block_prefab) as GameObject;
 			GameObject go2 = Instantiate (RoomController.rc.pushable_block_prefab) as GameObject;
@@ -452,6 +476,12 @@ public class Room : MonoBehaviour {
 			go6.GetComponent<PushableBlock> ().original_pos = new Vector3 (43f, 14f, 0f);
 			go6.GetComponent<Rigidbody> ().constraints = RigidbodyConstraints.FreezeRotation
 				| RigidbodyConstraints.FreezePositionY | RigidbodyConstraints.FreezePositionZ;
+			things_inside_room.Add (go1);
+			things_inside_room.Add (go2);
+			things_inside_room.Add (go3);
+			things_inside_room.Add (go4);
+			things_inside_room.Add (go5);
+			things_inside_room.Add (go6);
 		}
 	}
 
@@ -514,6 +544,8 @@ public class Room : MonoBehaviour {
 				go2.GetComponent<PushableBlock> ().original_pos = new Vector3 (28f, 27f, 0f);
 				go2.GetComponent<Rigidbody> ().constraints = RigidbodyConstraints.FreezeAll;
 			}
+			things_inside_room.Add (go1);
+			things_inside_room.Add (go2);
 		} else if (num_push_blocks_total == 4) {
 			GameObject go1 = Instantiate (RoomController.rc.pushable_block_prefab) as GameObject;
 			GameObject go2 = Instantiate (RoomController.rc.pushable_block_prefab) as GameObject;
@@ -535,6 +567,10 @@ public class Room : MonoBehaviour {
 			go4.GetComponent<PushableBlock> ().target = new Vector3 (25f, 15f, 0f);
 			go4.GetComponent<PushableBlock> ().original_pos = new Vector3 (25f, 16f, 0f);
 			go4.GetComponent<Rigidbody> ().constraints = RigidbodyConstraints.FreezeAll;
+			things_inside_room.Add (go1);
+			things_inside_room.Add (go2);
+			things_inside_room.Add (go3);
+			things_inside_room.Add (go4);
 		} else if (num_push_blocks_total == 6) {
 			GameObject go1 = Instantiate (RoomController.rc.pushable_block_prefab) as GameObject;
 			GameObject go2 = Instantiate (RoomController.rc.pushable_block_prefab) as GameObject;
@@ -566,6 +602,12 @@ public class Room : MonoBehaviour {
 			go6.GetComponent<PushableBlock> ().target = new Vector3 (44f, 14f, 0f);
 			go6.GetComponent<PushableBlock> ().original_pos = new Vector3 (43f, 14f, 0f);
 			go6.GetComponent<Rigidbody> ().constraints = RigidbodyConstraints.FreezeAll;
+			things_inside_room.Add (go1);
+			things_inside_room.Add (go2);
+			things_inside_room.Add (go3);
+			things_inside_room.Add (go4);
+			things_inside_room.Add (go5);
+			things_inside_room.Add (go6);
 		}
 	}
 }

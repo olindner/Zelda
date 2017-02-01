@@ -37,5 +37,12 @@ public class BottomClaw : MonoBehaviour {
 
 		if(movingout && Time.time >= extendTimer) sr.transform.position = Vector3.MoveTowards(sr.transform.position, target, Time.deltaTime * speed);
 		else if (movingin) sr.transform.position = Vector3.MoveTowards(sr.transform.position, origin, Time.deltaTime * speed);
+
+		Vector3 rayDown = transform.TransformDirection (Vector3.down);
+		RaycastHit hit;
+
+		if (Physics.Raycast(transform.position, rayDown, out hit, 1)){// && hit.transform.tag == "MovableBlock") {
+			GetComponent<Rigidbody>().constraints = RigidbodyConstraints.FreezeAll;
+		}
 	}
 }
