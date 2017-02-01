@@ -8,7 +8,7 @@ public enum EntityState {NORMAL, ATTACKING};
 
 public class PlayerController : MonoBehaviour {
 
-	//public int frame = 0; //for debugging
+	//public int frame = 0; //for debugging 
 	//fuck you austin jk i love you
 
     /* Inspector Tunables */
@@ -16,6 +16,14 @@ public class PlayerController : MonoBehaviour {
 	public int showDamageForFrames = 2;
 
     Rigidbody rb;
+    public AudioSource player;
+    public AudioClip rupee;
+	public AudioClip bombKeyPickup;
+	public AudioClip oldMan;
+	public AudioClip bowClip;
+	public AudioClip death;
+	public AudioClip bombClip;
+	public AudioClip swordThrow;
 	//public bool receive_damage = false;
 	public Material[] materials;
 	public Material[] tile_materials;
@@ -86,9 +94,11 @@ public class PlayerController : MonoBehaviour {
 
 	public bool cheat_health = false;
 	public bool cheat_items = false;
+	private bool playedOld = false;
 
     // Use this for initialization
     void Start () {
+    	
         rb = GetComponent<Rigidbody>();
         instance = this;
 
@@ -121,6 +131,13 @@ public class PlayerController : MonoBehaviour {
     // Update is called once per frame
     void Update ()
 	{
+
+		if (RoomController.rc.active_col_index == 0 && RoomController.rc.active_row_index == 2 && !playedOld) {
+			player.clip = oldMan;
+			player.Play();
+			playedOld = true;
+		}
+
 		if (cheat_health) {
 			num_hearts = 16;
 			heart_capacity = 16;
@@ -213,6 +230,8 @@ public class PlayerController : MonoBehaviour {
 			if (current_weapon_B.def.delayBetweenShots == 0) {
 				//print ("BOMB GOES BOOM");
 				BombKills ();
+				player.clip = bombClip;
+				player.Play();
 				Destroy (current_weapon_B.w_go);
 				GameObject c_w = new GameObject ();
 				current_weapon_B = new Weapon (WeaponType.none, getWeaponDefinition (WeaponType.none), c_w, this);
@@ -641,6 +660,8 @@ public class PlayerController : MonoBehaviour {
 
 	void UseSword(Weapon sword) {
 		if (num_hearts == heart_capacity) { //I'm not sure when he's allowed to shoot--it's either at 3 or "full capacity"
+			player.clip = swordThrow;
+			player.Play();
 			//it shoots
 			switch (this.current_direction) {
 			case Direction.SOUTH:
@@ -680,6 +701,8 @@ public class PlayerController : MonoBehaviour {
 				if (num_hearts == 0.0) {
 					//print ("ah dude I ded");
 					//DestroyStuffOnDeath ();
+					player.clip = death;
+					player.Play();
 					GetComponent<Rigidbody> ().velocity = Vector3.zero;
 					animation_state_machine.ChangeState (new StatePlayAnimationForDead (this, 
 						GetComponent<SpriteRenderer> (), link_dead, 6));
@@ -699,18 +722,24 @@ public class PlayerController : MonoBehaviour {
 	void OnTriggerEnter(Collider collider) {
 		print ("player controller trigger entered");
 		if (collider.gameObject.tag == "Rupee") {
+			player.clip = rupee;
+			player.Play();
 			num_rupees++;
 			rc.map1 [rc.active_row_index, rc.active_col_index].things_inside_room.Remove (collider.gameObject);
 			//print ("num rupees:" + num_rupees);
 			Destroy (collider.gameObject);
 			//print ("collected rupee");
 		} else if (collider.gameObject.tag == "BlueRupee") {
+			player.clip = rupee;
+			player.Play();
 			num_rupees += 5;
 			rc.map1 [rc.active_row_index, rc.active_col_index].things_inside_room.Remove (collider.gameObject);
 			//print ("num rupees:" + num_rupees);
 			Destroy (collider.gameObject);
 			//print ("collected rupee");
 		} else if (collider.gameObject.tag == "Heart") {
+			player.clip = bombKeyPickup;
+			player.Play();
 			if (num_hearts <= heart_capacity - 1) {
 				num_hearts++;
 			} else {
@@ -726,15 +755,21 @@ public class PlayerController : MonoBehaviour {
 			rc.map1 [rc.active_row_index, rc.active_col_index].things_inside_room.Remove (collider.gameObject);
 			Destroy (collider.gameObject);
 		} else if (collider.gameObject.tag == "Key") {
+			player.clip = bombKeyPickup;
+			player.Play();
 			num_keys++;
 			rc.map1 [rc.active_row_index, rc.active_col_index].key_picked_up = true;
 			rc.map1 [rc.active_row_index, rc.active_col_index].things_inside_room.Remove (collider.gameObject);
 			Destroy (collider.gameObject);
 		} else if (collider.gameObject.tag == "Bomb") {
+			player.clip = bombKeyPickup;
+			player.Play();
 			num_bombs++;
 			rc.map1 [rc.active_row_index, rc.active_col_index].things_inside_room.Remove (collider.gameObject);
 			Destroy (collider.gameObject);
 		} else if (collider.gameObject.tag == "Bow") {
+			player.clip = bowClip;
+			player.Play();
 			GetComponent<Rigidbody> ().velocity = Vector3.zero;
 			animation_state_machine.ChangeState(new StateIdleWithSprite(this, GetComponent<SpriteRenderer>(), bow_link));
 			Vector3 new_pos = this.gameObject.transform.position;
@@ -762,6 +797,8 @@ public class PlayerController : MonoBehaviour {
 			rc.map1 [rc.active_row_index, rc.active_col_index].things_inside_room.Remove (collider.gameObject);
 			Destroy (collider.gameObject);
 		} else if (collider.gameObject.tag == "Triforce") {
+			player.clip = bowClip;
+			player.Play();
 			animation_state_machine.ChangeState(new StateIdleWithSprite(this, GetComponent<SpriteRenderer>(), triforce_link));
 			Vector3 new_pos = this.gameObject.transform.position;
 			new_pos.y += 1;
@@ -803,6 +840,8 @@ public class PlayerController : MonoBehaviour {
 				if (num_hearts == 0.0) {
 					//print ("ah dude I ded");
 					//DestroyStuffOnDeath ();
+					player.clip = death;
+					player.Play();
 					GetComponent<Rigidbody> ().velocity = Vector3.zero;
 					animation_state_machine.ChangeState (new StatePlayAnimationForDead (this, 
 						GetComponent<SpriteRenderer> (), link_dead, 6));

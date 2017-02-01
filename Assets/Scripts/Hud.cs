@@ -8,6 +8,7 @@ public class Hud : MonoBehaviour {
 	public Text rupeeText;
 	public Text keyText;
 	public Text bombText;
+	public Text oldmanText;
 	public Image[] redHearts;
 	public Image[] whiteHearts;
 	public Image[] halfHearts;
@@ -57,50 +58,17 @@ public class Hud : MonoBehaviour {
 
 		hidden = true;
 		rt = GetComponent<RectTransform> ();
-		
-//		float health = PlayerController.instance.num_hearts;
-//		int capacity = PlayerController.instance.heart_capacity;
-//		slot = (int)Mathf.Floor(health);
-//
-//		//Display red hearts
-//		int count = (int)Mathf.Floor (health);
-//		foreach (Image i in redHearts) {
-//			if (count > 0)
-//				i.enabled = true;
-//			else
-//				i.enabled = false;
-//			count--;
-//		}
-//
-//		//Display half hearts
-////		if (health % 1 != 0) {
-//			int num = (int)Mathf.Floor (health);
-//			foreach (Image i in halfHearts) {
-//				if (num == 0 && health % 1.0 != 0.0)
-//					i.enabled = true;
-//				else
-//					i.enabled = false;
-//				num--;
-//			}
-////		}
-//
-//		//Display white hearts
-////		if (capacity - health > 0.5) {
-//			int hi = (int)Mathf.Ceil (health);
-//			int bye = 0;
-//			foreach (Image i in whiteHearts) {
-//			if (bye >= hi && bye < capacity)
-//					i.enabled = true;
-//				else
-//					i.enabled = false;
-//				bye++;
-//			}
-//		}
+
+		oldmanText.enabled = false;
 	}
 	
 	// Update is called once per frame
 	void Update ()
 	{
+
+		if (RoomController.rc.active_col_index == 0 && RoomController.rc.active_row_index == 2) {
+			oldmanText.enabled = true;
+		}
 
 		if (Input.GetKeyDown (KeyCode.Return)) {
 			hidden = !hidden;
@@ -301,13 +269,12 @@ public class Hud : MonoBehaviour {
 		}
 	}
 
-	//Replenishing heart (think it heals one full heart amount?)
-	public void CollectedHeart () {
-
-	}
-
-	//Increases heart capacity by one
-	public void CollectedBIGHeart () {
-		
+	IEnumerator Letters() {
+		string message = oldmanText.text;
+		oldmanText.text = "";
+		foreach (char letter in message.ToCharArray()) {
+			oldmanText.text += letter;
+			yield return new WaitForSeconds(0.1f);
+		}
 	}
 }
