@@ -35,6 +35,7 @@ public class PlayerController : MonoBehaviour {
 	public int num_keys;
 	public int num_bombs;
 	public GameObject thing; //had to rename to thing because naming/static error
+	public GameObject bow;//super temporary just so it can delete after holding it up
 
 	public bool has_map;
 	public bool has_compass;
@@ -58,8 +59,10 @@ public class PlayerController : MonoBehaviour {
 
 	public Sprite[] link_dead;
 	public Sprite triforce_link;
+	public Sprite bow_link;
 
 	public int num_frames_hold_triforce = 0;
+	public int num_frames_hold_bow = 0;
 
 	StateMachine animation_state_machine;
 	StateMachine control_state_machine;
@@ -152,6 +155,7 @@ public class PlayerController : MonoBehaviour {
 		if (num_frames_hold_triforce > 0) {
 			num_frames_hold_triforce--;
 			if (num_frames_hold_triforce == 0) {
+				animation_state_machine.ChangeState(new StateIdleWithSprite(this, GetComponent<SpriteRenderer>(), link_run_down[0]));
 				if (RoomController.rc.active_row_index == 8 && RoomController.rc.active_col_index == 4) {
 					DelayedRestart (gameRestartDelay);
 				} else {
@@ -164,6 +168,14 @@ public class PlayerController : MonoBehaviour {
 					CameraPan.c.current_pos = CameraPan.c.transform.position;
 					CameraPan.c.destination = CameraPan.c.current_pos;
 				}
+			}
+		}
+
+		if (num_frames_hold_bow > 0) {
+			num_frames_hold_bow--;
+			if (num_frames_hold_bow == 0) {
+				animation_state_machine.ChangeState(new StateIdleWithSprite(this, GetComponent<SpriteRenderer>(), link_run_down[0]));
+				Destroy (bow);
 			}
 		}
 
@@ -210,7 +222,7 @@ public class PlayerController : MonoBehaviour {
 //		print ("boomerang position " + current_weapon_B.w_go.transform.position);
 //		print ("boomerang target " + current_weapon_B.target1);
 //		print ("on way back " + current_weapon_B.on_way_back);
-		if (current_weapon_B.type == WeaponType.boomerang && !current_weapon_B.on_way_back && current_weapon_B != null //had error if returning
+		if (current_weapon_B.type == WeaponType.boomerang && !current_weapon_B.on_way_back// && current_weapon_B != null //had error if returning
 			&& (Mathf.Abs (current_weapon_B.w_go.transform.position.x - current_weapon_B.target1.x) <= 0.1
 			&& Mathf.Abs (current_weapon_B.w_go.transform.position.y - current_weapon_B.target1.y) <= 0.1)) {
 			//print ("ON MAH WAY BACK DAWG");
@@ -285,7 +297,7 @@ public class PlayerController : MonoBehaviour {
 		if (num_cooldown_frames == 0
 		    && (!CameraPan.c.panning_down && !CameraPan.c.panning_up
 		    && !CameraPan.c.panning_left && !CameraPan.c.panning_right)
-		    && num_frames_hold_triforce == 0) {
+			&& num_frames_hold_triforce == 0 && num_frames_hold_bow == 0) {
 			if (Input.GetKey (KeyCode.UpArrow)) {
 				desired_velocity = new Vector3 (0, 1, 0);
 				float temp;
@@ -663,7 +675,7 @@ public class PlayerController : MonoBehaviour {
 				ShowDamage (5);
 				num_hearts -= 0.5f;
 				//thing.GetComponent<Hud> ().TookDamage ();
-				num_cooldown_frames = 50;
+				num_cooldown_frames = 24;
 				GetComponent<Rigidbody> ().velocity *= (-1f * damage_hopback_vel);
 				if (num_hearts == 0.0) {
 					//print ("ah dude I ded");
@@ -723,9 +735,15 @@ public class PlayerController : MonoBehaviour {
 			rc.map1 [rc.active_row_index, rc.active_col_index].things_inside_room.Remove (collider.gameObject);
 			Destroy (collider.gameObject);
 		} else if (collider.gameObject.tag == "Bow") {
+			GetComponent<Rigidbody> ().velocity = Vector3.zero;
+			animation_state_machine.ChangeState(new StateIdleWithSprite(this, GetComponent<SpriteRenderer>(), bow_link));
+			Vector3 new_pos = this.gameObject.transform.position;
+			new_pos.y += 1;
+			collider.gameObject.transform.position = new_pos;
+			num_frames_hold_bow = 100;
 			has_bow = true;
 			//change animation to hold up bow
-			Destroy (collider.gameObject);
+			bow = collider.gameObject;
 		} else if (collider.gameObject.tag == "Map") {
 			has_map = true;
 			rc.map1 [rc.active_row_index, rc.active_col_index].map_picked_up = true;
@@ -744,11 +762,11 @@ public class PlayerController : MonoBehaviour {
 			rc.map1 [rc.active_row_index, rc.active_col_index].things_inside_room.Remove (collider.gameObject);
 			Destroy (collider.gameObject);
 		} else if (collider.gameObject.tag == "Triforce") {
-			GetComponent<SpriteRenderer> ().sprite = triforce_link;
+			animation_state_machine.ChangeState(new StateIdleWithSprite(this, GetComponent<SpriteRenderer>(), triforce_link));
 			Vector3 new_pos = this.gameObject.transform.position;
 			new_pos.y += 1;
 			collider.gameObject.transform.position = new_pos;
-			num_frames_hold_triforce = 50;
+			num_frames_hold_triforce = 100;
 			num_hearts = heart_capacity;
 		} else if (collider.gameObject.tag == "ChomperPickup") {
 			Instantiate(chomper, new Vector3(transform.position.x, transform.position.y + 2f, 0 ), Quaternion.identity);
@@ -780,7 +798,7 @@ public class PlayerController : MonoBehaviour {
 				ShowDamage (5);
 				num_hearts -= 0.5f;
 				//thing.GetComponent<Hud> ().TookDamage ();
-				num_cooldown_frames = 50;
+				num_cooldown_frames = 24;
 				GetComponent<Rigidbody> ().velocity *= (-1f * damage_hopback_vel);
 				if (num_hearts == 0.0) {
 					//print ("ah dude I ded");

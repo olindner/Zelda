@@ -98,7 +98,7 @@ public class StateIdleWithSprite : State
 			return;
 
 		// Transition to walking animations on key press.
-		if (pc.num_cooldown_frames == 0 && pc.num_hearts > 0) {
+		if (pc.num_cooldown_frames == 0 && pc.num_hearts > 0 && pc.num_frames_hold_triforce == 0 && pc.num_frames_hold_bow == 0) {
 			if (Input.GetKeyDown (KeyCode.DownArrow))
 				state_machine.ChangeState (new StatePlayAnimationForHeldKey (pc, renderer, pc.link_run_down, 6, KeyCode.DownArrow));
 			if (Input.GetKeyDown (KeyCode.UpArrow))
