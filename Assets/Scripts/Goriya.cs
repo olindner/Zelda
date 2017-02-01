@@ -191,13 +191,13 @@ public class Goriya : MonoBehaviour {
 		has_boomerang = false;
 	}
 
-	void OnCollisionEnter(Collision coll) { //caught it!
-		if (coll.gameObject.tag == "GoriyaBoomerang") {
-			Destroy (coll.gameObject);
-			has_boomerang = true;
-			throwTimer = Time.time + throwDelay;
-		}
-	}
+//	void OnCollisionEnter(Collision coll) { //caught it!
+//		if (coll.gameObject.tag == "GoriyaBoomerang") {
+//			Destroy (coll.gameObject);
+//			has_boomerang = true;
+//			throwTimer = Time.time + throwDelay;
+//		}
+//	}
 
 	void CorrectPosition ()
 	{
