@@ -276,10 +276,10 @@ public class Room : MonoBehaviour {
 	public void SetPushFarBlocks() {
 		if (num_push_blocks_total == 1) {
 			GameObject go = Instantiate (RoomController.rc.push_far_block_prefab) as GameObject;
-			go.GetComponent<SpriteRenderer> ().color = Color.black;
-			go.transform.position = new Vector3 (60f, 14f, 0f);
+			go.GetComponent<SpriteRenderer> ().color = Color.red;
+			go.transform.position = new Vector3 (59f, 14f, 0f);
 			go.GetComponent<PushFarBlock> ().target = new Vector3 (58f, 19f, 0f);
-			go.GetComponent<PushFarBlock> ().original_pos = new Vector3 (60f, 14f, 0f);
+			go.GetComponent<PushFarBlock> ().original_pos = new Vector3 (59f, 14f, 0f);
 			go.GetComponent<Rigidbody> ().constraints = RigidbodyConstraints.FreezeRotation | RigidbodyConstraints.FreezePositionZ;
 			things_inside_room.Add (go);
 		} else if (num_push_blocks_total == 3) {

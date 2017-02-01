@@ -11,7 +11,7 @@ public class Chomper : MonoBehaviour {
 	private int here;
 	public int distance = 2;
 	private float changeTimer;
-	private float changeDelay = 1f; //has to wait 1 second to change distance again
+	private float changeDelay = 4f; //has to wait 1 second to change distance again
 
 	// Use this for initialization
 	void Start () {

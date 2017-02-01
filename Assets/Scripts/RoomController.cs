@@ -368,7 +368,7 @@ public class RoomController : MonoBehaviour {
 		    && map1 [active_row_index, active_col_index].has_push_far_block) {
 			Room cur_room = map1 [active_row_index, active_col_index];
 			if (active_row_index == 11 && active_col_index == 3) {
-				ShowMapOnCamera.MAP_TILES [cur_room.tile_xmax - 3, cur_room.tile_ymax].GetComponent<SpriteRenderer> ().color = Color.black;
+				ShowMapOnCamera.MAP_TILES [cur_room.tile_xmax - 3, cur_room.tile_ymax].GetComponent<SpriteRenderer> ().color = Color.red;
 			} else if (active_row_index == 9 && active_col_index == 4) {
 				ShowMapOnCamera.MAP_TILES [cur_room.tile_xmin + 4, cur_room.tile_ymax - 3].GetComponent<SpriteRenderer> ().color = Color.green;
 				ShowMapOnCamera.MAP_TILES [cur_room.tile_xmax - 3, cur_room.tile_ymax - 3].GetComponent<SpriteRenderer> ().color = Color.blue;

@@ -1,0 +1,27 @@
+The Chomper mechanic is slightly buggy, in that sometimes in order to make it push blocks effectively, you may have to rotate (using S) it a few times.
+Also, the pushable blocks may be a bit buggy and require a room reset (walk out of current room, and back in again).
+The mechanic DOES work with a couple trials.
+
+Guide to Custom Level:
+
+Extra Cheat Code: F5 teleports to Custom Level boss room. Boss will not instantiate at first, so you must leave the room (down) and reenter to instantiate the boss.
+
+(Custom Level is sequential, so "First", "Second", etc refers to the rooms beginning with the room you spawn in ("First")
+First Room) ---
+Second Room) Kill all Stalfos to spawn Chomper Pickup (enables Chomper when acquired)
+Third Room) Kill all Gel and push out of place block in (to the right) to make solid 6 block to open door
+Fourth Room) Kill all Keese and push single block on island to the right
+Fifth Room) Kill all enemies
+Sixth Room) Kill all enemies
+Seventh Room) Push block inside corner partition up one space (end result of blocks looks kind of like Hangman) to change tiles in front of door to floor tiles
+Eighth Room) Kill all Stalfos and push both blocks on both small islands one space to the right to unlock door
+Ninth Room) Kill all enemies and push blocks on either side of the  rivers one space up
+Tenth Room) Kill all Kese and push all four blocks:
+	-first/third blocks from the right: push one up
+- 	-second/fourth blocks from the right: push one down
+Eleventh Room) Spiketraps can't be killed, so wall them off by pushing all 6 blocks not immediately next to a Spiketrap in front of the closest Spiketrap (on the righthand side, where
+the 4 spiketraps are right next to each other, all blocks are pushed to the right one; on the left hand side, the blocks are pushed to the left)
+Twelfth Room) Push the one red block all the way to the red square
+Thirteenth Room) Kill all enemies
+Fourteenth Room) Kill all enemies for key pickup to BOSS BATTLE
+Boss battle) Can't kill boss; must push the appropriately colored block to the code-matched colored tiles so that the boss can't extend arms anymore.

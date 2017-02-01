@@ -50,6 +50,7 @@ public class AspectRatio : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
-		
+		if (PlayerController.instance.num_hearts <= 0)
+			GetComponent<AudioSource> ().Stop ();
 	}
 }

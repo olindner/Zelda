@@ -715,6 +715,7 @@ public class PlayerController : MonoBehaviour {
 //						}
 //					}
 					DeathScreen.screen.gameObject.GetComponent<DeathScreen>().enabled = true;
+					player.Stop ();
 					player.clip = death;
 					player.Play();
 					GetComponent<Rigidbody> ().velocity = Vector3.zero;
@@ -864,6 +865,7 @@ public class PlayerController : MonoBehaviour {
 						//print ("ah dude I ded");
 						//DestroyStuffOnDeath ();
 						DeathScreen.screen.gameObject.GetComponent<DeathScreen>().enabled = true;
+						player.Stop ();
 						player.clip = death;
 						player.Play();
 						GetComponent<Rigidbody> ().velocity = Vector3.zero;
