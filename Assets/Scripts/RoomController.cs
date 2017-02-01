@@ -26,6 +26,7 @@ public class RoomController : MonoBehaviour {
 	public GameObject pushable_block_prefab;
 	public GameObject push_far_block_prefab;
 	public GameObject chomper_prefab;
+	public GameObject key_stalfos_prefab;
 
 //	public RoomController() {
 //	}
@@ -83,10 +84,10 @@ public class RoomController : MonoBehaviour {
 		map1 [1, 1].num_enemies_left = 4;
 		map1 [1, 1].SetEnemyPrefab ();
 
-		map1 [1, 2].needs_key_pickup = true;
+		map1 [1, 2].has_key_stalfos = true;
 		map1 [1, 2].enemy_type = "Stalfos";
-		map1 [1, 2].num_enemies_total = 3;
-		map1 [1, 2].num_enemies_left = 3;
+		map1 [1, 2].num_enemies_total = 2;
+		map1 [1, 2].num_enemies_left = 2;
 		map1 [1, 2].SetEnemyPrefab ();
 
 		map1 [1, 4].enemy_type = "Aquamentus"; //dragon boss
@@ -159,9 +160,9 @@ public class RoomController : MonoBehaviour {
 		map1 [5, 1].SetEnemyPrefab ();
 
 		map1 [5, 3].enemy_type = "Stalfos";
-		map1 [5, 3].num_enemies_total = 5;
-		map1 [5, 3].num_enemies_left = 5;
-		map1 [5, 3].needs_key_pickup = true;
+		map1 [5, 3].num_enemies_total = 4;
+		map1 [5, 3].num_enemies_left = 4;
+		map1 [5, 3].has_key_stalfos = true;
 		map1 [5, 3].SetEnemyPrefab ();
 
 		map1 [5, 2].is_active = true;
@@ -312,6 +313,10 @@ public class RoomController : MonoBehaviour {
 				map1 [active_row_index, active_col_index].SetPushFarBlocks ();
 			} else if (map1 [active_row_index, active_col_index].has_push_far_block && map1 [active_row_index, active_col_index].all_blocks_pushed) {
 				map1[active_row_index, active_col_index].SetPushFarBlocksAtTarget ();
+			}
+			if (map1[active_row_index, active_col_index].has_key_stalfos) {
+				print ("instantiating key stalfos");
+				map1 [active_row_index, active_col_index].InstantiateKeyStalfos ();
 			}
 		}
 

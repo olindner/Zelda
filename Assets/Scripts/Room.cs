@@ -28,6 +28,7 @@ public class Room : MonoBehaviour {
 	public bool has_push_block = false;
 	public bool has_push_far_block = false;
 	public bool needs_chomper_pickup = false;
+	public bool has_key_stalfos = false;
 
 	public bool bats_instantiated = false;
 
@@ -219,6 +220,14 @@ public class Room : MonoBehaviour {
 		things_inside_room.Add (mitchell);
 	}
 
+	public void InstantiateKeyStalfos() {
+		GameObject stal = Instantiate (RoomController.rc.key_stalfos_prefab) as GameObject;
+		Vector3 pos = FindFreeTile ();
+		stal.transform.position = pos;
+		stal.GetComponent<SkeletonKey> ().room = this;
+		things_inside_room.Add (stal);
+	}
+
 	public void InstantiateBatsInBowRoom() {
 		GameObject b1 = Instantiate (enemy_prefab) as GameObject;
 		GameObject b2 = Instantiate (enemy_prefab) as GameObject;
@@ -291,9 +300,9 @@ public class Room : MonoBehaviour {
 			go2.GetComponent<Rigidbody> ().constraints = RigidbodyConstraints.FreezeRotation | RigidbodyConstraints.FreezePositionZ;
 
 			go3.GetComponent<SpriteRenderer> ().color = Color.green;
-			go3.transform.position = new Vector3 (68f, 39f, 0f);
+			go3.transform.position = new Vector3 (68f, 40f, 0f);
 			go3.GetComponent<PushFarBlock> ().target = new Vector3 (70f, 38f, 0f);
-			go3.GetComponent<PushFarBlock> ().original_pos = new Vector3 (68f, 39f, 0f);
+			go3.GetComponent<PushFarBlock> ().original_pos = new Vector3 (68f, 40f, 0f);
 			go3.GetComponent<Rigidbody> ().constraints = RigidbodyConstraints.FreezeRotation | RigidbodyConstraints.FreezePositionZ;
 
 			things_inside_room.Add (go1);

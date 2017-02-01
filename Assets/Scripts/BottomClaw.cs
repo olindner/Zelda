@@ -12,6 +12,7 @@ public class BottomClaw : MonoBehaviour {
 	private bool movingout;
 	private bool movingin;
 	private bool delayset = false;
+	private bool STOP = false;
 
 	// Use this for initialization
 	void Start () {
@@ -23,6 +24,11 @@ public class BottomClaw : MonoBehaviour {
 	// Update is called once per frame
 	void Update ()
 	{
+		if (STOP) {
+			GetComponent<Rigidbody> ().velocity = Vector3.zero;
+			return;
+		}
+
 		if (sr.transform.position == origin && !delayset) {
 			extendTimer = Time.time + Random.Range(0f,5f);
 			delayset = true;
@@ -41,8 +47,10 @@ public class BottomClaw : MonoBehaviour {
 		Vector3 rayDown = transform.TransformDirection (Vector3.down);
 		RaycastHit hit;
 
-		if (Physics.Raycast(transform.position, rayDown, out hit, 1)){// && hit.transform.tag == "MovableBlock") {
+		if (Physics.Raycast(transform.position, rayDown, out hit, 1) && hit.transform.tag == "MovableBlock") {
 			GetComponent<Rigidbody>().constraints = RigidbodyConstraints.FreezeAll;
+			STOP = true;
+			print ("bottom claw is done");
 		}
 	}
 }
