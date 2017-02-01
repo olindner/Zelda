@@ -23,9 +23,15 @@ public class GameConfiguration : MonoBehaviour {
     }
 
     /* Flip cheats on and off in response to user input */
+<<<<<<< HEAD
+    void ProcessCheats ()
+	{
+		// Note: standardized controls may be found in project spec.
+=======
     void ProcessCheats()
     {
         // Note: standardized controls may be found in project spec.
+>>>>>>> 07759331f948067ecdefc681157dfdc3f1cff72b
 		if (Input.GetKey (KeyCode.F1)) {
 			PlayerController.instance.DelayedRestart (PlayerController.instance.gameRestartDelay);
 		} else if (Input.GetKey (KeyCode.F2)) {
@@ -42,12 +48,21 @@ public class GameConfiguration : MonoBehaviour {
 		} else if (Input.GetKey (KeyCode.F4)) {
 			PlayerController.instance.cheat_items = true;
 		} else if (Input.GetKey (KeyCode.F5)) {
+<<<<<<< HEAD
+			PlayerController.instance.transform.position = new Vector3(71f, 35f, 0f);
+			CameraPan.c.transform.position = new Vector3(71.52f, 38.79f, -11f);
+			RoomController.rc.active_col_index = 4;
+			RoomController.rc.active_row_index = 9;
+			PlayerController.instance.num_frozen_frames = 24;
+			PlayerController.instance.GetComponent<Rigidbody>().constraints = RigidbodyConstraints.FreezeAll;
+=======
 			PlayerController.instance.transform.position = new Vector3 (71f, 35f, 0f);
 			CameraPan.c.transform.position = new Vector3 (71.52f, 38.79f, -11f);
 			RoomController.rc.active_col_index = 4;
 			RoomController.rc.active_row_index = 9;
 			PlayerController.instance.num_frozen_frames = 24;
 			PlayerController.instance.GetComponent<Rigidbody> ().constraints = RigidbodyConstraints.FreezeAll;
+>>>>>>> 07759331f948067ecdefc681157dfdc3f1cff72b
 			CameraPan.c.current_pos = CameraPan.c.transform.position;
 			CameraPan.c.destination = CameraPan.c.current_pos;
 		}

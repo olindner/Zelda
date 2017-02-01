@@ -24,6 +24,8 @@ public class PlayerController : MonoBehaviour {
 	public AudioClip death;
 	public AudioClip bombClip;
 	public AudioClip swordThrow;
+	public AudioClip LinkHurt;
+	public AudioClip attack;
 	//public bool receive_damage = false;
 	public Material[] materials;
 	public Material[] tile_materials;
@@ -48,7 +50,7 @@ public class PlayerController : MonoBehaviour {
 	public bool has_map;
 	public bool has_compass;
 	public bool has_bow;
-	public GameObject chomper;
+	//public GameObject chomper; moved to Hud
 	public bool has_chomper = false;
 
 	//state machine stuff
@@ -406,6 +408,8 @@ public class PlayerController : MonoBehaviour {
 
 			if (Input.GetKeyDown (KeyCode.A)) {
 				Weapon sword = GenerateWeapon (WeaponType.sword, 'a');
+				player.clip = attack;
+				player.Play();
 				UseSword (sword);
 			} else if (Input.GetKeyDown (KeyCode.S)) {
 				if (selected_weapon_prefab_b.name == "Boomerang" && have_boomerang) {
@@ -694,6 +698,8 @@ public class PlayerController : MonoBehaviour {
 			&& num_cooldown_frames == 0) {
 			print ("dude you touched me");
 			if (num_hearts > 0) {
+				player.clip = LinkHurt;
+				player.Play();
 				ShowDamage (5);
 				num_hearts -= 0.5f;
 				//thing.GetComponent<Hud> ().TookDamage ();
@@ -814,8 +820,8 @@ public class PlayerController : MonoBehaviour {
 			num_frames_hold_triforce = 100;
 			num_hearts = heart_capacity;
 		} else if (collider.gameObject.tag == "ChomperPickup") {
-			print ("GOT CHOMPER PICKUP");
-			Instantiate(chomper, new Vector3(transform.position.x, transform.position.y + 2f, 0 ), Quaternion.identity);
+			//print ("GOT CHOMPER PICKUP");
+			//Instantiate(chomper, new Vector3(transform.position.x, transform.position.y + 2f, 0 ), Quaternion.identity); //moved to HUD.cs
 			has_chomper = true;
 			RoomController.rc.map1 [RoomController.rc.active_row_index, RoomController.rc.active_col_index].chomper_picked_up = true;
 			RoomController.rc.map1 [RoomController.rc.active_row_index, RoomController.rc.active_col_index].things_inside_room.Remove (collider.gameObject);

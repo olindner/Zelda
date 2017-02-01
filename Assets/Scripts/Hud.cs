@@ -9,6 +9,7 @@ public class Hud : MonoBehaviour {
 	public Text keyText;
 	public Text bombText;
 	public Text oldmanText;
+	public Text KAText;
 	public Image[] redHearts;
 	public Image[] whiteHearts;
 	public Image[] halfHearts;
@@ -30,6 +31,9 @@ public class Hud : MonoBehaviour {
 	public int activeSlot = 0;
 	private bool redSet = false;
 	public GameObject[] weaponPrefabs;
+	public GameObject chomperPrefab;
+	public GameObject chomperInstantiation;
+	private bool chomperActive = false;
 
 	// Use this for initialization
 	void Start ()
@@ -68,7 +72,13 @@ public class Hud : MonoBehaviour {
 
 		if (RoomController.rc.active_col_index == 0 && RoomController.rc.active_row_index == 2) {
 			oldmanText.enabled = true;
-		}
+		} else
+			oldmanText.enabled = false;
+
+		if (RoomController.rc.active_col_index == 2 && RoomController.rc.active_row_index == 12) {
+			KAText.enabled = true;
+		} else
+			KAText.enabled = false;
 
 		if (Input.GetKeyDown (KeyCode.Return)) {
 			hidden = !hidden;
@@ -209,7 +219,16 @@ public class Hud : MonoBehaviour {
 					h.enabled = false;
 				}
 				BSelected [activeSlot].enabled = true;
-				PlayerController.instance.selected_weapon_prefab_b = weaponPrefabs[activeSlot];
+				if (activeSlot != 3 && chomperInstantiation != null) {
+					Destroy (chomperInstantiation);
+					chomperActive = false;
+				}
+
+				PlayerController.instance.selected_weapon_prefab_b = weaponPrefabs [activeSlot];
+				if (activeSlot == 3 && !chomperActive && PlayerController.instance.has_chomper) {
+					chomperInstantiation = Instantiate(chomperPrefab, new Vector3(PlayerController.instance.transform.position.x, PlayerController.instance.transform.position.y + 2f, 0 ), Quaternion.identity);
+					chomperActive = true;
+				}
 			}
 		}
 

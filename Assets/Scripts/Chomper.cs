@@ -79,7 +79,7 @@ public class Chomper : MonoBehaviour {
 			changeTimer = Time.time + changeDelay;
 		}
 
-		if (Input.GetKeyDown(KeyCode.X)) { //set as x for now to not create issues
+		if (Input.GetKeyDown(KeyCode.S)) {
 			if (dir == 'N') dir = 'E';
 			else if (dir == 'E') dir = 'S';
 			else if (dir == 'S') dir = 'W';
