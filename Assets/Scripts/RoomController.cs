@@ -454,7 +454,7 @@ public class RoomController : MonoBehaviour {
 				ShowMapOnCamera.MAP [cur_room.tile_xmin - 1, cur_room.tile_ymin + 3] = 51;
 			} else if ((active_row_index == 9 && active_col_index == 0) || (active_row_index == 11 && active_col_index == 1)
 				|| (active_row_index == 11 && active_col_index == 2)) {
-				ShowMapOnCamera.MAP_TILES [cur_room.tile_xmax + 1, cur_room.tile_ymin + 3].SetTile (cur_room.tile_xmin - 1, cur_room.tile_ymin + 3, 48);
+				ShowMapOnCamera.MAP_TILES [cur_room.tile_xmax + 1, cur_room.tile_ymin + 3].SetTile (cur_room.tile_xmax + 1, cur_room.tile_ymin + 3, 48);
 				ShowMapOnCamera.MAP_TILES [cur_room.tile_xmax + 1, cur_room.tile_ymin + 3].GetComponent<BoxCollider> ().enabled = true;
 				ShowMapOnCamera.MAP_TILES [cur_room.tile_xmax + 1, cur_room.tile_ymin + 3].GetComponent<BoxCollider> ().size = new Vector3 (1f, 0.8f, 1f);
 				ShowMapOnCamera.MAP_TILES [cur_room.tile_xmax + 1, cur_room.tile_ymin + 3].GetComponent<BoxCollider> ().isTrigger = true;

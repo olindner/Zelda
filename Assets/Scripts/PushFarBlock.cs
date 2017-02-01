@@ -9,7 +9,7 @@ public class PushFarBlock : MonoBehaviour {
 	public Vector3 last_pos;
 	public Vector3 original_pos;
 	public bool is_moving = false;
-	public bool done_moving = false;
+//	public bool done_moving = false;
 	public bool done_moving_forever = false;
 
 	// Use this for initialization
@@ -28,7 +28,7 @@ public class PushFarBlock : MonoBehaviour {
 				&& (Mathf.Abs (transform.position.z - local_target.z) <= 0.1f)) {
 				transform.position = local_target;
 				is_moving = false;
-				done_moving = true;
+//				done_moving = true;
 				last_pos = local_target;
 				if (local_target == target) {
 					//print ("moving block got to target");
@@ -46,7 +46,7 @@ public class PushFarBlock : MonoBehaviour {
 	}
 
 	void OnCollisionEnter(Collision coll) {
-		if (coll.gameObject.tag == "Player" && !done_moving_forever && !done_moving && !is_moving) {
+		if (coll.gameObject.tag == "Player" && !done_moving_forever && !is_moving) {
 			Vector3 direction_of_push = this.transform.position - original_pos;
 			direction_of_push = direction_of_push.normalized;
 			Vector3 temp = last_pos;

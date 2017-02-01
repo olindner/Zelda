@@ -168,20 +168,39 @@ public class Room : MonoBehaviour {
 	}
 
 	public void InstantiateSpiketraps() {
-		GameObject st1 = Instantiate (enemy_prefab) as GameObject;
-		GameObject st2 = Instantiate (enemy_prefab) as GameObject;
-		GameObject st3 = Instantiate (enemy_prefab) as GameObject;
-		GameObject st4 = Instantiate (enemy_prefab) as GameObject;
-
-		st1.transform.position = ShowMapOnCamera.MAP_TILES[tile_xmin, tile_ymin].transform.position;
-		st2.transform.position = ShowMapOnCamera.MAP_TILES[tile_xmin, tile_ymax].transform.position;
-		st3.transform.position = ShowMapOnCamera.MAP_TILES[tile_xmax, tile_ymin].transform.position;
-		st4.transform.position = ShowMapOnCamera.MAP_TILES[tile_xmax, tile_ymax].transform.position;
-
-		things_inside_room.Add(st1);
-		things_inside_room.Add(st2);
-		things_inside_room.Add(st3);
-		things_inside_room.Add(st4);
+		if (RoomController.rc.active_row_index == 0 && RoomController.rc.active_col_index == 1) {
+			GameObject st1 = Instantiate (enemy_prefab) as GameObject;
+			GameObject st2 = Instantiate (enemy_prefab) as GameObject;
+			GameObject st3 = Instantiate (enemy_prefab) as GameObject;
+			GameObject st4 = Instantiate (enemy_prefab) as GameObject;
+			st1.transform.position = ShowMapOnCamera.MAP_TILES [tile_xmin, tile_ymin].transform.position;
+			st2.transform.position = ShowMapOnCamera.MAP_TILES [tile_xmin, tile_ymax].transform.position;
+			st3.transform.position = ShowMapOnCamera.MAP_TILES [tile_xmax, tile_ymin].transform.position;
+			st4.transform.position = ShowMapOnCamera.MAP_TILES [tile_xmax, tile_ymax].transform.position;
+			things_inside_room.Add(st1);
+			things_inside_room.Add(st2);
+			things_inside_room.Add(st3);
+			things_inside_room.Add(st4);
+		} else if (RoomController.rc.active_row_index == 11 && RoomController.rc.active_col_index == 2) {
+			GameObject st1 = Instantiate (enemy_prefab) as GameObject;
+			GameObject st2 = Instantiate (enemy_prefab) as GameObject;
+			GameObject st3 = Instantiate (enemy_prefab) as GameObject;
+			GameObject st4 = Instantiate (enemy_prefab) as GameObject;
+			GameObject st5 = Instantiate (enemy_prefab) as GameObject;
+			GameObject st6 = Instantiate (enemy_prefab) as GameObject;
+			st1.transform.position = ShowMapOnCamera.MAP_TILES [tile_xmin+1, tile_ymin].transform.position;
+			st2.transform.position = ShowMapOnCamera.MAP_TILES [tile_xmin+1, tile_ymax].transform.position;
+			st3.transform.position = ShowMapOnCamera.MAP_TILES [tile_xmax-1, tile_ymin].transform.position;
+			st4.transform.position = ShowMapOnCamera.MAP_TILES [tile_xmax-1, tile_ymax].transform.position;
+			st5.transform.position = ShowMapOnCamera.MAP_TILES [tile_xmax-3, tile_ymin].transform.position;
+			st6.transform.position = ShowMapOnCamera.MAP_TILES [tile_xmax-3, tile_ymax].transform.position;
+			things_inside_room.Add(st1);
+			things_inside_room.Add(st2);
+			things_inside_room.Add(st3);
+			things_inside_room.Add(st4);
+			things_inside_room.Add(st5);
+			things_inside_room.Add(st6);
+		}
 	}
 
 	public void InstantiateAquamentus() {
@@ -241,8 +260,8 @@ public class Room : MonoBehaviour {
 			GameObject go = Instantiate (RoomController.rc.push_far_block_prefab) as GameObject;
 			go.GetComponent<SpriteRenderer> ().color = Color.black;
 			go.transform.position = new Vector3 (60f, 14f, 0f);
-			go.GetComponent<PushableBlock> ().target = new Vector3 (58f, 19f, 0f);
-			go.GetComponent<PushableBlock> ().original_pos = new Vector3 (60f, 14f, 0f);
+			go.GetComponent<PushFarBlock> ().target = new Vector3 (58f, 19f, 0f);
+			go.GetComponent<PushFarBlock> ().original_pos = new Vector3 (60f, 14f, 0f);
 			go.GetComponent<Rigidbody> ().constraints = RigidbodyConstraints.FreezeRotation | RigidbodyConstraints.FreezePositionZ;
 		} else if (num_push_blocks_total == 3) {
 			GameObject go1 = Instantiate (RoomController.rc.push_far_block_prefab) as GameObject;
@@ -251,20 +270,20 @@ public class Room : MonoBehaviour {
 
 			go1.GetComponent<SpriteRenderer> ().color = Color.blue;
 			go1.transform.position = new Vector3 (76f, 40f, 0f);
-			go1.GetComponent<PushableBlock> ().target = new Vector3 (74f, 38f, 0f);
-			go1.GetComponent<PushableBlock> ().original_pos = new Vector3 (76f, 40f, 0f);
+			go1.GetComponent<PushFarBlock> ().target = new Vector3 (74f, 38f, 0f);
+			go1.GetComponent<PushFarBlock> ().original_pos = new Vector3 (76f, 40f, 0f);
 			go1.GetComponent<Rigidbody> ().constraints = RigidbodyConstraints.FreezeRotation | RigidbodyConstraints.FreezePositionZ;
 
 			go2.GetComponent<SpriteRenderer> ().color = Color.red;
 			go2.transform.position = new Vector3 (72f, 40f, 0f);
-			go2.GetComponent<PushableBlock> ().target = new Vector3 (72f, 36f, 0f);
-			go2.GetComponent<PushableBlock> ().original_pos = new Vector3 (72f, 40f, 0f);
+			go2.GetComponent<PushFarBlock> ().target = new Vector3 (72f, 36f, 0f);
+			go2.GetComponent<PushFarBlock> ().original_pos = new Vector3 (72f, 40f, 0f);
 			go2.GetComponent<Rigidbody> ().constraints = RigidbodyConstraints.FreezeRotation | RigidbodyConstraints.FreezePositionZ;
 
 			go3.GetComponent<SpriteRenderer> ().color = Color.green;
 			go3.transform.position = new Vector3 (68f, 39f, 0f);
-			go3.GetComponent<PushableBlock> ().target = new Vector3 (70f, 38f, 0f);
-			go3.GetComponent<PushableBlock> ().original_pos = new Vector3 (68f, 39f, 0f);
+			go3.GetComponent<PushFarBlock> ().target = new Vector3 (70f, 38f, 0f);
+			go3.GetComponent<PushFarBlock> ().original_pos = new Vector3 (68f, 39f, 0f);
 			go3.GetComponent<Rigidbody> ().constraints = RigidbodyConstraints.FreezeRotation | RigidbodyConstraints.FreezePositionZ;
 		}
 	}
@@ -337,10 +356,10 @@ public class Room : MonoBehaviour {
 				| RigidbodyConstraints.FreezePositionY | RigidbodyConstraints.FreezePositionZ;
 			} else if (row == 9 && col == 0) {
 				go.transform.position = new Vector3 (2f, 37f, 0f);
-				go.GetComponent<PushableBlock> ().target = new Vector3 (3f, 37f, 0f);
+				go.GetComponent<PushableBlock> ().target = new Vector3 (2f, 38f, 0f);
 				go.GetComponent<PushableBlock> ().original_pos = new Vector3 (2f, 37f, 0f);
 				go.GetComponent<Rigidbody> ().constraints = RigidbodyConstraints.FreezeRotation
-				| RigidbodyConstraints.FreezePositionY | RigidbodyConstraints.FreezePositionZ;
+				| RigidbodyConstraints.FreezePositionX | RigidbodyConstraints.FreezePositionZ;
 			}
 			//else remember the one that goes a long way???
 			//go.GetComponent<PushableBlock> ().rc = room_controller;
