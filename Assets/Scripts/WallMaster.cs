@@ -63,33 +63,53 @@ public class WallMaster : MonoBehaviour {
 		if (playerx >= 34.5f && playerx <= 35.5f)
 			isDown = true;
 
-		if (isLeft) {	
-			if (!set1) {
-				target = new Vector3 (transform.position.x + 1f, transform.position.y, 0); //Target 1: right 1 space
-				set1 = true;
-			}
+		if (!set1) {	
+			if (isLeft)
+				target = new Vector3 (transform.position.x + 1f, transform.position.y, 0); //Target 1a: right 1 space
+			else if (isRight)
+				target = new Vector3 (transform.position.x - 1f, transform.position.y, 0); //Target 1b: left 1 space
+			else if (isUp)
+				target = new Vector3 (transform.position.x, transform.position.y - 1f, 0); //Target 1c: down 1 space
+			else if (isDown)
+				target = new Vector3 (transform.position.x, transform.position.y + 1f, 0); //Target 1d: up 1 space
+			set1 = true;
+		}
 
-			if (checks == 1 && !set2) { //has reached right1, and is in top part of room
+		if (checks == 1 && !set2) {
+			if (isLeft || isRight) {
 				if (transform.position.y < playery) { //player is above
 					target = new Vector3 (transform.position.x, transform.position.y + 3f, 0); //Target 2a: up 3 spaces
 				} else if (transform.position.y >= playery) { //player is below
-					target = new Vector3 (transform.position.x, transform.position.y - 3f, 0); //Target 2a: down 3 spaces
+					target = new Vector3 (transform.position.x, transform.position.y - 3f, 0); //Target 2b: down 3 spaces
 				}
-				set2 = true;
-			}
-
-			if (checks == 2 && !set3) { //has reached up3/down3
-				target = new Vector3 (transform.position.x - 1f, transform.position.y, 0); //Target 3: left 1 space
-				set3 = true;
-			}
-
-			//Check if at destination, increment checkpoints
-			if (transform.position == target) {
-				checks++;
-				if (checks == 3) {
-					Destroy (gameObject);
-					//need proper delete lines of code (Lillian)
+			} else if (isUp || isDown) {
+				if (transform.position.x < playerx) { //player is right
+					target = new Vector3 (transform.position.x + 3f, transform.position.y, 0); //Target 2c: right 3 spaces
+				} else if (transform.position.x >= playerx) { //player is left
+					target = new Vector3 (transform.position.x - 3f, transform.position.y, 0); //Target 2d: left 3 spaces
 				}
+			}
+			set2 = true;
+		}
+
+		if (checks == 2 && !set3) {
+			if (isLeft)
+				target = new Vector3 (transform.position.x - 1f, transform.position.y, 0); //Target 3a: left 1 space
+			else if (isRight)
+				target = new Vector3 (transform.position.x + 1f, transform.position.y, 0); //Target 3b: right 1 space
+			else if (isUp)
+				target = new Vector3 (transform.position.x, transform.position.y + 1f, 0); //Target 3c: up 1 space
+			else if (isDown)
+				target = new Vector3 (transform.position.x, transform.position.y - 1f, 0); //Target 3d: down 1 space
+			set3 = true;
+		}
+
+		//Check if at destination, increment checkpoints
+		if (transform.position == target) {
+			checks++;
+			if (checks == 3) {
+				Destroy (gameObject);
+				//need proper delete lines of code (Lillian)
 			}
 		}
 
