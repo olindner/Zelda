@@ -774,7 +774,7 @@ public class PlayerController : MonoBehaviour {
 			transform.position = new Vector3 (23f, 137f, 0f);
 			num_frozen_frames = 24;
 			GetComponent<Rigidbody> ().constraints = RigidbodyConstraints.FreezeAll;
-		} else if (collider.gameObject.tag == "Enemy" && num_cooldown_frames == 0) {
+		} else if ((collider.gameObject.tag == "Enemy" || collider.gameObject.tag == "GoriyaBoomerang") && num_cooldown_frames == 0) {
 			//print ("dude you touched me");
 			if (num_hearts > 0) {
 				ShowDamage (5);

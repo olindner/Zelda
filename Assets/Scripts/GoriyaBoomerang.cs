@@ -7,27 +7,27 @@ public class GoriyaBoomerang : MonoBehaviour {
 	private SpriteRenderer sr;
 	public float speed = 5f;
 	public Vector3 target;
-	Vector3 origin;
+	public Vector3 origin;
 //	public bool on_way_back = false;
 	public Vector3 goriya_pos;
-	private bool movingout;
+	private bool movingout = true;
 	private bool movingin;
+	public float failsafe;
 
 	// Use this for initialization
 	void Start () {
 		sr = GetComponent<SpriteRenderer>();
-		origin = sr.transform.position;
+		failsafe = Time.time + 3f;
 	}
 	
 	// Update is called once per frame
 	void Update () {
-		transform.Rotate (0, 0, 3*Time.time);
 
-		if (sr.transform.position == origin) {
-			movingout = true;
-			movingin = false;
-		}
-		else if (sr.transform.position == target) {
+		if (Time.time >= failsafe) Destroy(gameObject);
+
+		transform.Rotate (0, 0, 1000*Time.deltaTime);
+
+		if (sr.transform.position == target) {
 			movingout = false;
 			movingin = true;
 		}
@@ -42,6 +42,7 @@ public class GoriyaBoomerang : MonoBehaviour {
 		    || coll.gameObject.tag == "DoorDown" || coll.gameObject.tag == "LockedDoorUp"
 		    || coll.gameObject.tag == "LockedDoorLeft" || coll.gameObject.tag == "LockedDoorRight"
 		    || coll.gameObject.tag == "Player") {
+		    movingout = false;
 			movingin = true;
 //			Vector3 new_direction = goriya_pos - this.transform.position;
 //			this.gameObject.GetComponent<Rigidbody> ().velocity = new_direction.normalized * 5f;
