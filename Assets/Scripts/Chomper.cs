@@ -67,7 +67,7 @@ public class Chomper : MonoBehaviour {
 		else if (dir == 'S') transform.position = new Vector3(PlayerController.instance.transform.position.x, PlayerController.instance.transform.position.y - distance, 0);
 		else if (dir == 'W') transform.position = new Vector3(PlayerController.instance.transform.position.x - distance, PlayerController.instance.transform.position.y, 0);
 
-		if (Input.GetKeyDown(KeyCode.X)) { //set as x for now to not create issues
+		if (Input.GetKeyDown(KeyCode.S)) {
 			if (dir == 'N') dir = 'E';
 			else if (dir == 'E') dir = 'S';
 			else if (dir == 'S') dir = 'W';
