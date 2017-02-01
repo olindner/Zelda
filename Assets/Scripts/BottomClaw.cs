@@ -12,7 +12,7 @@ public class BottomClaw : MonoBehaviour {
 	private bool movingout;
 	private bool movingin;
 	private bool delayset = false;
-	private bool STOP = false;
+	public bool STOP = false;
 
 	// Use this for initialization
 	void Start () {
