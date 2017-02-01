@@ -55,11 +55,11 @@ public class Weapon : MonoBehaviour {
 	void OnCollisionEnter(Collision coll) {
 		//print ("collided with something!");
 		if (this.type == WeaponType.boomerang && (coll.gameObject.tag == "Wall"
-			|| coll.gameObject.tag == "DoorUp" || coll.gameObject.tag == "DoorLeft"
-			|| coll.gameObject.tag == "DoorRight" || coll.gameObject.tag == "DoorDown"
-			|| coll.gameObject.tag == "LockedDoorUp" || coll.gameObject.tag == "LockedDoorLeft"
-			|| coll.gameObject.tag == "LockedDoorRight" || coll.gameObject.tag == "Enemy"
-			||coll.gameObject.tag == "MovableBlock")) {
+		    || coll.gameObject.tag == "DoorUp" || coll.gameObject.tag == "DoorLeft"
+		    || coll.gameObject.tag == "DoorRight" || coll.gameObject.tag == "DoorDown"
+		    || coll.gameObject.tag == "LockedDoorUp" || coll.gameObject.tag == "LockedDoorLeft"
+		    || coll.gameObject.tag == "LockedDoorRight" || coll.gameObject.tag == "Enemy"
+		    || coll.gameObject.tag == "MovableBlock")) {
 			//print ("Boomerang triggered player");
 			//print ("boom velocity " + this.gameObject.GetComponent<Rigidbody> ().velocity);
 //			if (PlayerController.instance.current_direction == Direction.EAST) {
@@ -75,6 +75,8 @@ public class Weapon : MonoBehaviour {
 			on_way_back = true;
 			Vector3 new_direction = PlayerController.instance.transform.position - this.transform.position;
 			this.gameObject.GetComponent<Rigidbody> ().velocity = new_direction.normalized * this.def.velocity;
+		} else if ((this.type == WeaponType.sword || this.type == WeaponType.arrow) && coll.gameObject.tag == "Wall") {
+			Destroy (this.w_go);
 		}
 	}
 

@@ -17,6 +17,8 @@ public class Skeleton : MonoBehaviour {
 	public float prob_drop_rupee = 0.75f;
 	public GameObject rupee;
 	public GameObject blue_rupee;
+	public GameObject bomb;
+	public GameObject heart;
 
 	public int showDamageForFrames = 2;
 	public Material[] materials;
@@ -93,7 +95,7 @@ public class Skeleton : MonoBehaviour {
 			}
 		}
 
-		if (!isMoving && !isStunned) {
+		if (!isMoving && !isStunned && num_cooldown_frames == 0) {
 			int num = Random.Range (0, 15);
 
 			//Make sure set position in middle of square
@@ -143,20 +145,36 @@ public class Skeleton : MonoBehaviour {
 	void OnCollisionEnter (Collision col)
 	{
 		if (col.gameObject.tag == "Sword") {
-			GetComponent<Rigidbody> ().velocity = damage_hopback_vel * col.rigidbody.velocity;
-			num_cooldown_frames = 5;
+			print ("current skeleton velocity is " + GetComponent < Rigidbody> ().velocity);
+			if (GetComponent<Rigidbody> ().velocity.normalized == Vector3.up) {
+				GetComponent<Rigidbody> ().velocity = damage_hopback_vel * Vector3.up;
+			} else if (GetComponent<Rigidbody> ().velocity.normalized == Vector3.down) {
+				GetComponent<Rigidbody> ().velocity = damage_hopback_vel * Vector3.down;
+			} else if (GetComponent<Rigidbody> ().velocity.normalized == Vector3.left) {
+				GetComponent<Rigidbody> ().velocity = damage_hopback_vel * Vector3.left;
+			} else {
+				GetComponent<Rigidbody> ().velocity = damage_hopback_vel * Vector3.right;
+			}
+
+			//GetComponent<Rigidbody> ().velocity = damage_hopback_vel * col.rigidbody.velocity;
+			num_cooldown_frames = 25;
 			Destroy (col.gameObject);
 			health--;
 			ShowDamage (5);
 			if (health <= 0) {
 				room.num_enemies_left--;
 				room.things_inside_room.Remove (this.gameObject);
-				if (Random.Range (0f, 1f) < prob_drop_rupee) {
-					GameObject go;
-					if (Random.Range (0f, 1f) < 0.5) {
+				int temp = Random.Range (1, 5);
+				GameObject go;
+				if (temp == 1 || temp == 2 || temp == 3 || temp == 4) {
+					if (temp == 1) {
 						go = Instantiate (rupee) as GameObject;
-					} else {
+					} else if (temp == 2) {
 						go = Instantiate (blue_rupee) as GameObject;
+					} else if (temp == 3) {
+						go = Instantiate (heart) as GameObject;
+					} else {
+						go = Instantiate (bomb) as GameObject;
 					}
 					go.transform.position = this.transform.position;
 					room.things_inside_room.Add (go);
