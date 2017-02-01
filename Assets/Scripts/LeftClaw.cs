@@ -12,6 +12,7 @@ public class LeftClaw : MonoBehaviour {
 	private bool movingout;
 	private bool movingin;
 	private bool delayset = false;
+	private bool STOP = false;
 
 	// Use this for initialization
 	void Start () {
@@ -23,6 +24,12 @@ public class LeftClaw : MonoBehaviour {
 	// Update is called once per frame
 	void Update ()
 	{
+
+		if (STOP) {
+			GetComponent<Rigidbody> ().velocity = Vector3.zero;
+			return;
+		}
+
 		if (sr.transform.position == origin && !delayset) {
 			extendTimer = Time.time + Random.Range(0f,5f);
 			delayset = true;
@@ -37,5 +44,14 @@ public class LeftClaw : MonoBehaviour {
 
 		if(movingout && Time.time >= extendTimer) sr.transform.position = Vector3.MoveTowards(sr.transform.position, target, Time.deltaTime * speed);
 		else if (movingin) sr.transform.position = Vector3.MoveTowards(sr.transform.position, origin, Time.deltaTime * speed);
+	
+		Vector3 rayLeft = transform.TransformDirection (Vector3.left);
+		RaycastHit hit;
+
+		if (Physics.Raycast(transform.position, rayLeft, out hit, 1) && hit.transform.tag == "MovableBlock") {
+			GetComponent<Rigidbody>().constraints = RigidbodyConstraints.FreezeAll;
+			STOP = true;
+			print ("left claw is done");
+		}
 	}
 }

@@ -100,6 +100,7 @@ public class PlayerController : MonoBehaviour {
 
     // Use this for initialization
     void Start () {
+		//deathScreen.gameObject.GetComponent<Renderer> ().enabled = false;
     	
         rb = GetComponent<Rigidbody>();
         instance = this;
@@ -443,49 +444,49 @@ public class PlayerController : MonoBehaviour {
 			if (this.current_direction == Direction.SOUTH) {
 				go.GetComponent<SpriteRenderer> ().sprite = def.sprites_dlur [0];
 				LinkPos.x += 0.1f;
-				LinkPos.y -= 0.7f;
+				LinkPos.y -= 1f;
 				go.transform.position = LinkPos;
 				Vector3 go_bc_center = go.GetComponent<BoxCollider> ().center;
 				Vector3 go_bc_size = go.GetComponent<BoxCollider> ().size;
 				go_bc_center.y -= 0.15f;
-				go_bc_size.y = 0.7f;
+				go_bc_size.y = 1.5f;
 				go_bc_size.x = 0.7f;
 				go.GetComponent<BoxCollider> ().center = go_bc_center;
 				go.GetComponent<BoxCollider> ().size = go_bc_size;
 			} else if (this.current_direction == Direction.WEST) {
 				go.GetComponent<SpriteRenderer> ().sprite = def.sprites_dlur [1];
-				LinkPos.x -= 0.7f;
+				LinkPos.x -= 1.3f;
 				LinkPos.y -= 0.06f;
 				go.transform.position = LinkPos;
 				Vector3 go_bc_center = go.GetComponent<BoxCollider> ().center;
 				Vector3 go_bc_size = go.GetComponent<BoxCollider> ().size;
 				go_bc_center.x += 0.15f;
-				go_bc_size.x = 0.7f;
+				go_bc_size.x = 1.5f;
 				go_bc_size.y = 0.7f;
 				go.GetComponent<BoxCollider> ().center = go_bc_center;
 				go.GetComponent<BoxCollider> ().size = go_bc_size;
 			} else if (this.current_direction == Direction.NORTH) {
 				go.GetComponent<SpriteRenderer> ().sprite = def.sprites_dlur [2];
 				LinkPos.x -= 0.1f;
-				LinkPos.y += 0.7f;
+				LinkPos.y += 1f;
 				go.transform.position = LinkPos;
 				Vector3 go_bc_center = go.GetComponent<BoxCollider> ().center;
 				Vector3 go_bc_size = go.GetComponent<BoxCollider> ().size;
 				go_bc_center.y += 0.15f;
-				go_bc_size.y = 0.7f;
+				go_bc_size.y = 1.5f;
 				go_bc_size.x = 0.7f;
 				go.GetComponent<BoxCollider> ().center = go_bc_center;
 				go.GetComponent<BoxCollider> ().size = go_bc_size;
 			} else { //current direction is EAST
 				go.GetComponent<SpriteRenderer> ().sprite = def.sprites_dlur [3];
-				LinkPos.x += 0.7f;
+				LinkPos.x += 1.3f;
 				LinkPos.y -= 0.06f;
 				go.transform.position = LinkPos;
 				Vector3 go_bc_center = go.GetComponent<BoxCollider> ().center;
 				Vector3 go_bc_size = go.GetComponent<BoxCollider> ().size;
 				go_bc_center.x -= 0.15f;
 				go_bc_size.y = 0.7f;
-				go_bc_size.x = 0.7f;
+				go_bc_size.x = 1.5f;
 				go.GetComponent<BoxCollider> ().center = go_bc_center;
 				go.GetComponent<BoxCollider> ().size = go_bc_size;
 			}
@@ -707,6 +708,13 @@ public class PlayerController : MonoBehaviour {
 				if (num_hearts == 0.0) {
 					//print ("ah dude I ded");
 					//DestroyStuffOnDeath ();
+					//deathScreen.gameObject.GetComponent<Renderer>().enabled = true;
+//					foreach (Transform child in CameraPan.c.gameObject.transform) {
+//						if (child.name == "RedScreenOfDeath") {
+//							child.
+//						}
+//					}
+					DeathScreen.screen.gameObject.GetComponent<DeathScreen>().enabled = true;
 					player.clip = death;
 					player.Play();
 					GetComponent<Rigidbody> ().velocity = Vector3.zero;
@@ -838,23 +846,30 @@ public class PlayerController : MonoBehaviour {
 			GetComponent<Rigidbody> ().constraints = RigidbodyConstraints.FreezeAll;
 		} else if ((collider.gameObject.tag == "Enemy" || collider.gameObject.tag == "GoriyaBoomerang") && num_cooldown_frames == 0) {
 			//print ("dude you touched me");
-			if (num_hearts > 0) {
-				ShowDamage (5);
-				num_hearts -= 0.5f;
-				//thing.GetComponent<Hud> ().TookDamage ();
-				num_cooldown_frames = 24;
-				GetComponent<Rigidbody> ().velocity *= (-1f * damage_hopback_vel);
-				if (num_hearts == 0.0) {
-					//print ("ah dude I ded");
-					//DestroyStuffOnDeath ();
-					player.clip = death;
-					player.Play();
-					GetComponent<Rigidbody> ().velocity = Vector3.zero;
-					animation_state_machine.ChangeState (new StatePlayAnimationForDead (this, 
-						GetComponent<SpriteRenderer> (), link_dead, 6));
-					//foreach (Material m in tile_materials) {
-					//m.color = Color.red;
-				//}
+			if (collider.gameObject.tag == "GoriyaBoomerang") {
+				if ((collider.gameObject.GetComponent<Rigidbody> ().velocity.normalized == Vector3.up && current_direction == Direction.SOUTH)
+				    || (collider.gameObject.GetComponent<Rigidbody> ().velocity.normalized == Vector3.down && current_direction == Direction.NORTH)
+				    || (collider.gameObject.GetComponent<Rigidbody> ().velocity.normalized == Vector3.left && current_direction == Direction.EAST)
+				    || (collider.gameObject.GetComponent<Rigidbody> ().velocity.normalized == Vector3.right && current_direction == Direction.WEST)) {
+					return;
+				}
+			} else {
+				if (num_hearts > 0) {
+					ShowDamage (5);
+					num_hearts -= 0.5f;
+					//thing.GetComponent<Hud> ().TookDamage ();
+					num_cooldown_frames = 24;
+					GetComponent<Rigidbody> ().velocity *= (-1f * damage_hopback_vel);
+					if (num_hearts == 0.0) {
+						//print ("ah dude I ded");
+						//DestroyStuffOnDeath ();
+						DeathScreen.screen.gameObject.GetComponent<DeathScreen>().enabled = true;
+						player.clip = death;
+						player.Play();
+						GetComponent<Rigidbody> ().velocity = Vector3.zero;
+						animation_state_machine.ChangeState (new StatePlayAnimationForDead (this, 
+							GetComponent<SpriteRenderer> (), link_dead, 6));
+					}
 				}
 			}
 		}

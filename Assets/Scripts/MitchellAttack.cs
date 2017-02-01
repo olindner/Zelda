@@ -9,6 +9,8 @@ public class MitchellAttack : MonoBehaviour {
 	private float shootTimer;
 	public Sprite ded;
 
+	public Room room;
+
 	// Use this for initialization
 	void Start () {
 		shootTimer = Time.time + shootDelay;

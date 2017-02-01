@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Skeleton : MonoBehaviour {
+public class SkeletonKey : MonoBehaviour {
 
 	private Transform tr;
 	public float speed;
@@ -14,10 +14,7 @@ public class Skeleton : MonoBehaviour {
 	private float timer;
 	private bool isStunned = false;
 
-	public GameObject rupee;
-	public GameObject blue_rupee;
-	public GameObject bomb;
-	public GameObject heart;
+	public GameObject key;
 
 	public int showDamageForFrames = 2;
 	public Material[] materials;
@@ -33,7 +30,7 @@ public class Skeleton : MonoBehaviour {
 	// Use this for initialization
 	void Start () {
 		pos = transform.position;
-    	tr = transform;
+		tr = transform;
 		health = 2;
 		isMoving = false;
 		dir = Random.Range(0,3); //pick a random starting direction
@@ -45,7 +42,7 @@ public class Skeleton : MonoBehaviour {
 			originalColors [i] = materials [i].color;
 		}
 	}
-	
+
 	// Update is called once per frame
 	void Update ()
 	{
@@ -165,21 +162,9 @@ public class Skeleton : MonoBehaviour {
 			if (health <= 0) {
 				room.num_enemies_left--;
 				room.things_inside_room.Remove (this.gameObject);
-				int temp = Random.Range (1, 5);
-				GameObject go;
-				if (temp == 1 || temp == 2 || temp == 3 || temp == 4) {
-					if (temp == 1) {
-						go = Instantiate (rupee) as GameObject;
-					} else if (temp == 2) {
-						go = Instantiate (blue_rupee) as GameObject;
-					} else if (temp == 3) {
-						go = Instantiate (heart) as GameObject;
-					} else {
-						go = Instantiate (bomb) as GameObject;
-					}
-					go.transform.position = this.transform.position;
-					room.things_inside_room.Add (go);
-				}
+				GameObject go = Instantiate (key) as GameObject;
+				go.transform.position = this.transform.position;
+				room.things_inside_room.Add (go);
 				Destroy (this.gameObject);
 			}
 		} else if (col.gameObject.tag == "Boomerang") {

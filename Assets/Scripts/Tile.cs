@@ -24,6 +24,8 @@ public class Tile : MonoBehaviour {
 		this.gameObject.tag = "Untagged";
 		bc.isTrigger = false;
 		bc.gameObject.layer = 0;
+		bc.size = Vector3.one;
+		bc.center = Vector3.zero;
 
         sprend = GetComponent<SpriteRenderer>();
         //Renderer rend = gameObject.GetComponent<Renderer>();
