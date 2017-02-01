@@ -82,7 +82,7 @@ public class Tile : MonoBehaviour {
 		} else if ((this.gameObject.tag == "LockedDoorUp" || this.gameObject.tag == "LockedDoorLeft" 
 			|| this.gameObject.tag == "LockedDoorRight") && coll.gameObject.tag == "Player"
 		           && coll.gameObject.GetComponent<PlayerController> ().num_keys > 0) {
-			//print ("hit locked door");
+			print ("hit locked door");
 			//print ("tile tag " + this.gameObject.tag);
 			OpenLockedDoor ();
 		}

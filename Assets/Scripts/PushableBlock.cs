@@ -50,6 +50,12 @@ public class PushableBlock : MonoBehaviour {
 			} else if (PlayerController.instance.current_direction == Direction.EAST && direction_of_push == Vector3.right
 			           && target.x - 1 == original_pos.x && target.y == original_pos.y) {
 				this.is_moving = true;
+			} else if (PlayerController.instance.current_direction == Direction.SOUTH && direction_of_push == Vector3.down
+			           && target.y + 1 == original_pos.y && target.x == original_pos.x) {
+				this.is_moving = true;
+			} else if (PlayerController.instance.current_direction == Direction.WEST && direction_of_push == Vector3.left
+				&& target.x + 1 == original_pos.x && target.y == original_pos.y) {
+				this.is_moving = true;
 			} else {
 				if (RoomController.rc.map1 [RoomController.rc.active_row_index, RoomController.rc.active_col_index].all_blocks_pushed) {
 					this.transform.position = target;

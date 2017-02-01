@@ -20,6 +20,21 @@ public class Goriya : MonoBehaviour {
 	private bool isStunned = false;
 	private int here = 0;
 
+	public GameObject rupee;
+	public GameObject blue_rupee;
+	public GameObject bomb;
+	public GameObject heart;
+
+	public int health = 3;
+	public int showDamageForFrames = 2;
+	public Material[] materials;
+	public Material[] tile_materials;
+	public int remainingDamageFrames = 0;
+	public int remainingDamageFlashes = 0;
+	public Color[] originalColors;
+	public int num_cooldown_frames = 0;
+	public float damage_hopback_vel = 2.65f;
+
 	public Room room;
 
 	public GameObject boomerang;
@@ -30,11 +45,18 @@ public class Goriya : MonoBehaviour {
 
 	// Use this for initialization
 	void Start () {
+		health = 3;
 		spriteTimer = 0f;
 		throwTimer = Time.time + throwDelay;
 		pos = transform.position;
 		dir = Random.Range(0,3);
 		sr = GetComponent<SpriteRenderer>();
+
+		materials = Utils.GetAllMaterials (gameObject);
+		originalColors = new Color[materials.Length];
+		for (int i = 0; i < materials.Length; i++) {
+			originalColors [i] = materials [i].color;
+		}
 	}
 	
 	// Update is called once per frame
@@ -46,6 +68,41 @@ public class Goriya : MonoBehaviour {
 			has_boomerang = true;
 			CorrectPosition();
 			pos = transform.position;
+		}
+
+		if (isStunned) {
+			this.GetComponent<Rigidbody> ().velocity = Vector3.zero;
+		}
+
+		if (remainingDamageFlashes > 0) {
+			//print ("frame number: " + frame);
+			//print (remainingDamageFlashes + " damage flashes left");
+			if (remainingDamageFrames > 0) {
+				//print (remainingDamageFrames + " damage frames left");
+				remainingDamageFrames--;
+				if (remainingDamageFrames == showDamageForFrames / 2) {
+					//print ("no damage frames left!");
+					UnshowDamage ();
+				}
+			} else {
+				//print ("decreasing damage flashes left");
+				remainingDamageFlashes--;
+				ShowDamage (remainingDamageFlashes);
+			}
+		} else {
+			//print ("no damage flashes left!");
+			UnshowDamage ();
+		}
+
+		if (num_cooldown_frames > 0) {
+			num_cooldown_frames--;
+			if (num_cooldown_frames == 0) {
+				this.GetComponent<Rigidbody> ().velocity = Vector3.zero;
+				if (isStunned) {
+					isStunned = false;
+					GetComponent<Rigidbody> ().constraints = RigidbodyConstraints.FreezeRotation | RigidbodyConstraints.FreezePositionZ;
+				}
+			}
 		}
 
 		if (has_boomerang && transform.position == pos) {
@@ -194,5 +251,73 @@ public class Goriya : MonoBehaviour {
 		}
 		transform.position = new Vector3(tempx, tempy, 0);
 		//isMoving = false; //hopefully make it pick new direction
+	}
+
+	void OnCollisionEnter (Collision col)
+	{
+		if (col.gameObject.tag == "Sword" || col.gameObject.tag == "Chomper") {
+			print ("current goriya velocity is " + GetComponent < Rigidbody> ().velocity);
+			if (GetComponent<Rigidbody> ().velocity.normalized == Vector3.up) {
+				GetComponent<Rigidbody> ().velocity = damage_hopback_vel * Vector3.up;
+			} else if (GetComponent<Rigidbody> ().velocity.normalized == Vector3.down) {
+				GetComponent<Rigidbody> ().velocity = damage_hopback_vel * Vector3.down;
+			} else if (GetComponent<Rigidbody> ().velocity.normalized == Vector3.left) {
+				GetComponent<Rigidbody> ().velocity = damage_hopback_vel * Vector3.left;
+			} else {
+				GetComponent<Rigidbody> ().velocity = damage_hopback_vel * Vector3.right;
+			}
+
+			//GetComponent<Rigidbody> ().velocity = damage_hopback_vel * col.rigidbody.velocity;
+			num_cooldown_frames = 25;
+			if (col.gameObject.tag == "Sword") {
+				Destroy (col.gameObject);
+			}
+			health--;
+			ShowDamage (5);
+			if (health <= 0) {
+				room.num_enemies_left--;
+				room.things_inside_room.Remove (this.gameObject);
+				int temp = Random.Range (1, 5);
+				GameObject go;
+				if (temp == 1 || temp == 2 || temp == 3 || temp == 4) {
+					if (temp == 1) {
+						go = Instantiate (rupee) as GameObject;
+					} else if (temp == 2) {
+						go = Instantiate (blue_rupee) as GameObject;
+					} else if (temp == 3) {
+						go = Instantiate (heart) as GameObject;
+					} else {
+						go = Instantiate (bomb) as GameObject;
+					}
+					go.transform.position = this.transform.position;
+					room.things_inside_room.Add (go);
+				}
+				Destroy (this.gameObject);
+			}
+		} else if (col.gameObject.tag == "Boomerang") {
+			GetComponent<Rigidbody> ().velocity = Vector3.zero;
+			GetComponent<Rigidbody> ().constraints = RigidbodyConstraints.FreezeAll;
+			num_cooldown_frames = 300;
+			isStunned = true;
+		} else if (col.gameObject.name == "Skeleton") { //possibly do simple "else"
+			//CorrectPosition();
+			//isMoving = false;
+		}
+	}
+
+	void ShowDamage(int flashes_left) {
+		//print ("entered ShowDamage");
+		//receive_damage = false;
+		remainingDamageFlashes = flashes_left;
+		foreach (Material m in materials) {
+			m.color = Color.red;
+		}
+		remainingDamageFrames = showDamageForFrames;
+	}
+
+	void UnshowDamage() {
+		for (int i = 0; i < materials.Length; i++) {
+			materials [i].color = originalColors [i];
+		}
 	}
 }
